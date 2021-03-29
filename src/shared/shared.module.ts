@@ -22,7 +22,7 @@ const providers = [
         HttpModule,
         JwtModule.registerAsync({
             useFactory: (configService: ConfigService) => ({
-                secretOrPrivateKey: configService.get('JWT_SECRET_KEY'),
+                secret: configService.get('JWT_SECRET_KEY'),
                 // if you want to use token with expiration date
                 // signOptions: {
                 //     expiresIn: configService.getNumber('JWT_EXPIRATION_TIME'),

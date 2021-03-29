@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
     IsEmail,
-    IsNotEmpty,
     IsOptional,
     IsPhoneNumber,
     IsString,
@@ -9,26 +8,21 @@ import {
 } from 'class-validator';
 import { Column } from 'typeorm';
 
-import { Trim } from '../../../decorators/transforms.decorator';
+// import { Trim } from '../../../decorators/transforms.decorator';
 
 export class UserRegisterDto {
-    @ApiProperty()
+    @ApiProperty({ minLength: 4 })
     @IsString()
-    @IsNotEmpty()
-    @Trim()
     readonly firstName: string;
 
-    @ApiProperty()
+    @ApiProperty({ minLength: 4 })
     @IsString()
-    @IsNotEmpty()
-    @Trim()
     readonly lastName: string;
 
     @ApiProperty()
     @IsString()
     @IsEmail()
-    @IsNotEmpty()
-    @Trim()
+    @IsOptional()
     readonly email: string;
 
     @ApiProperty({ minLength: 6 })

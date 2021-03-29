@@ -15,7 +15,13 @@ export class TranslationService {
         key: string,
         options: translateOptions = {},
     ): Promise<string> {
-        return this.i18n.translate(`translations.${key}`, options);
+        const lang = ContextService.getLanguage();
+
+        if (!options.lang) {
+            options.lang = lang;
+        }
+
+        return this.i18n.translate(`${key}`, options);
     }
 
     async translateNecessaryKeys<T extends AbstractDto>(dto: T): Promise<T> {

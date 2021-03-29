@@ -32,9 +32,6 @@ export class UserController {
     async admin(@AuthUser() user: UserEntity): Promise<string> {
         const translation = await this.translationService.translate(
             'keywords.admin',
-            {
-                lang: 'en',
-            },
         );
         return `${translation} ${user.firstName}`;
     }
@@ -59,7 +56,7 @@ export class UserController {
     @HttpCode(HttpStatus.OK)
     @ApiResponse({
         status: HttpStatus.OK,
-        description: 'Get users list',
+        description: 'Get a user',
         type: UserDto,
     })
     getUser(@UUIDParam('id') userId: string): Promise<UserDto> {

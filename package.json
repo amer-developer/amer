@@ -1,8 +1,8 @@
 {
-    "name": "awesome-nest-boilerplate",
+    "name": "amer-backend",
     "version": "7.0.1",
-    "description": "Awesome NestJS Boilerplate, Typescript, Postgres, TypeORM",
-    "author": "Narek Hakobyan <narek.hakobyan.07@gmail.com>",
+    "description": "Amer backend built with NestJS, Typescript, Postgres, TypeORM",
+    "author": "Saud Alhelali <alhelali@saud.tech>",
     "license": "MIT",
     "scripts": {
         "build:prod": "tsc -p tsconfig.build.json",

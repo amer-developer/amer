@@ -5,7 +5,7 @@ import { version } from '../package.json';
 
 export function setupSwagger(app: INestApplication): void {
     const options = new DocumentBuilder()
-        .setTitle('API')
+        .setTitle('Amer API')
         .setVersion(version)
         .addBearerAuth()
         .build();

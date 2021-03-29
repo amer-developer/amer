@@ -22,6 +22,7 @@ import {
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './filters/bad-request.filter';
 import { QueryFailedFilter } from './filters/query-failed.filter';
+import { TranslateInterceptor } from './interceptors/translate-interceptor.service';
 import { setupSwagger } from './setup-swagger';
 import { ConfigService } from './shared/services/config.service';
 import { SharedModule } from './shared/shared.module';
@@ -52,7 +53,10 @@ async function bootstrap() {
         new QueryFailedFilter(reflector),
     );
 
-    app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
+    app.useGlobalInterceptors(
+        new ClassSerializerInterceptor(reflector),
+        new TranslateInterceptor(),
+    );
 
     app.useGlobalPipes(
         new ValidationPipe({

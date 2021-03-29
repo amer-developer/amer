@@ -9,6 +9,7 @@ import morgan from 'morgan';
 
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './filters/bad-request.filter';
+import { TranslateInterceptor } from './interceptors/translate-interceptor.service';
 import { setupSwagger } from './setup-swagger';
 import { ConfigService } from './shared/services/config.service';
 import { SharedModule } from './shared/shared.module';
@@ -35,7 +36,10 @@ async function bootstrap(): Promise<void> {
 
     app.useGlobalFilters(new HttpExceptionFilter(reflector));
 
-    app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
+    app.useGlobalInterceptors(
+        new ClassSerializerInterceptor(reflector),
+        new TranslateInterceptor(),
+    );
 
     app.useGlobalPipes(
         new ValidationPipe({
