@@ -6,6 +6,7 @@ import {
     Query,
     ValidationPipe,
 } from '@nestjs/common';
+import { Query as GLQuery } from '@nestjs/graphql';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { RoleType } from '../../common/constants/role-type';
@@ -52,6 +53,7 @@ export class UserController {
     }
 
     @Get(':id')
+    @GLQuery(() => UserDto)
     @Auth(RoleType.USER)
     @HttpCode(HttpStatus.OK)
     @ApiResponse({

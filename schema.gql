@@ -1,0 +1,17 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UserDto {
+  firstName: String!
+  lastName: String!
+  username: String!
+  role: String!
+  email: String!
+  avatar: String!
+  phone: String!
+}
+
+type Query {
+  user(id: String!): UserDto!
+}

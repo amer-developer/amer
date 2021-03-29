@@ -1,6 +1,7 @@
 import './boilerplate.polyfill';
 
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { I18nJsonParser, I18nModule } from 'nestjs-i18n';
 import path from 'path';
@@ -17,6 +18,11 @@ import { SharedModule } from './shared/shared.module';
         AuthModule,
         UserModule,
         MathModule,
+        GraphQLModule.forRoot({
+            autoSchemaFile: 'schema.gql',
+            debug: true,
+            playground: true,
+        }),
         TypeOrmModule.forRootAsync({
             imports: [SharedModule],
             useFactory: (configService: ConfigService) =>
