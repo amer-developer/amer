@@ -1,10 +1,10 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
 
+// import { UsersPageOptionsDto } from './dto/UsersPageOptionsDto';
+import { RoleType } from '../../common/constants/role-type';
+import { Auth } from '../../decorators/http.decorators';
 // import { PageDto } from '../../common/dto/PageDto';
 import { UserDto } from './dto/UserDto';
-// import { UsersPageOptionsDto } from './dto/UsersPageOptionsDto';
-// import { RoleType } from '../../common/constants/role-type';
-// import { Auth } from '../../decorators/http.decorators';
 import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
 
@@ -21,7 +21,7 @@ export class UserResolver {
     // }
 
     @Query(() => UserDto)
-    // @Auth(RoleType.USER)
+    @Auth(RoleType.USER)
     user(@Args('id') id: string): Promise<UserDto> {
         return this.userService.getUser(id);
     }
