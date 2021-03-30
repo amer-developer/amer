@@ -1,3 +1,4 @@
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { PageOptionsDto } from './PageOptionsDto';
@@ -7,22 +8,29 @@ interface IPageMetaDtoParameters {
     itemCount: number;
 }
 
+@ObjectType()
 export class PageMetaDto {
+    @Field(() => Int)
     @ApiProperty()
     readonly page: number;
 
+    @Field(() => Int)
     @ApiProperty()
     readonly take: number;
 
+    @Field(() => Int)
     @ApiProperty()
     readonly itemCount: number;
 
+    @Field(() => Int)
     @ApiProperty()
     readonly pageCount: number;
 
+    @Field(() => Boolean)
     @ApiProperty()
     readonly hasPreviousPage: boolean;
 
+    @Field(() => Boolean)
     @ApiProperty()
     readonly hasNextPage: boolean;
 

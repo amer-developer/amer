@@ -2,6 +2,7 @@ import {
     ArgumentsHost,
     Catch,
     ExceptionFilter,
+    HttpException,
     HttpStatus,
     UnprocessableEntityException,
 } from '@nestjs/common';
@@ -31,7 +32,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
         r.statusCode = statusCode;
         r.error = STATUS_CODES[statusCode];
 
-        response.status(statusCode).json(r);
+        if (host.getType() === 'http') {
+            response.status(statusCode).json(r);
+        } else {
+            throw new HttpException(r, HttpStatus.BAD_REQUEST);
+        }
     }
 
     private validationFilter(validationErrors: ValidationError[]): void {

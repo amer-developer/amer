@@ -16,19 +16,15 @@ export class UserDto extends AbstractDto {
     @ApiPropertyOptional()
     lastName: string;
 
-    @Field()
-    @ApiPropertyOptional()
-    username: string;
-
-    @Field()
+    @Field(() => RoleType)
     @ApiPropertyOptional({ enum: RoleType })
     role: RoleType;
 
-    @Field()
+    @Field({ nullable: true })
     @ApiPropertyOptional()
     email: string;
 
-    @Field()
+    @Field({ nullable: true })
     @ApiPropertyOptional()
     avatar: string;
 

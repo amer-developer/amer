@@ -10,11 +10,11 @@ import { Query as GLQuery } from '@nestjs/graphql';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { RoleType } from '../../common/constants/role-type';
-import { PageDto } from '../../common/dto/PageDto';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth, UUIDParam } from '../../decorators/http.decorators';
 import { TranslationService } from '../../shared/services/translation.service';
 import { UserDto } from './dto/UserDto';
+import { UsersPageDto } from './dto/UsersPageDto';
 import { UsersPageOptionsDto } from './dto/UsersPageOptionsDto';
 import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
@@ -43,12 +43,12 @@ export class UserController {
     @ApiResponse({
         status: HttpStatus.OK,
         description: 'Get users list',
-        type: PageDto,
+        type: UsersPageDto,
     })
     getUsers(
         @Query(new ValidationPipe({ transform: true }))
         pageOptionsDto: UsersPageOptionsDto,
-    ): Promise<PageDto<UserDto>> {
+    ): Promise<UsersPageDto> {
         return this.userService.getUsers(pageOptionsDto);
     }
 

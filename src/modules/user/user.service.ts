@@ -1,19 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { FindConditions } from 'typeorm';
 
-import { PageDto } from '../../common/dto/PageDto';
 import { FileNotImageException } from '../../exceptions/file-not-image.exception';
 import { IFile } from '../../interfaces/IFile';
 import { AwsS3Service } from '../../shared/services/aws-s3.service';
 import { ValidatorService } from '../../shared/services/validator.service';
 import { UserRegisterDto } from '../auth/dto/UserRegisterDto';
-import { UserDto } from './dto/UserDto';
+import { UsersPageDto } from './dto/UsersPageDto';
 import { UsersPageOptionsDto } from './dto/UsersPageOptionsDto';
 import { UserEntity } from './user.entity';
 import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
+    private logger = new Logger(UserService.name);
     constructor(
         public readonly userRepository: UserRepository,
         public readonly validatorService: ValidatorService,
@@ -62,9 +62,8 @@ export class UserService {
         return this.userRepository.save(user);
     }
 
-    async getUsers(
-        pageOptionsDto: UsersPageOptionsDto,
-    ): Promise<PageDto<UserDto>> {
+    async getUsers(pageOptionsDto: UsersPageOptionsDto): Promise<UsersPageDto> {
+        this.logger.debug(JSON.stringify(pageOptionsDto));
         const queryBuilder = this.userRepository.createQueryBuilder('user');
         const { items, pageMetaDto } = await queryBuilder.paginate(
             pageOptionsDto,

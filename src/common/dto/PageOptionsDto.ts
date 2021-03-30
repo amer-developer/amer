@@ -1,3 +1,4 @@
+import { ArgsType, Field, Int } from '@nestjs/graphql';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -11,8 +12,9 @@ import {
 } from 'class-validator';
 
 import { Order } from '../constants/order';
-
+@ArgsType()
 export class PageOptionsDto {
+    @Field(() => Order)
     @ApiPropertyOptional({
         enum: Order,
         default: Order.ASC,
@@ -21,6 +23,7 @@ export class PageOptionsDto {
     @IsOptional()
     readonly order: Order = Order.ASC;
 
+    @Field(() => Int)
     @ApiPropertyOptional({
         minimum: 1,
         default: 1,
@@ -31,6 +34,7 @@ export class PageOptionsDto {
     @IsOptional()
     readonly page: number = 1;
 
+    @Field(() => Int)
     @ApiPropertyOptional({
         minimum: 1,
         maximum: 50,
@@ -38,7 +42,7 @@ export class PageOptionsDto {
     })
     @Type(() => Number)
     @IsInt()
-    @Min(10)
+    @Min(1)
     @Max(50)
     @IsOptional()
     readonly take: number = 10;
@@ -47,6 +51,7 @@ export class PageOptionsDto {
         return (this.page - 1) * this.take;
     }
 
+    @Field({ nullable: true })
     @ApiPropertyOptional()
     @IsString()
     @IsNotEmpty()

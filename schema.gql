@@ -2,16 +2,59 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type PageMetaDto {
+  page: Int!
+  take: Int!
+  itemCount: Int!
+  pageCount: Int!
+  hasPreviousPage: Boolean!
+  hasNextPage: Boolean!
+}
+
 type UserDto {
   firstName: String!
   lastName: String!
-  username: String!
-  role: String!
-  email: String!
-  avatar: String!
+  role: RoleType!
+  email: String
+  avatar: String
   phone: String!
 }
 
+enum RoleType {
+  USER
+  ADMIN
+}
+
+type UsersPageDto {
+  data: [UserDto!]!
+  meta: PageMetaDto!
+}
+
+type TokenPayloadDto {
+  expiresIn: Int!
+  accessToken: String!
+}
+
+type LoginPayloadDto {
+  user: UserDto!
+  token: TokenPayloadDto!
+}
+
 type Query {
+  me: UserDto!
+  users(order: Order = ASC, page: Int = 1, take: Int = 10, q: String): UsersPageDto!
   user(id: String!): UserDto!
 }
+
+enum Order {
+  ASC
+  DESC
+}
+
+type Mutation {
+  login(phone: String!, password: String!): LoginPayloadDto!
+  register(file: Upload, firstName: String!, lastName: String!, email: String, password: String!, phone: String!): UserDto!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload

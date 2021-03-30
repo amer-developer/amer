@@ -5,24 +5,25 @@ import { RoleType } from '../../common/constants/role-type';
 import { Auth } from '../../decorators/http.decorators';
 // import { PageDto } from '../../common/dto/PageDto';
 import { UserDto } from './dto/UserDto';
-import { UserEntity } from './user.entity';
+import { UsersPageDto } from './dto/UsersPageDto';
+import { UsersPageOptionsDto } from './dto/UsersPageOptionsDto';
 import { UserService } from './user.service';
 
-@Resolver(() => UserEntity)
+@Resolver(() => UserDto)
 export class UserResolver {
     constructor(private userService: UserService) {}
 
-    // @Query(() => [UserDto])
-    // users(
-    //     @Args('options')
-    //     pageOptionsDto: UsersPageOptionsDto,
-    // ): Promise<PageDto<UserDto>> {
-    //     return this.userService.getUsers(pageOptionsDto);
-    // }
+    @Query(() => UsersPageDto, { name: 'users' })
+    getUsers(
+        @Args()
+        pageOptionsDto: UsersPageOptionsDto,
+    ): Promise<UsersPageDto> {
+        return this.userService.getUsers(pageOptionsDto);
+    }
 
-    @Query(() => UserDto)
+    @Query(() => UserDto, { name: 'user' })
     @Auth(RoleType.USER)
-    user(@Args('id') id: string): Promise<UserDto> {
+    getUser(@Args('id') id: string): Promise<UserDto> {
         return this.userService.getUser(id);
     }
 }

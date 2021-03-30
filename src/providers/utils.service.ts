@@ -1,3 +1,5 @@
+import { ExecutionContext } from '@nestjs/common';
+import { GqlExecutionContext } from '@nestjs/graphql';
 import bcrypt from 'bcrypt';
 
 export class UtilsService {
@@ -60,5 +62,22 @@ export class UtilsService {
             return Promise.resolve(false);
         }
         return bcrypt.compare(password, hash);
+    }
+
+    static getRequest(context: ExecutionContext) {
+        let request: any;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+        switch (context.getType() as string) {
+            case 'http':
+                request = context.switchToHttp().getRequest();
+                break;
+            case 'graphql':
+                request = GqlExecutionContext.create(context).getContext().req;
+                break;
+            default:
+                // eslint-disable-next-line @typescript-eslint/tslint/config
+                return undefined;
+        }
+        return request;
     }
 }
