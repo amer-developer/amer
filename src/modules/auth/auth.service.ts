@@ -26,9 +26,12 @@ export class AuthService {
     }
 
     async validateUser(userLoginDto: UserLoginDto): Promise<UserEntity> {
-        const user = await this.userService.findOne({
-            phone: userLoginDto.phone,
-        });
+        const user = await this.userService.findOne(
+            {
+                phone: userLoginDto.phone,
+            },
+            { relations: ['profile'] },
+        );
         const isPasswordValid = await UtilsService.validateHash(
             userLoginDto.password,
             user && user.password,

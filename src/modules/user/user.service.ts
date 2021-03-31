@@ -1,11 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { FindConditions } from 'typeorm';
+import { FindConditions, FindOneOptions } from 'typeorm';
 
 import { FileNotImageException } from '../../exceptions/file-not-image.exception';
 import { IFile } from '../../interfaces/IFile';
 import { AwsS3Service } from '../../shared/services/aws-s3.service';
 import { ValidatorService } from '../../shared/services/validator.service';
 import { UserRegisterDto } from '../auth/dto/UserRegisterDto';
+import { UserDto } from './dto/UserDto';
 import { UsersPageDto } from './dto/UsersPageDto';
 import { UsersPageOptionsDto } from './dto/UsersPageOptionsDto';
 import { UserEntity } from './user.entity';
@@ -23,9 +24,13 @@ export class UserService {
     /**
      * Find single user
      */
-    findOne(findData: FindConditions<UserEntity>): Promise<UserEntity> {
-        return this.userRepository.findOne(findData);
+    findOne(
+        findData: FindConditions<UserEntity>,
+        findOpts?: FindOneOptions<UserEntity>,
+    ): Promise<UserEntity> {
+        return this.userRepository.findOne(findData, findOpts);
     }
+
     async findByUsernameOrEmail(
         options: Partial<{ username: string; email: string }>,
     ): Promise<UserEntity | undefined> {
@@ -60,6 +65,10 @@ export class UserService {
         }
 
         return this.userRepository.save(user);
+    }
+
+    async updateUser(id: string, user: UserDto) {
+        return this.userRepository.save({ id, ...user });
     }
 
     async getUsers(pageOptionsDto: UsersPageOptionsDto): Promise<UsersPageDto> {

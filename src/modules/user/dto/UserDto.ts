@@ -4,6 +4,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 
 import { RoleType } from '../../../common/constants/role-type';
 import { AbstractDto } from '../../../common/dto/AbstractDto';
+import { ProfileDto } from '../../profile/dto/ProfileDto';
 import { UserEntity } from '../user.entity';
 
 @ObjectType()
@@ -32,6 +33,10 @@ export class UserDto extends AbstractDto {
     @ApiPropertyOptional()
     phone: string;
 
+    @Field(() => ProfileDto, { nullable: true })
+    @ApiPropertyOptional()
+    profile: ProfileDto;
+
     constructor(user: UserEntity) {
         super(user);
         this.firstName = user.firstName;
@@ -40,5 +45,8 @@ export class UserDto extends AbstractDto {
         this.email = user.email;
         this.avatar = user.avatar;
         this.phone = user.phone;
+        if (user.profile) {
+            this.profile = user.profile.toDto();
+        }
     }
 }

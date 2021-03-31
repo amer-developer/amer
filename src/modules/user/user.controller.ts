@@ -1,8 +1,10 @@
 import {
+    Body,
     Controller,
     Get,
     HttpCode,
     HttpStatus,
+    Put,
     Query,
     ValidationPipe,
 } from '@nestjs/common';
@@ -63,5 +65,12 @@ export class UserController {
     })
     getUser(@UUIDParam('id') userId: string): Promise<UserDto> {
         return this.userService.getUser(userId);
+    }
+
+    @Put('')
+    @Auth(RoleType.USER)
+    @HttpCode(HttpStatus.OK)
+    updateUser(@AuthUser() currentUser: UserEntity, @Body() user: UserDto) {
+        return this.userService.updateUser(currentUser.id, user);
     }
 }

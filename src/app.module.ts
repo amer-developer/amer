@@ -9,6 +9,7 @@ import path from 'path';
 import { contextMiddleware } from './middlewares';
 import { AuthModule } from './modules/auth/auth.module';
 import { MathModule } from './modules/math/math.module';
+import { ProfileModule } from './modules/profile/profile.module';
 import { UserModule } from './modules/user/user.module';
 import { ConfigService } from './shared/services/config.service';
 import { SharedModule } from './shared/shared.module';
@@ -17,6 +18,7 @@ import { SharedModule } from './shared/shared.module';
     imports: [
         AuthModule,
         UserModule,
+        ProfileModule,
         MathModule,
         GraphQLModule.forRoot({
             autoSchemaFile: 'schema.gql',
