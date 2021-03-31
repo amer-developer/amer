@@ -2,7 +2,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { PageMetaDto } from '../../../common/dto/PageMetaDto';
-import { UserDto } from './UserDto';
+import { UserDto } from './user.dto';
 
 @ObjectType()
 export class UsersPageDto {

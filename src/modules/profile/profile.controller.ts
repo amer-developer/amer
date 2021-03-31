@@ -11,9 +11,9 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { RoleType } from '../../common/constants/role-type';
 import { Auth, UUIDParam } from '../../decorators/http.decorators';
-import { ProfileDto } from './dto/ProfileDto';
-import { ProfilesPageDto } from './dto/ProfilesPageDto';
-import { ProfilesPageOptionsDto } from './dto/ProfilesPageOptionsDto';
+import { ProfileDto } from './dto/profile.dto';
+import { ProfilesPageDto } from './dto/profiles-page.dto';
+import { ProfilesPageOptionsDto } from './dto/profiles-page.options.dto';
 import { ProfileService } from './profile.service';
 
 @Controller('profiles')

@@ -15,9 +15,10 @@ import { RoleType } from '../../common/constants/role-type';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth, UUIDParam } from '../../decorators/http.decorators';
 import { TranslationService } from '../../shared/services/translation.service';
-import { UserDto } from './dto/UserDto';
-import { UsersPageDto } from './dto/UsersPageDto';
-import { UsersPageOptionsDto } from './dto/UsersPageOptionsDto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UserDto } from './dto/user.dto';
+import { UsersPageOptionsDto } from './dto/users-page-options.dto';
+import { UsersPageDto } from './dto/users-page.dto';
 import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
 
@@ -36,7 +37,7 @@ export class UserController {
         const translation = await this.translationService.translate(
             'keywords.admin',
         );
-        return `${translation} ${user.firstName}`;
+        return `${translation} ${user.name}`;
     }
 
     @Get()
@@ -70,7 +71,14 @@ export class UserController {
     @Put('')
     @Auth(RoleType.USER)
     @HttpCode(HttpStatus.OK)
-    updateUser(@AuthUser() currentUser: UserEntity, @Body() user: UserDto) {
-        return this.userService.updateUser(currentUser.id, user);
+    updateUser(
+        @AuthUser() currentUser: UserEntity,
+        @Body() user: UpdateUserDto,
+    ) {
+        return this.userService.updateUser(
+            currentUser.id,
+            user,
+            currentUser.profile?.id,
+        );
     }
 }

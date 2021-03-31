@@ -4,7 +4,7 @@ import { ArgsType, Field } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsPhoneNumber, IsString } from 'class-validator';
 @ArgsType()
-export class UserLoginDto {
+export class LoginDto {
     @Field()
     @ApiProperty()
     @IsPhoneNumber('ZZ')

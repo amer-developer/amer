@@ -1,49 +1,56 @@
 'use strict';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+    IsEmail,
+    IsObject,
+    IsOptional,
+    IsPhoneNumber,
+    IsString,
+} from 'class-validator';
 
 import { RoleType } from '../../../common/constants/role-type';
 import { AbstractDto } from '../../../common/dto/AbstractDto';
-import { ProfileDto } from '../../profile/dto/ProfileDto';
+import { ProfileDto } from '../../profile/dto/profile.dto';
 import { UserEntity } from '../user.entity';
 
 @ObjectType()
 export class UserDto extends AbstractDto {
     @Field()
-    @ApiPropertyOptional()
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsString()
     firstName: string;
 
-    @Field()
-    @ApiPropertyOptional()
-    lastName: string;
-
     @Field(() => RoleType)
-    @ApiPropertyOptional({ enum: RoleType })
+    @ApiProperty({ required: false, enum: RoleType })
+    @IsOptional()
     role: RoleType;
 
     @Field({ nullable: true })
-    @ApiPropertyOptional()
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsString()
+    @IsEmail()
     email: string;
 
-    @Field({ nullable: true })
-    @ApiPropertyOptional()
-    avatar: string;
-
     @Field()
-    @ApiPropertyOptional()
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsPhoneNumber('ZZ')
     phone: string;
 
     @Field(() => ProfileDto, { nullable: true })
-    @ApiPropertyOptional()
+    @ApiProperty({ required: false, type: () => ProfileDto })
+    @IsOptional()
+    @IsObject()
     profile: ProfileDto;
 
     constructor(user: UserEntity) {
         super(user);
-        this.firstName = user.firstName;
-        this.lastName = user.lastName;
+        this.firstName = user.name;
         this.role = user.role;
         this.email = user.email;
-        this.avatar = user.avatar;
         this.phone = user.phone;
         if (user.profile) {
             this.profile = user.profile.toDto();

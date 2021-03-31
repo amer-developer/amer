@@ -5,13 +5,13 @@ import { RoleType } from '../../common/constants/role-type';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth } from '../../decorators/http.decorators';
 import { IFile } from '../../interfaces/IFile';
-import { UserDto } from '../user/dto/UserDto';
+import { UserDto } from '../user/dto/user.dto';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
-import { LoginPayloadDto } from './dto/LoginPayloadDto';
-import { UserLoginDto } from './dto/UserLoginDto';
-import { UserRegisterDto } from './dto/UserRegisterDto';
+import { LoginDto } from './dto/login.dto';
+import { LoginRo } from './dto/login.ro';
+import { RegisterDto } from './dto/register.dto';
 
 @Resolver(() => UserDto)
 export class AuthResolver {
@@ -20,19 +20,17 @@ export class AuthResolver {
         public readonly authService: AuthService,
     ) {}
 
-    @Mutation(() => LoginPayloadDto, { name: 'login' })
-    async userLogin(
-        @Args() userLoginDto: UserLoginDto,
-    ): Promise<LoginPayloadDto> {
+    @Mutation(() => LoginRo, { name: 'login' })
+    async userLogin(@Args() userLoginDto: LoginDto): Promise<LoginRo> {
         const userEntity = await this.authService.validateUser(userLoginDto);
 
         const token = await this.authService.createToken(userEntity);
-        return new LoginPayloadDto(userEntity.toDto(), token);
+        return new LoginRo(userEntity.toDto(), token);
     }
 
     @Mutation(() => UserDto, { name: 'register' })
     async userRegister(
-        @Args() userRegisterDto: UserRegisterDto,
+        @Args() userRegisterDto: RegisterDto,
         @Args('file', { type: () => GraphQLUpload, nullable: true })
         file: IFile,
     ): Promise<UserDto> {

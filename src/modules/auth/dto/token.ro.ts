@@ -4,7 +4,7 @@ import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 
 @ObjectType()
-export class TokenPayloadDto {
+export class TokenRo {
     @Field(() => Int)
     @ApiProperty()
     expiresIn: number;

@@ -3,9 +3,9 @@ import { FindConditions } from 'typeorm';
 
 import { AwsS3Service } from '../../shared/services/aws-s3.service';
 import { ValidatorService } from '../../shared/services/validator.service';
-import { ProfileDto } from './dto/ProfileDto';
-import { ProfilesPageDto } from './dto/ProfilesPageDto';
-import { ProfilesPageOptionsDto } from './dto/ProfilesPageOptionsDto';
+import { ProfileDto } from './dto/profile.dto';
+import { ProfilesPageDto } from './dto/profiles-page.dto';
+import { ProfilesPageOptionsDto } from './dto/profiles-page.options.dto';
 import { ProfileEntity } from './profile.entity';
 import { ProfileRepository } from './profile.repository';
 

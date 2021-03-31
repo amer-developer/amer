@@ -2,17 +2,13 @@ import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
 import { RoleType } from '../../common/constants/role-type';
-import { VirtualColumn } from '../../decorators/virtual-column.decorator';
 import { ProfileEntity } from '../profile/profile.entity';
-import { UserDto } from './dto/UserDto';
+import { UserDto } from './dto/user.dto';
 
 @Entity({ name: 'users' })
 export class UserEntity extends AbstractEntity<UserDto> {
     @Column({ nullable: true })
-    firstName: string;
-
-    @Column({ nullable: true })
-    lastName: string;
+    name: string;
 
     @Column({ type: 'enum', enum: RoleType, default: RoleType.USER })
     role: RoleType;
@@ -26,13 +22,7 @@ export class UserEntity extends AbstractEntity<UserDto> {
     @Column({ unique: true, nullable: false })
     phone: string;
 
-    @Column({ nullable: true })
-    avatar: string;
-
-    @VirtualColumn()
-    fullName: string;
-
-    @OneToOne(() => ProfileEntity, (profile) => profile.user)
+    @OneToOne(() => ProfileEntity, (profile) => profile.user, { cascade: true })
     @JoinColumn()
     profile: ProfileEntity;
 

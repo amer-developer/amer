@@ -5,10 +5,11 @@ import { FileNotImageException } from '../../exceptions/file-not-image.exception
 import { IFile } from '../../interfaces/IFile';
 import { AwsS3Service } from '../../shared/services/aws-s3.service';
 import { ValidatorService } from '../../shared/services/validator.service';
-import { UserRegisterDto } from '../auth/dto/UserRegisterDto';
-import { UserDto } from './dto/UserDto';
-import { UsersPageDto } from './dto/UsersPageDto';
-import { UsersPageOptionsDto } from './dto/UsersPageOptionsDto';
+import { RegisterDto } from '../auth/dto/register.dto';
+import { ProfileDto } from '../profile/dto/profile.dto';
+import { UserDto } from './dto/user.dto';
+import { UsersPageOptionsDto } from './dto/users-page-options.dto';
+import { UsersPageDto } from './dto/users-page.dto';
 import { UserEntity } from './user.entity';
 import { UserRepository } from './user.repository';
 
@@ -51,7 +52,7 @@ export class UserService {
     }
 
     async createUser(
-        userRegisterDto: UserRegisterDto,
+        userRegisterDto: RegisterDto,
         file: IFile,
     ): Promise<UserEntity> {
         const user = this.userRepository.create(userRegisterDto);
@@ -61,14 +62,24 @@ export class UserService {
         }
 
         if (file) {
-            user.avatar = await this.awsS3Service.uploadImage(file);
+            user.profile.avatar = await this.awsS3Service.uploadImage(file);
         }
 
         return this.userRepository.save(user);
     }
 
-    async updateUser(id: string, user: UserDto) {
-        return this.userRepository.save({ id, ...user });
+    async updateUser(id: string, user: Partial<UserDto>, profileID?: string) {
+        this.logger.debug(`Updating user: ${id} to ${JSON.stringify(user)}`);
+        const profile: ProfileDto = { ...user.profile };
+        if (profileID) {
+            profile.id = profileID;
+        }
+        delete user.profile;
+        return this.userRepository.save({
+            id,
+            profile,
+            ...user,
+        });
     }
 
     async getUsers(pageOptionsDto: UsersPageOptionsDto): Promise<UsersPageDto> {

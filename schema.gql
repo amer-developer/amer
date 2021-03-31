@@ -13,14 +13,13 @@ type PageMetaDto {
 
 type ProfileDto {
   bio: String
+  avatar: String
 }
 
 type UserDto {
   firstName: String!
-  lastName: String!
   role: RoleType!
   email: String
-  avatar: String
   phone: String!
   profile: ProfileDto
 }
@@ -35,14 +34,25 @@ type UsersPageDto {
   meta: PageMetaDto!
 }
 
-type TokenPayloadDto {
+type TokenRo {
   expiresIn: Int!
   accessToken: String!
 }
 
-type LoginPayloadDto {
+type LoginRo {
   user: UserDto!
-  token: TokenPayloadDto!
+  token: TokenRo!
+}
+
+type CountryDto {
+  code: String
+  nameAR: String
+  nameEN: String
+}
+
+type CountriesPageDto {
+  data: [CountryDto!]!
+  meta: PageMetaDto!
 }
 
 type ProfilesPageDto {
@@ -56,6 +66,8 @@ type Query {
   user(id: String!): UserDto!
   profiles(order: Order = ASC, page: Int = 1, take: Int = 10, q: String): ProfilesPageDto!
   profile(id: String!): ProfileDto!
+  countries(order: Order = ASC, page: Int = 1, take: Int = 10, q: String): CountriesPageDto!
+  country(id: String!): CountryDto!
 }
 
 enum Order {
@@ -64,8 +76,8 @@ enum Order {
 }
 
 type Mutation {
-  login(phone: String!, password: String!): LoginPayloadDto!
-  register(file: Upload, firstName: String!, lastName: String!, email: String, password: String!, phone: String!): UserDto!
+  login(phone: String!, password: String!): LoginRo!
+  register(file: Upload, name: String!, email: String, password: String!, phone: String!): UserDto!
 }
 
 """The `Upload` scalar type represents a file upload."""

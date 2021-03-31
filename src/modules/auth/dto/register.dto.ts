@@ -7,21 +7,15 @@ import {
     IsString,
     MinLength,
 } from 'class-validator';
-import { Column } from 'typeorm';
 
 // import { Trim } from '../../../decorators/transforms.decorator';
 
 @ArgsType()
-export class UserRegisterDto {
+export class RegisterDto {
     @Field()
     @ApiProperty({ minLength: 4 })
     @IsString()
-    readonly firstName: string;
-
-    @Field()
-    @ApiProperty({ minLength: 4 })
-    @IsString()
-    readonly lastName: string;
+    readonly name: string;
 
     @Field({ nullable: true })
     @ApiProperty()
@@ -38,7 +32,6 @@ export class UserRegisterDto {
 
     @Field()
     @ApiProperty()
-    @Column()
     @IsPhoneNumber('ZZ')
     @IsOptional()
     phone: string;

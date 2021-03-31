@@ -4,9 +4,9 @@ import { Args, Query, Resolver } from '@nestjs/graphql';
 import { RoleType } from '../../common/constants/role-type';
 import { Auth } from '../../decorators/http.decorators';
 // import { PageDto } from '../../common/dto/PageDto';
-import { UserDto } from './dto/UserDto';
-import { UsersPageDto } from './dto/UsersPageDto';
-import { UsersPageOptionsDto } from './dto/UsersPageOptionsDto';
+import { UserDto } from './dto/user.dto';
+import { UsersPageOptionsDto } from './dto/users-page-options.dto';
+import { UsersPageDto } from './dto/users-page.dto';
 import { UserService } from './user.service';
 
 @Resolver(() => UserDto)
