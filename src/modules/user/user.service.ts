@@ -6,8 +6,7 @@ import { IFile } from '../../interfaces/IFile';
 import { AwsS3Service } from '../../shared/services/aws-s3.service';
 import { ValidatorService } from '../../shared/services/validator.service';
 import { RegisterDto } from '../auth/dto/register.dto';
-import { ProfileDto } from '../profile/dto/profile.dto';
-import { UserDto } from './dto/user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersPageOptionsDto } from './dto/users-page-options.dto';
 import { UsersPageDto } from './dto/users-page.dto';
 import { UserEntity } from './user.entity';
@@ -68,12 +67,11 @@ export class UserService {
         return this.userRepository.save(user);
     }
 
-    async updateUser(id: string, user: Partial<UserDto>, profileID?: string) {
+    async updateUser(id: string, user: UpdateUserDto, profileID?: string) {
         this.logger.debug(`Updating user: ${id} to ${JSON.stringify(user)}`);
-        const profile: ProfileDto = { ...user.profile };
-        if (profileID) {
-            profile.id = profileID;
-        }
+        const profile = profileID
+            ? { id: profileID, ...user.profile }
+            : { ...user.profile };
         delete user.profile;
         return this.userRepository.save({
             id,

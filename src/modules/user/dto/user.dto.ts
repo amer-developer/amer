@@ -20,7 +20,7 @@ export class UserDto extends AbstractDto {
     @ApiProperty({ required: false })
     @IsOptional()
     @IsString()
-    firstName: string;
+    name: string;
 
     @Field(() => RoleType)
     @ApiProperty({ required: false, enum: RoleType })
@@ -48,7 +48,7 @@ export class UserDto extends AbstractDto {
 
     constructor(user: UserEntity) {
         super(user);
-        this.firstName = user.name;
+        this.name = user.name;
         this.role = user.role;
         this.email = user.email;
         this.phone = user.phone;

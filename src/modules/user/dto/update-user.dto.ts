@@ -2,23 +2,15 @@
 import { InputType, OmitType as GLOmitType } from '@nestjs/graphql';
 import { OmitType } from '@nestjs/swagger';
 
-import { UserDto } from './user.dto';
+import { RegisterDto } from '../../auth/dto/register.dto';
 
 @InputType()
-export class UpdateUserInput extends GLOmitType(UserDto, [
-    'createdAt',
-    'updatedAt',
-    'role',
+export class UpdateUserInput extends GLOmitType(RegisterDto, [
     'phone',
     'email',
-    'id',
 ] as const) {}
 
-export class UpdateUserDto extends OmitType(UserDto, [
-    'createdAt',
-    'updatedAt',
-    'role',
+export class UpdateUserDto extends OmitType(RegisterDto, [
     'phone',
     'email',
-    'id',
 ] as const) {}

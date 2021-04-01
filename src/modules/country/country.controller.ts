@@ -1,26 +1,33 @@
 import {
     Body,
     Controller,
+    Delete,
     Get,
     HttpCode,
     HttpStatus,
+    Logger,
     Post,
+    Put,
     Query,
     ValidationPipe,
 } from '@nestjs/common';
-import { Query as GLQuery } from '@nestjs/graphql';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { RoleType } from '../../common/constants/role-type';
+import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth, UUIDParam } from '../../decorators/http.decorators';
+import { UserEntity } from '../user/user.entity';
 import { CountryService } from './country.service';
 import { CountriesPageOptionsDto } from './dto/countries-page-options.dto';
 import { CountriesPageDto } from './dto/countries-page.dto';
 import { CountryDto } from './dto/country.dto';
+import { CreateCountryDto } from './dto/create-country.dto';
+import { UpdateCountryDto } from './dto/update-country.dto';
 
 @Controller('countries')
 @ApiTags('countries')
 export class CountryController {
+    private logger = new Logger(CountryController.name);
     constructor(private countryService: CountryService) {}
 
     @Post()
@@ -33,13 +40,18 @@ export class CountryController {
     })
     createCountry(
         @Body()
-        country: CountryDto,
+        country: CreateCountryDto,
+        @AuthUser() user: UserEntity,
     ): Promise<CountryDto> {
+        this.logger.debug(
+            `Creating a new country, user: ${user.id}, country ${JSON.stringify(
+                country,
+            )}`,
+        );
         return this.countryService.createCountry(country);
     }
 
     @Get()
-    @Auth(RoleType.USER)
     @HttpCode(HttpStatus.OK)
     @ApiResponse({
         status: HttpStatus.OK,
@@ -54,8 +66,6 @@ export class CountryController {
     }
 
     @Get(':id')
-    @GLQuery(() => CountryDto)
-    @Auth(RoleType.USER)
     @HttpCode(HttpStatus.OK)
     @ApiResponse({
         status: HttpStatus.OK,
@@ -64,5 +74,44 @@ export class CountryController {
     })
     getCountry(@UUIDParam('id') countryId: string): Promise<CountryDto> {
         return this.countryService.getCountry(countryId);
+    }
+
+    @Put(':id')
+    @Auth(RoleType.ADMIN)
+    @HttpCode(HttpStatus.OK)
+    @ApiResponse({
+        status: HttpStatus.OK,
+        description: 'Updated country',
+        type: CountryDto,
+    })
+    updateCountry(
+        @UUIDParam('id') countryId: string,
+        @Body() country: UpdateCountryDto,
+        @AuthUser() user: UserEntity,
+    ): Promise<CountryDto> {
+        this.logger.debug(
+            `Update country, user: ${user.id}, country ${JSON.stringify(
+                country,
+            )}`,
+        );
+
+        return this.countryService.updateCountry(countryId, country);
+    }
+
+    @Delete(':id')
+    @Auth(RoleType.ADMIN)
+    @HttpCode(HttpStatus.OK)
+    @ApiResponse({
+        status: HttpStatus.OK,
+        description: 'Deleted country',
+        type: CountryDto,
+    })
+    deleteCountry(
+        @UUIDParam('id') id: string,
+        @AuthUser() user: UserEntity,
+    ): Promise<CountryDto> {
+        this.logger.debug(`Delete country, user: ${user.id}, country: ${id}`);
+
+        return this.countryService.deleteCountry(id);
     }
 }

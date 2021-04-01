@@ -22,7 +22,7 @@ export class UserResolver {
     }
 
     @Query(() => UserDto, { name: 'user' })
-    @Auth(RoleType.USER)
+    @Auth(RoleType.ADMIN, RoleType.USER)
     getUser(@Args('id') id: string): Promise<UserDto> {
         return this.userService.getUser(id);
     }

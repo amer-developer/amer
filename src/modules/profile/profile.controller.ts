@@ -6,7 +6,6 @@ import {
     Query,
     ValidationPipe,
 } from '@nestjs/common';
-import { Query as GLQuery } from '@nestjs/graphql';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { RoleType } from '../../common/constants/role-type';
@@ -37,7 +36,6 @@ export class ProfileController {
     }
 
     @Get(':id')
-    @GLQuery(() => ProfileDto)
     @Auth(RoleType.USER)
     @HttpCode(HttpStatus.OK)
     @ApiResponse({

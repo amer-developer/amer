@@ -43,7 +43,7 @@ export class AuthResolver {
     }
 
     @Query(() => UserDto, { name: 'me' })
-    @Auth(RoleType.USER)
+    @Auth(RoleType.ADMIN, RoleType.USER)
     getCurrentUser(@AuthUser() user: UserEntity) {
         return user.toDto();
     }

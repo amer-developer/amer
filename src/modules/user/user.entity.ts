@@ -7,7 +7,7 @@ import { UserDto } from './dto/user.dto';
 
 @Entity({ name: 'users' })
 export class UserEntity extends AbstractEntity<UserDto> {
-    @Column({ nullable: true })
+    @Column({ nullable: false })
     name: string;
 
     @Column({ type: 'enum', enum: RoleType, default: RoleType.USER })

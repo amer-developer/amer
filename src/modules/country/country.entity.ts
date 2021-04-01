@@ -5,13 +5,13 @@ import { CountryDto } from './dto/country.dto';
 
 @Entity({ name: 'countries' })
 export class CountryEntity extends AbstractEntity<CountryDto> {
-    @Column({ nullable: true })
+    @Column({ nullable: false })
     code: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: false })
     nameAR: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: false })
     nameEN: string;
 
     dtoClass = CountryDto;

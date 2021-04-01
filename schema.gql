@@ -12,12 +12,23 @@ type PageMetaDto {
 }
 
 type ProfileDto {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   bio: String
   avatar: String
 }
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type UserDto {
-  firstName: String!
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
   role: RoleType!
   email: String
   phone: String!
@@ -45,9 +56,12 @@ type LoginRo {
 }
 
 type CountryDto {
-  code: String
-  nameAR: String
-  nameEN: String
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  code: String!
+  nameAR: String!
+  nameEN: String!
 }
 
 type CountriesPageDto {
@@ -77,8 +91,16 @@ enum Order {
 
 type Mutation {
   login(phone: String!, password: String!): LoginRo!
-  register(file: Upload, name: String!, email: String, password: String!, phone: String!): UserDto!
+  register(file: Upload, name: String!, email: String, password: String!, phone: String!, profile: CreateProfileDto): UserDto!
+  createCountry(code: String!, nameAR: String!, nameEN: String!): CountryDto!
+  updateCountry(code: String, nameAR: String, nameEN: String, id: String!): CountryDto!
+  deleteCountry(id: String!): CountryDto!
 }
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+input CreateProfileDto {
+  bio: String
+  avatar: String
+}

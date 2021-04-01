@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { FindConditions } from 'typeorm';
 
 import { ValidatorService } from '../../shared/services/validator.service';
@@ -7,6 +7,8 @@ import { CountryRepository } from './country.repository';
 import { CountriesPageOptionsDto } from './dto/countries-page-options.dto';
 import { CountriesPageDto } from './dto/countries-page.dto';
 import { CountryDto } from './dto/country.dto';
+import { CreateCountryDto } from './dto/create-country.dto';
+import { UpdateCountryDto } from './dto/update-country.dto';
 
 @Injectable()
 export class CountryService {
@@ -23,10 +25,11 @@ export class CountryService {
         return this.countryRepository.findOne(findData);
     }
 
-    async createCountry(countryDto: CountryDto): Promise<CountryEntity> {
+    async createCountry(countryDto: CreateCountryDto): Promise<CountryDto> {
         const country = this.countryRepository.create(countryDto);
 
-        return this.countryRepository.save(country);
+        const savedEntity = await this.countryRepository.save(country);
+        return savedEntity.toDto();
     }
 
     async getCountries(
@@ -46,6 +49,34 @@ export class CountryService {
     async getCountry(id: string) {
         const countryEntity = await this.findOne({ id });
 
+        return countryEntity.toDto();
+    }
+
+    async updateCountry(id: string, country: UpdateCountryDto) {
+        const countryEntity = await this.findOne({ id });
+        if (!countryEntity) {
+            throw new HttpException('Country not found', HttpStatus.NOT_FOUND);
+        }
+
+        await this.countryRepository.save({
+            id: countryEntity.id,
+            ...country,
+        });
+
+        let updatedCountry = countryEntity.toDto();
+        updatedCountry = { ...updatedCountry, ...country };
+
+        return updatedCountry;
+    }
+
+    async deleteCountry(id: string) {
+        const countryEntity = await this.findOne({ id });
+        if (!countryEntity) {
+            throw new HttpException('Country not found', HttpStatus.NOT_FOUND);
+        }
+        await this.countryRepository.delete({
+            id: countryEntity.id,
+        });
         return countryEntity.toDto();
     }
 }

@@ -8,7 +8,6 @@ import {
     Query,
     ValidationPipe,
 } from '@nestjs/common';
-import { Query as GLQuery } from '@nestjs/graphql';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { RoleType } from '../../common/constants/role-type';
@@ -41,7 +40,7 @@ export class UserController {
     }
 
     @Get()
-    @Auth(RoleType.USER)
+    @Auth(RoleType.USER, RoleType.ADMIN)
     @HttpCode(HttpStatus.OK)
     @ApiResponse({
         status: HttpStatus.OK,
@@ -56,8 +55,7 @@ export class UserController {
     }
 
     @Get(':id')
-    @GLQuery(() => UserDto)
-    @Auth(RoleType.USER)
+    @Auth(RoleType.USER, RoleType.ADMIN)
     @HttpCode(HttpStatus.OK)
     @ApiResponse({
         status: HttpStatus.OK,
@@ -69,7 +67,7 @@ export class UserController {
     }
 
     @Put('')
-    @Auth(RoleType.USER)
+    @Auth(RoleType.USER, RoleType.ADMIN)
     @HttpCode(HttpStatus.OK)
     updateUser(
         @AuthUser() currentUser: UserEntity,

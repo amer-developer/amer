@@ -2,11 +2,14 @@ import { ArgsType, Field } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import {
     IsEmail,
+    IsObject,
     IsOptional,
     IsPhoneNumber,
     IsString,
     MinLength,
 } from 'class-validator';
+
+import { CreateProfileDto } from '../../profile/dto/create-profile.dto';
 
 // import { Trim } from '../../../decorators/transforms.decorator';
 
@@ -35,4 +38,10 @@ export class RegisterDto {
     @IsPhoneNumber('ZZ')
     @IsOptional()
     phone: string;
+
+    @Field(() => CreateProfileDto, { nullable: true })
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsObject()
+    profile: CreateProfileDto;
 }
