@@ -71,9 +71,17 @@ QueryBuilder.prototype.searchByString = function (q, columnNames) {
 SelectQueryBuilder.prototype.paginate = async function (
     pageOptionsDto: PageOptionsDto,
 ) {
-    const selectQueryBuilder = this.skip(pageOptionsDto.skip).take(
+    let selectQueryBuilder = this.skip(pageOptionsDto.skip).take(
         pageOptionsDto.take,
     );
+
+    for (const includable of pageOptionsDto.includes) {
+        selectQueryBuilder = this.leftJoinAndSelect(
+            `${this.alias}.${includable}`,
+            includable,
+        );
+    }
+
     const itemCount = await selectQueryBuilder.getCount();
 
     const { entities, raw } = await selectQueryBuilder.getRawAndEntities();

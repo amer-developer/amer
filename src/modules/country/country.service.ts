@@ -39,6 +39,7 @@ export class CountryService {
         const queryBuilder = this.countryRepository.createQueryBuilder(
             'country',
         );
+
         const { items, pageMetaDto } = await queryBuilder.paginate(
             pageOptionsDto,
         );

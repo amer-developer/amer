@@ -8,6 +8,7 @@ import path from 'path';
 
 import { contextMiddleware } from './middlewares';
 import { AuthModule } from './modules/auth/auth.module';
+import { CityModule } from './modules/city/city.module';
 import { CountryModule } from './modules/country/country.module';
 import { MathModule } from './modules/math/math.module';
 import { ProfileModule } from './modules/profile/profile.module';
@@ -21,6 +22,7 @@ import { SharedModule } from './shared/shared.module';
         UserModule,
         ProfileModule,
         CountryModule,
+        CityModule,
         MathModule,
         GraphQLModule.forRoot({
             autoSchemaFile: 'schema.gql',

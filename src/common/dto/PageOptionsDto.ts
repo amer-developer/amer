@@ -56,5 +56,20 @@ export class PageOptionsDto {
     @IsString()
     @IsNotEmpty()
     @IsOptional()
+    readonly include: string;
+
+    get includes(): string[] {
+        return this.include
+            ? this.include.endsWith(',')
+                ? this.include.split(',').splice(0, 1)
+                : this.include.split(',')
+            : [];
+    }
+
+    @Field({ nullable: true })
+    @ApiPropertyOptional()
+    @IsString()
+    @IsNotEmpty()
+    @IsOptional()
     readonly q?: string;
 }

@@ -55,6 +55,14 @@ type LoginRo {
   token: TokenRo!
 }
 
+type CityDto {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  nameAR: String!
+  nameEN: String!
+}
+
 type CountryDto {
   id: String!
   createdAt: DateTime!
@@ -62,10 +70,16 @@ type CountryDto {
   code: String!
   nameAR: String!
   nameEN: String!
+  cities: [CityDto!]
 }
 
 type CountriesPageDto {
   data: [CountryDto!]!
+  meta: PageMetaDto!
+}
+
+type CitiesPageDto {
+  data: [CityDto!]!
   meta: PageMetaDto!
 }
 
@@ -76,12 +90,14 @@ type ProfilesPageDto {
 
 type Query {
   me: UserDto!
-  users(order: Order = ASC, page: Int = 1, take: Int = 10, q: String): UsersPageDto!
+  users(order: Order = ASC, page: Int = 1, take: Int = 10, include: String, q: String): UsersPageDto!
   user(id: String!): UserDto!
-  profiles(order: Order = ASC, page: Int = 1, take: Int = 10, q: String): ProfilesPageDto!
+  profiles(order: Order = ASC, page: Int = 1, take: Int = 10, include: String, q: String): ProfilesPageDto!
   profile(id: String!): ProfileDto!
-  countries(order: Order = ASC, page: Int = 1, take: Int = 10, q: String): CountriesPageDto!
+  countries(order: Order = ASC, page: Int = 1, take: Int = 10, include: String, q: String): CountriesPageDto!
   country(id: String!): CountryDto!
+  cities(order: Order = ASC, page: Int = 1, take: Int = 10, include: String, q: String): CitiesPageDto!
+  city(id: String!): CityDto!
 }
 
 enum Order {
@@ -95,6 +111,9 @@ type Mutation {
   createCountry(code: String!, nameAR: String!, nameEN: String!): CountryDto!
   updateCountry(code: String, nameAR: String, nameEN: String, id: String!): CountryDto!
   deleteCountry(id: String!): CountryDto!
+  createCity(nameAR: String!, nameEN: String!, countryCode: String!): CityDto!
+  updateCity(nameAR: String, nameEN: String, countryCode: String, id: String!): CityDto!
+  deleteCity(id: String!): CityDto!
 }
 
 """The `Upload` scalar type represents a file upload."""

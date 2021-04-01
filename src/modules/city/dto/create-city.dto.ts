@@ -4,12 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString, Length } from 'class-validator';
 
 @ArgsType()
-export class CreateCountryDto {
-    @Field({ nullable: false })
-    @ApiProperty({ maxLength: 2, minLength: 2 })
-    @Length(2, 2)
-    code: string;
-
+export class CreateCityDto {
     @Field({ nullable: false })
     @ApiProperty()
     @IsString()
@@ -19,4 +14,10 @@ export class CreateCountryDto {
     @ApiProperty()
     @IsString()
     nameEN: string;
+
+    @Field({ nullable: false })
+    @ApiProperty({ minLength: 2, maxLength: 2 })
+    @IsString()
+    @Length(2, 2)
+    countryCode: string;
 }
