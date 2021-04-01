@@ -90,13 +90,13 @@ type ProfilesPageDto {
 
 type Query {
   me: UserDto!
-  users(order: Order = ASC, page: Int = 1, take: Int = 10, include: String, q: String): UsersPageDto!
+  users(order: Order = ASC, sort: String!, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): UsersPageDto!
   user(id: String!): UserDto!
-  profiles(order: Order = ASC, page: Int = 1, take: Int = 10, include: String, q: String): ProfilesPageDto!
+  profiles(order: Order = ASC, sort: String!, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): ProfilesPageDto!
   profile(id: String!): ProfileDto!
-  countries(order: Order = ASC, page: Int = 1, take: Int = 10, include: String, q: String): CountriesPageDto!
+  countries(order: Order = ASC, sort: String!, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): CountriesPageDto!
   country(id: String!): CountryDto!
-  cities(order: Order = ASC, page: Int = 1, take: Int = 10, include: String, q: String): CitiesPageDto!
+  cities(order: Order = ASC, sort: String!, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): CitiesPageDto!
   city(id: String!): CityDto!
 }
 

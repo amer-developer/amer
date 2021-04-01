@@ -3,6 +3,7 @@ import 'source-map-support/register';
 
 import { compact, map } from 'lodash';
 import { Brackets, QueryBuilder, SelectQueryBuilder } from 'typeorm';
+import { snakeCase } from 'typeorm/util/StringUtils';
 
 import { AbstractEntity } from './common/abstract.entity';
 import { AbstractDto } from './common/dto/AbstractDto';
@@ -80,6 +81,22 @@ SelectQueryBuilder.prototype.paginate = async function (
             `${this.alias}.${includable}`,
             includable,
         );
+    }
+
+    for (const filter of pageOptionsDto.filters) {
+        selectQueryBuilder = this.andWhere(
+            `${this.alias}.${snakeCase(filter.name)} = '${String(
+                filter.value,
+            )}'`,
+        );
+    }
+
+    if (!pageOptionsDto.include) {
+        const column = pageOptionsDto.sort
+            ? `${snakeCase(pageOptionsDto.sort)}`
+            : 'created_at';
+
+        selectQueryBuilder = this.addOrderBy(column, pageOptionsDto.order);
     }
 
     const itemCount = await selectQueryBuilder.getCount();

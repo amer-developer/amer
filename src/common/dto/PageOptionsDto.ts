@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { ArgsType, Field, Int } from '@nestjs/graphql';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
@@ -12,6 +13,11 @@ import {
 } from 'class-validator';
 
 import { Order } from '../constants/order';
+
+export class Filter {
+    name: string;
+    value: string;
+}
 @ArgsType()
 export class PageOptionsDto {
     @Field(() => Order)
@@ -22,6 +28,12 @@ export class PageOptionsDto {
     @IsEnum(Order)
     @IsOptional()
     readonly order: Order = Order.ASC;
+
+    @Field()
+    @ApiPropertyOptional()
+    @IsString()
+    @IsOptional()
+    readonly sort?: string;
 
     @Field(() => Int)
     @ApiPropertyOptional({
@@ -63,6 +75,25 @@ export class PageOptionsDto {
             ? this.include.endsWith(',')
                 ? this.include.split(',').splice(0, 1)
                 : this.include.split(',')
+            : [];
+    }
+
+    @Field({ nullable: true })
+    @ApiPropertyOptional()
+    @IsString()
+    @IsNotEmpty()
+    @IsOptional()
+    readonly filter?: string;
+
+    get filters(): Filter[] {
+        return this.filter
+            ? this.filter.split(',').map((val) => {
+                  const filter = val.split('=');
+                  return {
+                      name: filter[0],
+                      value: filter[1],
+                  };
+              })
             : [];
     }
 
