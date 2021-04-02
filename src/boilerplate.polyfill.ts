@@ -3,7 +3,6 @@ import 'source-map-support/register';
 
 import { compact, map } from 'lodash';
 import { Brackets, QueryBuilder, SelectQueryBuilder } from 'typeorm';
-import { snakeCase } from 'typeorm/util/StringUtils';
 
 import { AbstractEntity } from './common/abstract.entity';
 import { AbstractDto } from './common/dto/AbstractDto';
@@ -11,6 +10,7 @@ import { PageDto } from './common/dto/PageDto';
 import { PageMetaDto } from './common/dto/PageMetaDto';
 import { PageOptionsDto } from './common/dto/PageOptionsDto';
 import { VIRTUAL_COLUMN_KEY } from './decorators/virtual-column.decorator';
+import { UtilsService } from './providers/utils.service';
 
 declare global {
     interface Array<T> {
@@ -85,19 +85,17 @@ SelectQueryBuilder.prototype.paginate = async function (
 
     for (const filter of pageOptionsDto.filters) {
         selectQueryBuilder = this.andWhere(
-            `${this.alias}.${snakeCase(filter.name)} = '${String(
+            `${UtilsService.getColumnName(this.alias, filter.name)} = '${String(
                 filter.value,
             )}'`,
         );
     }
 
-    if (!pageOptionsDto.include) {
-        const column = pageOptionsDto.sort
-            ? `${snakeCase(pageOptionsDto.sort)}`
-            : 'created_at';
+    const sort = pageOptionsDto.sort
+        ? UtilsService.getColumnName(this.alias, pageOptionsDto.sort)
+        : UtilsService.getColumnName(this.alias, 'createdAt');
 
-        selectQueryBuilder = this.addOrderBy(column, pageOptionsDto.order);
-    }
+    selectQueryBuilder = this.orderBy(sort, pageOptionsDto.order);
 
     const itemCount = await selectQueryBuilder.getCount();
 
