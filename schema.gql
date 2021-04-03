@@ -84,6 +84,18 @@ type CitiesPageDto {
   meta: PageMetaDto!
 }
 
+type ImageDto {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+}
+
+type ImagesPageDto {
+  data: [ImageDto!]!
+  meta: PageMetaDto!
+}
+
 type ProfilesPageDto {
   data: [ProfileDto!]!
   meta: PageMetaDto!
@@ -99,6 +111,8 @@ type Query {
   country(id: String!): CountryDto!
   cities(order: Order = ASC, sort: String!, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): CitiesPageDto!
   city(id: String!): CityDto!
+  images(order: Order = ASC, sort: String!, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): ImagesPageDto!
+  image(id: String!): ImageDto!
 }
 
 enum Order {
@@ -115,6 +129,9 @@ type Mutation {
   createCity(nameAR: String!, nameEN: String!, countryCode: String!): CityDto!
   updateCity(nameAR: String, nameEN: String, countryCode: String, id: String!): CityDto!
   deleteCity(id: String!): CityDto!
+  createImage(name: String!): ImageDto!
+  updateImage(name: String, id: String!): ImageDto!
+  deleteImage(id: String!): ImageDto!
 }
 
 """The `Upload` scalar type represents a file upload."""

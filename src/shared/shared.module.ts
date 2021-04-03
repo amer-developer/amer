@@ -1,6 +1,8 @@
 import { Global, HttpModule, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 
+import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
+import { CloudinaryService } from './modules/cloudinary/cloudinary.service';
 import { AwsS3Service } from './services/aws-s3.service';
 import { ConfigService } from './services/config.service';
 import { GeneratorService } from './services/generator.service';
@@ -13,6 +15,7 @@ const providers = [
     AwsS3Service,
     GeneratorService,
     TranslationService,
+    CloudinaryService,
 ];
 
 @Global()
@@ -20,6 +23,7 @@ const providers = [
     providers,
     imports: [
         HttpModule,
+        CloudinaryModule,
         JwtModule.registerAsync({
             useFactory: (configService: ConfigService) => ({
                 secret: configService.get('JWT_SECRET_KEY'),
