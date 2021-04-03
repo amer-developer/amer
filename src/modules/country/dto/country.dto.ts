@@ -1,7 +1,7 @@
 'use strict';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsObject, IsString, MaxLength } from 'class-validator';
+import { IsObject, IsOptional, IsString, MaxLength } from 'class-validator';
 
 import { AbstractDto } from '../../../common/dto/AbstractDto';
 import { CityDto } from '../../city/dto/city.dto';
@@ -27,6 +27,7 @@ export class CountryDto extends AbstractDto {
     @Field(() => [CityDto], { nullable: true })
     @ApiProperty()
     @IsObject()
+    @IsOptional()
     cities: CityDto[];
 
     constructor(country: CountryEntity) {

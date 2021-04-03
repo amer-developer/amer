@@ -36,9 +36,15 @@ export class CountryService {
         pageOptionsDto: CountriesPageOptionsDto,
     ): Promise<CountriesPageDto> {
         this.logger.debug(JSON.stringify(pageOptionsDto));
-        const queryBuilder = this.countryRepository.createQueryBuilder(
-            'country',
-        );
+        let queryBuilder = this.countryRepository.createQueryBuilder('country');
+
+        if (pageOptionsDto.q) {
+            queryBuilder = queryBuilder.searchByString(pageOptionsDto.q, [
+                'nameAR',
+                'nameEN',
+                'code',
+            ]);
+        }
 
         const { items, pageMetaDto } = await queryBuilder.paginate(
             pageOptionsDto,

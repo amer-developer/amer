@@ -59,7 +59,8 @@ QueryBuilder.prototype.searchByString = function (q, columnNames) {
     this.andWhere(
         new Brackets((qb) => {
             for (const item of columnNames) {
-                qb.orWhere(`${item} ILIKE :q`);
+                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                qb.orWhere(`${this.alias}.${item} ILIKE :q`);
             }
         }),
     );

@@ -55,14 +55,6 @@ type LoginRo {
   token: TokenRo!
 }
 
-type CityDto {
-  id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  nameAR: String!
-  nameEN: String!
-}
-
 type CountryDto {
   id: String!
   createdAt: DateTime!
@@ -71,6 +63,15 @@ type CountryDto {
   nameAR: String!
   nameEN: String!
   cities: [CityDto!]
+}
+
+type CityDto {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  nameAR: String!
+  nameEN: String!
+  country: CountryDto
 }
 
 type CountriesPageDto {

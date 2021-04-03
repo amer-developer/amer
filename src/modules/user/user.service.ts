@@ -82,7 +82,16 @@ export class UserService {
 
     async getUsers(pageOptionsDto: UsersPageOptionsDto): Promise<UsersPageDto> {
         this.logger.debug(JSON.stringify(pageOptionsDto));
-        const queryBuilder = this.userRepository.createQueryBuilder('user');
+        let queryBuilder = this.userRepository.createQueryBuilder('user');
+
+        if (pageOptionsDto.q) {
+            queryBuilder = queryBuilder.searchByString(pageOptionsDto.q, [
+                'name',
+                'email',
+                'phone',
+            ]);
+        }
+
         const { items, pageMetaDto } = await queryBuilder.paginate(
             pageOptionsDto,
         );

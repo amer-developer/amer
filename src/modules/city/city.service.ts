@@ -44,7 +44,15 @@ export class CityService {
         pageOptionsDto: CitiesPageOptionsDto,
     ): Promise<CitiesPageDto> {
         this.logger.debug(JSON.stringify(pageOptionsDto));
-        const queryBuilder = this.cityRepository.createQueryBuilder('city');
+        let queryBuilder = this.cityRepository.createQueryBuilder('city');
+
+        if (pageOptionsDto.q) {
+            queryBuilder = queryBuilder.searchByString(pageOptionsDto.q, [
+                'nameAR',
+                'nameEN',
+            ]);
+        }
+
         const { items, pageMetaDto } = await queryBuilder.paginate(
             pageOptionsDto,
         );
