@@ -9,11 +9,12 @@ import {
     Post,
     Put,
     Query,
+    UploadedFile,
     UploadedFiles,
     UseInterceptors,
     ValidationPipe,
 } from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { RoleType } from '../../common/constants/role-type';
@@ -35,33 +36,54 @@ export class ImageController {
     private logger = new Logger(ImageController.name);
     constructor(private imageService: ImageService) {}
 
-    @Post('upload')
-    @ApiConsumes('multipart/form-data')
-    @ApiFile([{ name: 'files' }])
-    @UseInterceptors(FilesInterceptor('files', 10))
-    upload(@UploadedFiles() files: IFile[]) {
-        return this.imageService.uploadImage(files);
-    }
-
     @Post()
-    @Auth(RoleType.ADMIN)
+    @Auth(RoleType.USER, RoleType.ADMIN)
+    @ApiConsumes('multipart/form-data')
     @HttpCode(HttpStatus.OK)
+    @ApiFile([{ name: 'file' }])
+    @UseInterceptors(FileInterceptor('file'))
     @ApiResponse({
         status: HttpStatus.OK,
         description: 'New image',
-        type: ImagesPageDto,
+        type: ImageDto,
     })
     createImage(
         @Body()
         image: CreateImageDto,
         @AuthUser() user: UserEntity,
+        @UploadedFile() file: IFile,
     ): Promise<ImageDto> {
         this.logger.debug(
             `Creating a new image, user: ${user.id}, image ${JSON.stringify(
                 image,
             )}`,
         );
-        return this.imageService.createImage(image);
+        return this.imageService.createImage(image, file);
+    }
+
+    @Post('bulk')
+    @Auth(RoleType.USER, RoleType.ADMIN)
+    @ApiConsumes('multipart/form-data')
+    @HttpCode(HttpStatus.OK)
+    @ApiFile([{ name: 'files' }])
+    @UseInterceptors(FilesInterceptor('files', 10))
+    @ApiResponse({
+        status: HttpStatus.OK,
+        description: 'New images',
+        type: [ImageDto],
+    })
+    createImages(
+        @Body()
+        image: CreateImageDto,
+        @AuthUser() user: UserEntity,
+        @UploadedFiles() files: IFile[],
+    ): Promise<ImageDto[]> {
+        this.logger.debug(
+            `Creating a new image, user: ${user.id}, image ${JSON.stringify(
+                image,
+            )}`,
+        );
+        return this.imageService.createImages(image, files);
     }
 
     @Get()

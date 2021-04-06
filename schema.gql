@@ -89,6 +89,14 @@ type ImageDto {
   createdAt: DateTime!
   updatedAt: DateTime!
   name: String!
+  folder: ImageType!
+  url: String!
+}
+
+enum ImageType {
+  PROFILE
+  POST
+  OFFER
 }
 
 type ImagesPageDto {
@@ -122,22 +130,22 @@ enum Order {
 
 type Mutation {
   login(phone: String!, password: String!): LoginRo!
-  register(file: Upload, name: String!, email: String, password: String!, phone: String!, profile: CreateProfileDto): UserDto!
+  register(name: String!, email: String, password: String!, phone: String!, profile: CreateProfileDto): UserDto!
   createCountry(code: String!, nameAR: String!, nameEN: String!): CountryDto!
   updateCountry(code: String, nameAR: String, nameEN: String, id: String!): CountryDto!
   deleteCountry(id: String!): CountryDto!
   createCity(nameAR: String!, nameEN: String!, countryCode: String!): CityDto!
   updateCity(nameAR: String, nameEN: String, countryCode: String, id: String!): CityDto!
   deleteCity(id: String!): CityDto!
-  createImage(name: String!): ImageDto!
-  updateImage(name: String, id: String!): ImageDto!
+  createImage(file: Upload, name: String, folder: ImageType!): ImageDto!
+  updateImage(name: String, folder: ImageType, id: String!): ImageDto!
   deleteImage(id: String!): ImageDto!
 }
-
-"""The `Upload` scalar type represents a file upload."""
-scalar Upload
 
 input CreateProfileDto {
   bio: String
   avatar: String
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload

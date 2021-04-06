@@ -1,8 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { FindConditions, FindOneOptions } from 'typeorm';
 
-import { FileNotImageException } from '../../exceptions/file-not-image.exception';
-import { IFile } from '../../interfaces/IFile';
 import { AwsS3Service } from '../../shared/services/aws-s3.service';
 import { ValidatorService } from '../../shared/services/validator.service';
 import { RegisterDto } from '../auth/dto/register.dto';
@@ -50,19 +48,8 @@ export class UserService {
         return queryBuilder.getOne();
     }
 
-    async createUser(
-        userRegisterDto: RegisterDto,
-        file: IFile,
-    ): Promise<UserEntity> {
+    async createUser(userRegisterDto: RegisterDto): Promise<UserEntity> {
         const user = this.userRepository.create(userRegisterDto);
-
-        if (file && !this.validatorService.isImage(file.mimetype)) {
-            throw new FileNotImageException();
-        }
-
-        if (file) {
-            user.profile.avatar = await this.awsS3Service.uploadImage(file);
-        }
 
         return this.userRepository.save(user);
     }

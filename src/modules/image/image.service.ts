@@ -5,8 +5,10 @@ import {
     Injectable,
     Logger,
 } from '@nestjs/common';
+import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
 import { FindConditions } from 'typeorm';
 
+import { FileNotImageException } from '../../exceptions/file-not-image.exception';
 import { IFile } from '../../interfaces/IFile';
 import { CloudinaryService } from '../../shared/modules/cloudinary/cloudinary.service';
 import { ValidatorService } from '../../shared/services/validator.service';
@@ -34,11 +36,44 @@ export class ImageService {
         return this.imageRepository.findOne(findData);
     }
 
-    async createImage(imageDto: CreateImageDto): Promise<ImageDto> {
-        const image = this.imageRepository.create(imageDto);
+    async createImage(
+        imageDto: CreateImageDto,
+        file: IFile,
+    ): Promise<ImageDto> {
+        const uploadedFile = await this.uploadImage(
+            [file],
+            imageDto.name,
+            imageDto.folder,
+        );
+        const image = this.imageRepository.create({
+            ...imageDto,
+            url: uploadedFile[0].url,
+        });
 
         const savedEntity = await this.imageRepository.save(image);
         return savedEntity.toDto();
+    }
+
+    async createImages(
+        imageDto: CreateImageDto,
+        files: IFile[],
+    ): Promise<ImageDto[]> {
+        const images: ImageEntity[] = [];
+        for (const file of files) {
+            const uploadedFile = await this.uploadImage(
+                [file],
+                imageDto.name,
+                imageDto.folder,
+            );
+            const image = this.imageRepository.create({
+                ...imageDto,
+                url: uploadedFile[0].url,
+            });
+
+            const savedEntity = await this.imageRepository.save(image);
+            images.push(savedEntity);
+        }
+        return images.toDtos();
     }
 
     async getImages(
@@ -96,12 +131,17 @@ export class ImageService {
         return imageEntity.toDto();
     }
 
-    async uploadImage(files: IFile[]) {
+    public async uploadImage(files: IFile[], name?: string, type?: string) {
         this.logger.debug(files);
-        const data = [];
+        const data = new Array<UploadApiErrorResponse | UploadApiResponse>();
+        for (const file of files) {
+            if (file && !this.validatorService.isImage(file.mimetype)) {
+                throw new FileNotImageException();
+            }
+        }
         for (const file of files) {
             const fileData = await this.cloudinary
-                .uploadImage(file, null, 'profile')
+                .uploadImage(file, name, type)
                 .catch((err) => {
                     this.logger.error(err);
                     throw new BadRequestException('Invalid file type.');

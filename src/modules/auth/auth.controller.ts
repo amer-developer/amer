@@ -5,23 +5,14 @@ import {
     HttpCode,
     HttpStatus,
     Post,
-    UploadedFile,
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import {
-    ApiBearerAuth,
-    ApiConsumes,
-    ApiOkResponse,
-    ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 import { AuthUser } from '../../decorators/auth-user.decorator';
-import { ApiFile } from '../../decorators/swagger.schema';
 import { AuthGuard } from '../../guards/auth.guard';
 import { AuthUserInterceptor } from '../../interceptors/auth-user-interceptor.service';
-import { IFile } from '../../interfaces/IFile';
 import { UserDto } from '../user/dto/user.dto';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
@@ -54,17 +45,8 @@ export class AuthController {
     @Post('register')
     @HttpCode(HttpStatus.OK)
     @ApiOkResponse({ type: UserDto, description: 'Successfully Registered' })
-    @ApiConsumes('multipart/form-data')
-    @ApiFile([{ name: 'avatar' }])
-    @UseInterceptors(FileInterceptor('avatar'))
-    async userRegister(
-        @Body() userRegisterDto: RegisterDto,
-        @UploadedFile() file: IFile,
-    ): Promise<UserDto> {
-        const createdUser = await this.userService.createUser(
-            userRegisterDto,
-            file,
-        );
+    async userRegister(@Body() userRegisterDto: RegisterDto): Promise<UserDto> {
+        const createdUser = await this.userService.createUser(userRegisterDto);
 
         return createdUser.toDto();
     }

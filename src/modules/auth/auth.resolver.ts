@@ -1,10 +1,8 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { GraphQLUpload } from 'graphql-tools';
 
 import { RoleType } from '../../common/constants/role-type';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth } from '../../decorators/http.decorators';
-import { IFile } from '../../interfaces/IFile';
 import { UserDto } from '../user/dto/user.dto';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
@@ -29,15 +27,8 @@ export class AuthResolver {
     }
 
     @Mutation(() => UserDto, { name: 'register' })
-    async userRegister(
-        @Args() userRegisterDto: RegisterDto,
-        @Args('file', { type: () => GraphQLUpload, nullable: true })
-        file: IFile,
-    ): Promise<UserDto> {
-        const createdUser = await this.userService.createUser(
-            userRegisterDto,
-            file,
-        );
+    async userRegister(@Args() userRegisterDto: RegisterDto): Promise<UserDto> {
+        const createdUser = await this.userService.createUser(userRegisterDto);
 
         return createdUser.toDto();
     }

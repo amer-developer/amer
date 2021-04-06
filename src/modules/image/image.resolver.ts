@@ -1,9 +1,11 @@
 import { Logger, ParseUUIDPipe } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { GraphQLUpload } from 'graphql-tools';
 
 import { RoleType } from '../../common/constants/role-type';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth } from '../../decorators/http.decorators';
+import { IFile } from '../../interfaces/IFile';
 import { UserEntity } from '../user/user.entity';
 import { CreateImageDto } from './dto/create-image.dto';
 import { ImageDto } from './dto/image.dto';
@@ -23,6 +25,9 @@ export class ImageResolver {
     createImage(
         @Args()
         image: CreateImageDto,
+
+        @Args('file', { type: () => GraphQLUpload, nullable: true })
+        file: IFile,
         @AuthUser() user: UserEntity,
     ): Promise<ImageDto> {
         this.logger.debug(
@@ -30,7 +35,7 @@ export class ImageResolver {
                 image,
             )}`,
         );
-        return this.imageService.createImage(image);
+        return this.imageService.createImage(image, file);
     }
     @Query(() => ImagesPageDto, { name: 'images' })
     getImages(
