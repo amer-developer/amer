@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { FindConditions, FindOneOptions } from 'typeorm';
 
+import { UserNotFoundException } from '../../exceptions/user-not-found.exception';
 import { AwsS3Service } from '../../shared/services/aws-s3.service';
 import { ValidatorService } from '../../shared/services/validator.service';
 import { RegisterDto } from '../auth/dto/register.dto';
@@ -86,12 +87,11 @@ export class UserService {
         return items.toPageDto(pageMetaDto);
     }
 
-    async getUser(userId: string) {
-        const queryBuilder = this.userRepository.createQueryBuilder('user');
-
-        queryBuilder.where('user.id = :userId', { userId });
-
-        const userEntity = await queryBuilder.getOne();
+    async getUser(id: string) {
+        const userEntity = await this.findOne({ id });
+        if (!userEntity) {
+            throw new UserNotFoundException();
+        }
 
         return userEntity.toDto();
     }

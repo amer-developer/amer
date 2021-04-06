@@ -36,7 +36,6 @@ export class RegisterDto {
     @Field()
     @ApiProperty()
     @IsPhoneNumber('ZZ')
-    @IsOptional()
     phone: string;
 
     @Field(() => CreateProfileDto, { nullable: true })
