@@ -12,11 +12,16 @@ import { Response } from 'express';
 import { STATUS_CODES } from 'http';
 import { isArray, isEmpty, snakeCase } from 'lodash';
 
+import { TranslationService } from '../shared/services/translation.service';
+
 @Catch(UnprocessableEntityException)
 export class HttpExceptionFilter implements ExceptionFilter {
-    constructor(public reflector: Reflector) {}
+    constructor(
+        public reflector: Reflector,
+        public translate: TranslationService,
+    ) {}
 
-    catch(exception: UnprocessableEntityException, host: ArgumentsHost): void {
+    async catch(exception: UnprocessableEntityException, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
         let statusCode = exception.getStatus();
@@ -26,7 +31,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
             statusCode = HttpStatus.UNPROCESSABLE_ENTITY;
             r.error = STATUS_CODES[statusCode];
             const validationErrors = r.message as ValidationError[];
-            this.validationFilter(validationErrors);
+            const errors = await this.validationFilter(validationErrors);
+            r.errors = errors;
+            delete r.message;
         }
 
         r.statusCode = statusCode;
@@ -39,24 +46,40 @@ export class HttpExceptionFilter implements ExceptionFilter {
         }
     }
 
-    private validationFilter(validationErrors: ValidationError[]): void {
+    private async validationFilter(validationErrors: ValidationError[]) {
+        const errors = [];
         for (const validationError of validationErrors) {
+            const error: any = {};
             if (!isEmpty(validationError.children)) {
-                this.validationFilter(validationError.children);
+                error.choldren = this.validationFilter(
+                    validationError.children,
+                );
                 return;
             }
+            error.field = validationError.property;
 
+            error.constraints = [];
             for (const [constraintKey, constraint] of Object.entries(
                 validationError.constraints,
             )) {
                 // convert default messages
-                if (!constraint) {
-                    // convert error message to error.fields.{key} syntax for i18n translation
-                    validationError.constraints[
-                        constraintKey
-                    ] = `error.fields.${snakeCase(constraintKey)}`;
-                }
+                // convert error message to error.fields.{key} syntax for i18n translation
+                const key = `validation.${snakeCase(constraintKey)}`;
+                const message = await this.translate.translate(key, {
+                    args: {
+                        property: await this.translate.translate(
+                            `fields.${validationError.property}`,
+                        ),
+                    },
+                });
+
+                error.constraints.push({
+                    code: constraintKey,
+                    message: message === key ? constraint : message,
+                });
             }
+            errors.push(error);
         }
+        return errors;
     }
 }

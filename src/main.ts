@@ -25,6 +25,7 @@ import { QueryFailedFilter } from './filters/query-failed.filter';
 import { TranslateInterceptor } from './interceptors/translate-interceptor.service';
 import { setupSwagger } from './setup-swagger';
 import { ConfigService } from './shared/services/config.service';
+import { TranslationService } from './shared/services/translation.service';
 import { SharedModule } from './shared/shared.module';
 
 async function bootstrap() {
@@ -54,8 +55,10 @@ async function bootstrap() {
 
     const reflector = app.get(Reflector);
 
+    const translationService = app.select(SharedModule).get(TranslationService);
+
     app.useGlobalFilters(
-        new HttpExceptionFilter(reflector),
+        new HttpExceptionFilter(reflector, translationService),
         new QueryFailedFilter(reflector),
     );
 
@@ -69,7 +72,7 @@ async function bootstrap() {
             whitelist: true,
             errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
             transform: true,
-            dismissDefaultMessages: true,
+            dismissDefaultMessages: false,
             exceptionFactory: (errors) =>
                 new UnprocessableEntityException(errors),
         }),

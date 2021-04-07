@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { FindConditions } from 'typeorm';
 
+import { CountryNotFoundException } from '../../exceptions/country-not-found.exception';
 import { ValidatorService } from '../../shared/services/validator.service';
 import { CountryEntity } from './country.entity';
 import { CountryRepository } from './country.repository';
@@ -55,6 +56,10 @@ export class CountryService {
 
     async getCountry(id: string) {
         const countryEntity = await this.findOne({ id });
+
+        if (!countryEntity) {
+            throw new CountryNotFoundException();
+        }
 
         return countryEntity.toDto();
     }

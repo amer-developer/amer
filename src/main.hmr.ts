@@ -9,9 +9,11 @@ import morgan from 'morgan';
 
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './filters/bad-request.filter';
+import { QueryFailedFilter } from './filters/query-failed.filter';
 import { TranslateInterceptor } from './interceptors/translate-interceptor.service';
 import { setupSwagger } from './setup-swagger';
 import { ConfigService } from './shared/services/config.service';
+import { TranslationService } from './shared/services/translation.service';
 import { SharedModule } from './shared/shared.module';
 
 declare const module: any;
@@ -40,7 +42,12 @@ async function bootstrap(): Promise<void> {
 
     const reflector = app.get(Reflector);
 
-    app.useGlobalFilters(new HttpExceptionFilter(reflector));
+    const translationService = app.select(SharedModule).get(TranslationService);
+
+    app.useGlobalFilters(
+        new HttpExceptionFilter(reflector, translationService),
+        new QueryFailedFilter(reflector),
+    );
 
     app.useGlobalInterceptors(
         new ClassSerializerInterceptor(reflector),
@@ -51,7 +58,7 @@ async function bootstrap(): Promise<void> {
         new ValidationPipe({
             whitelist: true,
             transform: true,
-            dismissDefaultMessages: true,
+            dismissDefaultMessages: false,
             validationError: {
                 target: false,
             },

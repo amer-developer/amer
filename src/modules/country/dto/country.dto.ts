@@ -11,6 +11,7 @@ import { CountryEntity } from '../country.entity';
 export class CountryDto extends AbstractDto {
     @Field({ nullable: false })
     @ApiProperty({ maxLength: 2 })
+    @IsString()
     @MaxLength(2)
     code: string;
 

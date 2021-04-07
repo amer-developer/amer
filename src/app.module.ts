@@ -11,7 +11,6 @@ import { AuthModule } from './modules/auth/auth.module';
 import { CityModule } from './modules/city/city.module';
 import { CountryModule } from './modules/country/country.module';
 import { ImageModule } from './modules/image/image.module';
-import { MathModule } from './modules/math/math.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { UserModule } from './modules/user/user.module';
 import { ConfigService } from './shared/services/config.service';
@@ -25,7 +24,6 @@ import { SharedModule } from './shared/shared.module';
         CountryModule,
         CityModule,
         ImageModule,
-        MathModule,
         GraphQLModule.forRoot({
             autoSchemaFile: 'schema.gql',
             debug: true,

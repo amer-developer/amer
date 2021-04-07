@@ -7,6 +7,7 @@ import { IsString, Length } from 'class-validator';
 export class CreateCountryDto {
     @Field({ nullable: false })
     @ApiProperty({ maxLength: 2, minLength: 2 })
+    @IsString()
     @Length(2, 2)
     code: string;
 
