@@ -21,7 +21,7 @@ export class RegisterDto {
     readonly name: string;
 
     @Field({ nullable: true })
-    @ApiProperty()
+    @ApiProperty({ required: false })
     @IsString()
     @IsEmail()
     @IsOptional()

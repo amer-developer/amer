@@ -1,6 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { FindConditions, FindOneOptions } from 'typeorm';
 
+import { RoleType } from '../../common/constants/role-type';
+import { UserExistException } from '../../exceptions/user-exist.exception';
 import { UserNotFoundException } from '../../exceptions/user-not-found.exception';
 import { AwsS3Service } from '../../shared/services/aws-s3.service';
 import { ValidatorService } from '../../shared/services/validator.service';
@@ -30,8 +32,9 @@ export class UserService {
         return this.userRepository.findOne(findData, findOpts);
     }
 
-    async findByUsernameOrEmail(
-        options: Partial<{ username: string; email: string }>,
+    async findByPhoneOrEmail(
+        options: Partial<{ phone: string; email: string }>,
+        role?: RoleType,
     ): Promise<UserEntity | undefined> {
         const queryBuilder = this.userRepository.createQueryBuilder('user');
 
@@ -40,27 +43,50 @@ export class UserService {
                 email: options.email,
             });
         }
-        if (options.username) {
-            queryBuilder.orWhere('user.username = :username', {
-                username: options.username,
+        if (options.phone) {
+            queryBuilder.orWhere('user.phone = :phone', {
+                phone: options.phone,
             });
+        }
+        if (role) {
+            queryBuilder.andWhere('user.role = :role', { role });
         }
 
         return queryBuilder.getOne();
     }
 
     async createUser(userRegisterDto: RegisterDto): Promise<UserEntity> {
+        const checkExist = await this.findByPhoneOrEmail({
+            phone: userRegisterDto.phone,
+            email: userRegisterDto.email,
+        });
+        if (checkExist) {
+            throw new UserExistException();
+        }
         const user = this.userRepository.create(userRegisterDto);
 
         return this.userRepository.save(user);
     }
 
-    async updateUser(id: string, user: UpdateUserDto, profileID?: string) {
-        this.logger.debug(`Updating user: ${id} to ${JSON.stringify(user)}`);
+    async updateUser(
+        id: string,
+        updatedUser: UpdateUserDto,
+        profileID?: string,
+    ) {
+        this.logger.debug(
+            `Updating user: ${id} to ${JSON.stringify(updatedUser)}`,
+        );
+        const user = await this.findOne({ id }, { relations: ['profile'] });
+        if (!user) {
+            throw new UserNotFoundException();
+        }
+        if (!profileID) {
+            profileID = user.profile.id;
+        }
         const profile = profileID
-            ? { id: profileID, ...user.profile }
-            : { ...user.profile };
-        delete user.profile;
+            ? { id: profileID, ...updatedUser.profile }
+            : { ...updatedUser.profile };
+        delete updatedUser.profile;
         return this.userRepository.save({
             id,
             profile,
