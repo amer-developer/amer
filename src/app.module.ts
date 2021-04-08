@@ -24,11 +24,11 @@ import { SharedModule } from './shared/shared.module';
         CountryModule,
         CityModule,
         ImageModule,
-        GraphQLModule.forRoot({
-            autoSchemaFile: 'schema.gql',
-            debug: true,
-            playground: true,
-            introspection: true,
+        GraphQLModule.forRootAsync({
+            imports: [SharedModule],
+            useFactory: (configService: ConfigService) =>
+                configService.graphQLConfig,
+            inject: [ConfigService],
         }),
         TypeOrmModule.forRootAsync({
             imports: [SharedModule],

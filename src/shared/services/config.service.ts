@@ -1,3 +1,4 @@
+import { GqlModuleOptions } from '@nestjs/graphql';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import dotenv from 'dotenv';
 
@@ -90,6 +91,15 @@ export class ConfigService {
             accessKeyId: this.get('AWS_S3_ACCESS_KEY_ID'),
             secretAccessKey: this.get('AWS_S3_SECRET_ACCESS_KEY'),
             bucketName: this.get('S3_BUCKET_NAME'),
+        };
+    }
+
+    get graphQLConfig(): GqlModuleOptions {
+        return {
+            autoSchemaFile: 'schema.gql',
+            debug: ['development', 'staging'].includes(this.nodeEnv),
+            playground: ['development', 'staging'].includes(this.nodeEnv),
+            introspection: ['development', 'staging'].includes(this.nodeEnv),
         };
     }
 }
