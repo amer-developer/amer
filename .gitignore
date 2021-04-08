@@ -75,3 +75,6 @@ mongo
 
 # Docker compose ganarated files
 db-data
+
+# Mac OSX files
+.DS_Store

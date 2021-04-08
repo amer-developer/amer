@@ -28,6 +28,7 @@ import { SharedModule } from './shared/shared.module';
             autoSchemaFile: 'schema.gql',
             debug: true,
             playground: true,
+            introspection: true,
         }),
         TypeOrmModule.forRootAsync({
             imports: [SharedModule],

@@ -4,6 +4,9 @@
     "description": "Amer backend built with NestJS, Typescript, Postgres, TypeORM",
     "author": "Saud Alhelali <alhelali@saud.tech>",
     "license": "MIT",
+    "engines": {
+        "node": "12.20.0"
+    },
     "scripts": {
         "build:prod": "tsc -p tsconfig.build.json",
         "postbuild:prod": "copyfiles --up 1 src/**/*.json dist",
