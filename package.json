@@ -8,6 +8,8 @@
         "node": "12.20.0"
     },
     "scripts": {
+        "build": "tsc -p tsconfig.build.json",
+        "postbuild": "copyfiles --up 1 src/**/*.json dist",
         "build:prod": "tsc -p tsconfig.build.json",
         "postbuild:prod": "copyfiles --up 1 src/**/*.json dist",
         "start:hmr": "node dist/main.hmr.ts",
