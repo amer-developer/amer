@@ -9,9 +9,9 @@
     },
     "scripts": {
         "build": "tsc -p tsconfig.build.json",
-        "postbuild": "copyfiles --up 1 src/**/*.json dist",
+        "postbuild": "copyfiles --up 1 src/**/*.json dist/src",
         "build:prod": "tsc -p tsconfig.build.json",
-        "postbuild:prod": "copyfiles --up 1 src/**/*.json dist",
+        "postbuild:prod": "copyfiles --up 1 src/**/*.json dist/src",
         "start:hmr": "node dist/main.hmr.ts",
         "start:dev": "ts-node src/main.ts",
         "start:prod": "node dist/src/main.js",
