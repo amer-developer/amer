@@ -29,7 +29,7 @@ export class PageOptionsDto {
     @IsOptional()
     readonly order: Order = Order.ASC;
 
-    @Field()
+    @Field({ nullable: true })
     @ApiPropertyOptional()
     @IsString()
     @IsOptional()
