@@ -1,16 +1,10 @@
 /* eslint-disable max-classes-per-file */
-import { InputType, OmitType as GLOmitType } from '@nestjs/graphql';
-import { OmitType } from '@nestjs/swagger';
+import { InputType, PartialType as GLPartialType } from '@nestjs/graphql';
+import { PartialType } from '@nestjs/swagger';
 
-import { RegisterDto } from '../../auth/dto/register.dto';
+import { UserDto } from './user.dto';
 
 @InputType()
-export class UpdateUserInput extends GLOmitType(RegisterDto, [
-    'phone',
-    'email',
-] as const) {}
+export class UpdateUserInput extends GLPartialType(UserDto) {}
 
-export class UpdateUserDto extends OmitType(RegisterDto, [
-    'phone',
-    'email',
-] as const) {}
+export class UpdateUserDto extends PartialType(UserDto) {}

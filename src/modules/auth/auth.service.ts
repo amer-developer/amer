@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
+import { UserStatus } from '../../common/constants/user-status';
+import { UserBlockedException } from '../../exceptions/user-blocked.exception';
+import { UserInactiveException } from '../../exceptions/user-inactive.exception';
 import { UserNotFoundException } from '../../exceptions/user-not-found.exception';
 import { UtilsService } from '../../providers/utils.service';
 import { ConfigService } from '../../shared/services/config.service';
@@ -38,6 +41,12 @@ export class AuthService {
         );
         if (!user || !isPasswordValid) {
             throw new UserNotFoundException();
+        }
+        if (user.status === UserStatus.INACTIVE) {
+            throw new UserInactiveException();
+        }
+        if (user.status === UserStatus.BLOCKED) {
+            throw new UserBlockedException();
         }
         return user;
     }

@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
 import { RoleType } from '../../common/constants/role-type';
+import { UserStatus } from '../../common/constants/user-status';
 import { ProfileEntity } from '../profile/profile.entity';
 import { UserDto } from './dto/user.dto';
 
@@ -21,6 +22,9 @@ export class UserEntity extends AbstractEntity<UserDto> {
 
     @Column({ nullable: false })
     phone: string;
+
+    @Column({ type: 'enum', enum: UserStatus, default: UserStatus.INACTIVE })
+    status: UserStatus;
 
     @OneToOne(() => ProfileEntity, (profile) => profile.user, { cascade: true })
     @JoinColumn()

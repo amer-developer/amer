@@ -10,6 +10,7 @@ import {
 } from 'class-validator';
 
 import { RoleType } from '../../../common/constants/role-type';
+import { UserStatus } from '../../../common/constants/user-status';
 import { AbstractDto } from '../../../common/dto/AbstractDto';
 import { ProfileDto } from '../../profile/dto/profile.dto';
 import { UserEntity } from '../user.entity';
@@ -40,6 +41,10 @@ export class UserDto extends AbstractDto {
     @IsPhoneNumber('ZZ')
     phone: string;
 
+    @Field(() => UserStatus)
+    @ApiProperty({ required: true, enum: UserStatus })
+    status: UserStatus;
+
     @Field(() => ProfileDto, { nullable: true })
     @ApiProperty({ required: false, type: () => ProfileDto })
     @IsOptional()
@@ -52,6 +57,7 @@ export class UserDto extends AbstractDto {
         this.role = user.role;
         this.email = user.email;
         this.phone = user.phone;
+        this.status = user.status;
         if (user.profile) {
             this.profile = user.profile.toDto();
         }

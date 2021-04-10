@@ -14,7 +14,6 @@ import { RoleType } from '../../common/constants/role-type';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth, UUIDParam } from '../../decorators/http.decorators';
 import { TranslationService } from '../../shared/services/translation.service';
-import { RegisterDto } from '../auth/dto/register.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
 import { UsersPageOptionsDto } from './dto/users-page-options.dto';
@@ -70,7 +69,7 @@ export class UserController {
     @Put(':id')
     @Auth(RoleType.ADMIN)
     @HttpCode(HttpStatus.OK)
-    updateUser(@Body() user: RegisterDto, @UUIDParam('id') userId: string) {
+    updateUser(@Body() user: UpdateUserDto, @UUIDParam('id') userId: string) {
         return this.userService.updateUser(userId, user);
     }
 
