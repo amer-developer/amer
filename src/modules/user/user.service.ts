@@ -4,9 +4,10 @@ import { FindConditions, FindOneOptions } from 'typeorm';
 import { RoleType } from '../../common/constants/role-type';
 import { UserExistException } from '../../exceptions/user-exist.exception';
 import { UserNotFoundException } from '../../exceptions/user-not-found.exception';
-import { AwsS3Service } from '../../shared/services/aws-s3.service';
 import { ValidatorService } from '../../shared/services/validator.service';
 import { RegisterDto } from '../auth/dto/register.dto';
+import { LocationService } from '../location/location.service';
+import { ProfileService } from '../profile/profile.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersPageOptionsDto } from './dto/users-page-options.dto';
 import { UsersPageDto } from './dto/users-page.dto';
@@ -19,7 +20,8 @@ export class UserService {
     constructor(
         public readonly userRepository: UserRepository,
         public readonly validatorService: ValidatorService,
-        public readonly awsS3Service: AwsS3Service,
+        public readonly profileService: ProfileService,
+        public readonly locationService: LocationService,
     ) {}
 
     /**
@@ -68,29 +70,46 @@ export class UserService {
         return this.userRepository.save(user);
     }
 
-    async updateUser(
-        id: string,
-        updatedUser: UpdateUserDto,
-        profileID?: string,
-    ) {
+    async updateUser(id: string, updatedUser: UpdateUserDto) {
         this.logger.debug(
             `Updating user: ${id} to ${JSON.stringify(updatedUser)}`,
         );
-        const user = await this.findOne({ id }, { relations: ['profile'] });
+        const user = await this.findOne(
+            { id },
+            {
+                relations: [
+                    'profile',
+                    'location',
+                    'location.country',
+                    'location.city',
+                    'location.district',
+                ],
+            },
+        );
+        this.logger.debug(`Current user: ${JSON.stringify(user)}`);
+        let profile, location;
         if (!user) {
             throw new UserNotFoundException();
         }
-        if (!profileID) {
-            profileID = user.profile.id;
+        if (updatedUser.profile) {
+            profile = await this.profileService.createProfile(
+                updatedUser.profile,
+                user.profile?.id,
+            );
         }
-        const profile = profileID
-            ? { id: profileID, ...updatedUser.profile }
-            : { ...updatedUser.profile };
+        if (updatedUser.location) {
+            location = await this.locationService.createLocation(
+                updatedUser.location,
+                user.location?.id,
+            );
+        }
         delete updatedUser.profile;
+        delete updatedUser.location;
         return this.userRepository.save({
             id,
             profile,
-            ...user,
+            location,
+            ...updatedUser,
         });
     }
 

@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { FindConditions } from 'typeorm';
+import { FindConditions, FindOneOptions } from 'typeorm';
 
 import { ValidatorService } from '../../shared/services/validator.service';
 import { CountryService } from '../country/country.service';
@@ -23,8 +23,11 @@ export class CityService {
     /**
      * Find single city
      */
-    findOne(findData: FindConditions<CityEntity>): Promise<CityEntity> {
-        return this.cityRepository.findOne(findData);
+    findOne(
+        findData: FindConditions<CityEntity>,
+        findOpts?: FindOneOptions<CityEntity>,
+    ): Promise<CityEntity> {
+        return this.cityRepository.findOne(findData, findOpts);
     }
 
     async createCity(cityDto: CreateCityDto): Promise<CityDto> {

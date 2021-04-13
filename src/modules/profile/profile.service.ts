@@ -3,7 +3,7 @@ import { FindConditions } from 'typeorm';
 
 import { AwsS3Service } from '../../shared/services/aws-s3.service';
 import { ValidatorService } from '../../shared/services/validator.service';
-import { ProfileDto } from './dto/profile.dto';
+import { CreateProfileDto } from './dto/create-profile.dto';
 import { ProfilesPageDto } from './dto/profiles-page.dto';
 import { ProfilesPageOptionsDto } from './dto/profiles-page.options.dto';
 import { ProfileEntity } from './profile.entity';
@@ -25,8 +25,11 @@ export class ProfileService {
         return this.profileRepository.findOne(findData);
     }
 
-    async createProfile(profileDto: ProfileDto): Promise<ProfileEntity> {
-        const profile = this.profileRepository.create(profileDto);
+    async createProfile(
+        profileDto: CreateProfileDto,
+        id?: string,
+    ): Promise<ProfileEntity> {
+        const profile = this.profileRepository.create({ id, ...profileDto });
 
         return this.profileRepository.save(profile);
     }

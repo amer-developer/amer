@@ -12,6 +12,7 @@ import {
 import { RoleType } from '../../../common/constants/role-type';
 import { UserStatus } from '../../../common/constants/user-status';
 import { AbstractDto } from '../../../common/dto/AbstractDto';
+import { LocationDto } from '../../location/dto/location.dto';
 import { ProfileDto } from '../../profile/dto/profile.dto';
 import { UserEntity } from '../user.entity';
 
@@ -51,6 +52,12 @@ export class UserDto extends AbstractDto {
     @IsObject()
     profile: ProfileDto;
 
+    @Field(() => LocationDto, { nullable: true })
+    @ApiProperty({ required: false, type: () => LocationDto })
+    @IsOptional()
+    @IsObject()
+    location: LocationDto;
+
     constructor(user: UserEntity) {
         super(user);
         this.name = user.name;
@@ -60,6 +67,9 @@ export class UserDto extends AbstractDto {
         this.status = user.status;
         if (user.profile) {
             this.profile = user.profile.toDto();
+        }
+        if (user.location) {
+            this.location = user.location.toDto();
         }
     }
 }

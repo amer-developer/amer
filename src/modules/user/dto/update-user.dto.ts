@@ -2,9 +2,9 @@
 import { InputType, PartialType as GLPartialType } from '@nestjs/graphql';
 import { PartialType } from '@nestjs/swagger';
 
-import { UserDto } from './user.dto';
+import { RegisterDto } from '../../auth/dto/register.dto';
 
 @InputType()
-export class UpdateUserInput extends GLPartialType(UserDto) {}
+export class UpdateUserInput extends GLPartialType(RegisterDto) {}
 
-export class UpdateUserDto extends PartialType(UserDto) {}
+export class UpdateUserDto extends PartialType(RegisterDto) {}

@@ -3,6 +3,7 @@ import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { AbstractEntity } from '../../common/abstract.entity';
 import { RoleType } from '../../common/constants/role-type';
 import { UserStatus } from '../../common/constants/user-status';
+import { LocationEntity } from '../location/location.entity';
 import { ProfileEntity } from '../profile/profile.entity';
 import { UserDto } from './dto/user.dto';
 
@@ -29,6 +30,12 @@ export class UserEntity extends AbstractEntity<UserDto> {
     @OneToOne(() => ProfileEntity, (profile) => profile.user, { cascade: true })
     @JoinColumn()
     profile: ProfileEntity;
+
+    @OneToOne(() => LocationEntity, (location) => location.user, {
+        cascade: true,
+    })
+    @JoinColumn()
+    location: LocationEntity;
 
     dtoClass = UserDto;
 }

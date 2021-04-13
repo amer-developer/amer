@@ -66,13 +66,6 @@ export class UserController {
         return this.userService.getUser(userId);
     }
 
-    @Put(':id')
-    @Auth(RoleType.ADMIN)
-    @HttpCode(HttpStatus.OK)
-    updateUser(@Body() user: UpdateUserDto, @UUIDParam('id') userId: string) {
-        return this.userService.updateUser(userId, user);
-    }
-
     @Put('me')
     @Auth(RoleType.USER, RoleType.ADMIN)
     @HttpCode(HttpStatus.OK)
@@ -80,10 +73,13 @@ export class UserController {
         @AuthUser() currentUser: UserEntity,
         @Body() user: UpdateUserDto,
     ) {
-        return this.userService.updateUser(
-            currentUser.id,
-            user,
-            currentUser.profile?.id,
-        );
+        return this.userService.updateUser(currentUser.id, user);
+    }
+
+    @Put(':id')
+    @Auth(RoleType.ADMIN)
+    @HttpCode(HttpStatus.OK)
+    updateUser(@Body() user: UpdateUserDto, @UUIDParam('id') userId: string) {
+        return this.userService.updateUser(userId, user);
     }
 }

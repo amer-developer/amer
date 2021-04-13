@@ -20,7 +20,7 @@ export class CityDto extends AbstractDto {
     nameEN: string;
 
     @Field(() => CountryDto, { nullable: true })
-    @ApiProperty()
+    @ApiProperty({ type: () => CountryDto })
     @IsObject()
     @IsOptional()
     country: CountryDto;

@@ -1,5 +1,6 @@
 import { ArgsType, Field } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
     IsEmail,
     IsObject,
@@ -9,9 +10,8 @@ import {
     MinLength,
 } from 'class-validator';
 
+import { CreateLocationDto } from '../../location/dto/create-location.dto';
 import { CreateProfileDto } from '../../profile/dto/create-profile.dto';
-
-// import { Trim } from '../../../decorators/transforms.decorator';
 
 @ArgsType()
 export class RegisterDto {
@@ -39,8 +39,15 @@ export class RegisterDto {
     phone: string;
 
     @Field(() => CreateProfileDto, { nullable: true })
-    @ApiProperty({ required: false })
+    @ApiProperty({ required: false, type: () => CreateProfileDto })
     @IsOptional()
     @IsObject()
     profile: CreateProfileDto;
+
+    @Field(() => CreateLocationDto, { nullable: true })
+    @ApiProperty({ required: false, type: () => CreateLocationDto })
+    @IsOptional()
+    @Type(() => CreateLocationDto)
+    @IsObject({ each: true })
+    location: CreateLocationDto;
 }

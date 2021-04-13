@@ -11,6 +11,50 @@ type PageMetaDto {
   hasNextPage: Boolean!
 }
 
+type CityDto {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  nameAR: String!
+  nameEN: String!
+  country: CountryDto
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type CountryDto {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  code: String!
+  nameAR: String!
+  nameEN: String!
+  cities: [CityDto!]
+}
+
+type DistrictDto {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  nameAR: String!
+  nameEN: String!
+  city: CityDto!
+}
+
+type LocationDto {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  address1: String
+  address2: String
+  country: CountryDto
+  city: CityDto
+  district: DistrictDto
+}
+
 type ProfileDto {
   id: String!
   createdAt: DateTime!
@@ -18,11 +62,6 @@ type ProfileDto {
   bio: String
   avatar: String
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type UserDto {
   id: String!
@@ -34,6 +73,7 @@ type UserDto {
   phone: String!
   status: UserStatus!
   profile: ProfileDto
+  location: LocationDto
 }
 
 enum RoleType {
@@ -45,6 +85,31 @@ enum UserStatus {
   ACTIVE
   INACTIVE
   BLOCKED
+}
+
+type CountriesPageDto {
+  data: [CountryDto!]!
+  meta: PageMetaDto!
+}
+
+type CitiesPageDto {
+  data: [CityDto!]!
+  meta: PageMetaDto!
+}
+
+type DistrictsPageDto {
+  data: [DistrictDto!]!
+  meta: PageMetaDto!
+}
+
+type LocationsPageDto {
+  data: [LocationDto!]!
+  meta: PageMetaDto!
+}
+
+type ProfilesPageDto {
+  data: [ProfileDto!]!
+  meta: PageMetaDto!
 }
 
 type UsersPageDto {
@@ -60,35 +125,6 @@ type TokenRo {
 type LoginRo {
   user: UserDto!
   token: TokenRo!
-}
-
-type CountryDto {
-  id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  code: String!
-  nameAR: String!
-  nameEN: String!
-  cities: [CityDto!]
-}
-
-type CityDto {
-  id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  nameAR: String!
-  nameEN: String!
-  country: CountryDto
-}
-
-type CountriesPageDto {
-  data: [CountryDto!]!
-  meta: PageMetaDto!
-}
-
-type CitiesPageDto {
-  data: [CityDto!]!
-  meta: PageMetaDto!
 }
 
 type ImageDto {
@@ -111,21 +147,20 @@ type ImagesPageDto {
   meta: PageMetaDto!
 }
 
-type ProfilesPageDto {
-  data: [ProfileDto!]!
-  meta: PageMetaDto!
-}
-
 type Query {
   me: UserDto!
   users(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): UsersPageDto!
   user(id: String!): UserDto!
   profiles(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): ProfilesPageDto!
   profile(id: String!): ProfileDto!
-  countries(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): CountriesPageDto!
-  country(id: String!): CountryDto!
+  locations(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): LocationsPageDto!
+  location(id: String!): LocationDto!
   cities(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): CitiesPageDto!
   city(id: String!): CityDto!
+  countries(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): CountriesPageDto!
+  country(id: String!): CountryDto!
+  districts(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): DistrictsPageDto!
+  district(id: String!): DistrictDto!
   images(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): ImagesPageDto!
   image(id: String!): ImageDto!
 }
@@ -137,13 +172,18 @@ enum Order {
 
 type Mutation {
   login(phone: String!, password: String!): LoginRo!
-  register(name: String!, email: String, password: String!, phone: String!, profile: CreateProfileDto): UserDto!
-  createCountry(code: String!, nameAR: String!, nameEN: String!): CountryDto!
-  updateCountry(code: String, nameAR: String, nameEN: String, id: String!): CountryDto!
-  deleteCountry(id: String!): CountryDto!
+  register(name: String!, email: String, password: String!, phone: String!, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
+  updateLocation(id: String!): LocationDto!
+  deleteLocation(id: String!): LocationDto!
   createCity(nameAR: String!, nameEN: String!, countryCode: String!): CityDto!
   updateCity(nameAR: String, nameEN: String, countryCode: String, id: String!): CityDto!
   deleteCity(id: String!): CityDto!
+  createCountry(code: String!, nameAR: String!, nameEN: String!): CountryDto!
+  updateCountry(code: String, nameAR: String, nameEN: String, id: String!): CountryDto!
+  deleteCountry(id: String!): CountryDto!
+  createDistrict(nameAR: String!, nameEN: String!, cityID: String!): DistrictDto!
+  updateDistrict(nameAR: String, nameEN: String, cityID: String, id: String!): DistrictDto!
+  deleteDistrict(id: String!): DistrictDto!
   createImage(file: Upload, name: String, folder: ImageType!): ImageDto!
   updateImage(name: String, folder: ImageType, id: String!): ImageDto!
   deleteImage(id: String!): ImageDto!
@@ -152,6 +192,13 @@ type Mutation {
 input CreateProfileDto {
   bio: String
   avatar: String
+}
+
+input CreateLocationDto {
+  address1: String
+  address2: String
+  cityID: String!
+  districtID: String
 }
 
 """The `Upload` scalar type represents a file upload."""
