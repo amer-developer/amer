@@ -1,13 +1,17 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { FindConditions, FindOneOptions } from 'typeorm';
 
+import { OtpReason } from '../../common/constants/otp-reason';
 import { RoleType } from '../../common/constants/role-type';
+import { UserStatus } from '../../common/constants/user-status';
 import { UserExistException } from '../../exceptions/user-exist.exception';
 import { UserNotFoundException } from '../../exceptions/user-not-found.exception';
 import { ValidatorService } from '../../shared/services/validator.service';
 import { RegisterDto } from '../auth/dto/register.dto';
 import { LocationService } from '../location/location.service';
+import { OtpService } from '../otp/otp.service';
 import { ProfileService } from '../profile/profile.service';
+import { ActivateUserDto } from './dto/activate-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersPageOptionsDto } from './dto/users-page-options.dto';
 import { UsersPageDto } from './dto/users-page.dto';
@@ -22,6 +26,7 @@ export class UserService {
         public readonly validatorService: ValidatorService,
         public readonly profileService: ProfileService,
         public readonly locationService: LocationService,
+        public readonly otpService: OtpService,
     ) {}
 
     /**
@@ -84,6 +89,11 @@ export class UserService {
             ...userRegisterDto,
         });
 
+        await this.otpService.sendOtp({
+            phone: userRegisterDto.phone,
+            reason: OtpReason.REGISTER,
+        });
+
         return this.userRepository.save(user);
     }
 
@@ -127,6 +137,24 @@ export class UserService {
             profile,
             location,
             ...updatedUser,
+        });
+    }
+
+    async activateUser(activateDto: ActivateUserDto) {
+        this.logger.debug(`Activate user: ${activateDto.phone}`);
+        const user = await this.findOne({ phone: activateDto.phone });
+        this.logger.debug(`User: ${JSON.stringify(user)}`);
+        if (!user) {
+            throw new UserNotFoundException();
+        }
+        await this.otpService.validateOTP({
+            phone: activateDto.phone,
+            code: activateDto.otp,
+            reason: OtpReason.REGISTER,
+        });
+        return this.userRepository.save({
+            id: user.id,
+            status: UserStatus.ACTIVE,
         });
     }
 

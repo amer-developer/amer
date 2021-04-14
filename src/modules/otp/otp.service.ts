@@ -4,6 +4,7 @@ import { FindConditions, FindManyOptions, In, MoreThanOrEqual } from 'typeorm';
 import { OtpReason } from '../../common/constants/otp-reason';
 import { OtpStatus } from '../../common/constants/otp-status';
 import { OtpMaxAttemptException } from '../../exceptions/otp-attempt.exception';
+import { OtpExpiredException } from '../../exceptions/otp-expired.exception';
 import { OtpInvalidException } from '../../exceptions/otp-invalid.exception';
 import { OtpNotFoundException } from '../../exceptions/otp-not-found.exception';
 import { OtpRetryException } from '../../exceptions/otp-retry.exception';
@@ -26,6 +27,7 @@ export class OtpService {
     private maxRetry: number;
     private maxAttempt: number;
     private minBetween: number;
+    private expiryMinute: number;
 
     constructor(
         public readonly otpRepository: OtpRepository,
@@ -36,6 +38,7 @@ export class OtpService {
         this.maxRetry = this.configService.getNumber('OTP_MAX_RETRY');
         this.maxAttempt = this.configService.getNumber('OTP_MAX_ATTEMPT');
         this.minBetween = this.configService.getNumber('OTP_MIN_BETWEEN');
+        this.expiryMinute = this.configService.getNumber('OTP_MIN_EXPIRY');
     }
 
     /**
@@ -165,6 +168,16 @@ export class OtpService {
         this.logger.debug(`Found this otp ${JSON.stringify(otp)}`);
         if (!otp) {
             throw new OtpNotFoundException();
+        }
+        const expiryTime = UtilsService.utcDate(new Date());
+        expiryTime.setMinutes(expiryTime.getMinutes() + this.expiryMinute);
+        this.logger.debug(`Otp expiry date ${expiryTime.toString()}`);
+        if (expiryTime > otp.updatedAt) {
+            await this.otpRepository.save({
+                id: otp.id,
+                status: OtpStatus.EXPIRED,
+            });
+            throw new OtpExpiredException();
         }
         if (otp.attempt >= this.maxAttempt) {
             await this.otpRepository.save({

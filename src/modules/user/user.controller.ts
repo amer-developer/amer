@@ -13,6 +13,7 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RoleType } from '../../common/constants/role-type';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth, UUIDParam } from '../../decorators/http.decorators';
+import { ActivateUserDto } from './dto/activate-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
 import { UsersPageOptionsDto } from './dto/users-page-options.dto';
@@ -60,6 +61,12 @@ export class UserController {
         @Body() user: UpdateUserDto,
     ) {
         return this.userService.updateUser(currentUser.id, user);
+    }
+
+    @Put('activate')
+    @HttpCode(HttpStatus.OK)
+    activateUser(@Body() activateDto: ActivateUserDto) {
+        return this.userService.activateUser(activateDto);
     }
 
     @Put(':id')

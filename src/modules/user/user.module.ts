@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { LocationModule } from '../location/location.module';
+import { OtpModule } from '../otp/otp.module';
 import { ProfileModule } from '../profile/profile.module';
 import { UserController } from './user.controller';
 import { UserRepository } from './user.repository';
@@ -13,6 +14,7 @@ import { UserService } from './user.service';
         TypeOrmModule.forFeature([UserRepository]),
         ProfileModule,
         LocationModule,
+        OtpModule,
     ],
     controllers: [UserController],
     exports: [UserService],
