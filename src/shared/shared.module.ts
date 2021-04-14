@@ -3,19 +3,19 @@ import { JwtModule } from '@nestjs/jwt';
 
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { CloudinaryService } from './modules/cloudinary/cloudinary.service';
-import { AwsS3Service } from './services/aws-s3.service';
 import { ConfigService } from './services/config.service';
 import { GeneratorService } from './services/generator.service';
+import { SMSService } from './services/sms.service';
 import { TranslationService } from './services/translation.service';
 import { ValidatorService } from './services/validator.service';
 
 const providers = [
     ConfigService,
     ValidatorService,
-    AwsS3Service,
     GeneratorService,
     TranslationService,
     CloudinaryService,
+    SMSService,
 ];
 
 @Global()

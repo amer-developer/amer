@@ -148,6 +148,42 @@ type ImagesPageDto {
   meta: PageMetaDto!
 }
 
+type OtpDto {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  code: String!
+  reason: OtpReason!
+  attempt: Float!
+  retry: Float!
+  phone: String!
+  status: OtpStatus!
+}
+
+enum OtpReason {
+  REGISTER
+}
+
+enum OtpStatus {
+  SENT
+  VERIFIED
+  INVALID
+  TERMINATED
+}
+
+type OtpPageDto {
+  data: [OtpDto!]!
+  meta: PageMetaDto!
+}
+
+type OtpSentRo {
+  reason: OtpReason!
+  attempt: Float!
+  retry: Float!
+  phone: String!
+  status: OtpStatus!
+}
+
 type Query {
   me: UserDto!
   users(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): UsersPageDto!
@@ -164,6 +200,8 @@ type Query {
   district(id: String!): DistrictDto!
   images(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): ImagesPageDto!
   image(id: String!): ImageDto!
+  otps(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): OtpPageDto!
+  otp(id: String!): OtpDto!
 }
 
 enum Order {
@@ -188,6 +226,10 @@ type Mutation {
   createImage(file: Upload, name: String, folder: ImageType!): ImageDto!
   updateImage(name: String, folder: ImageType, id: String!): ImageDto!
   deleteImage(id: String!): ImageDto!
+  sendOtp(phone: String!, reason: OtpReason!): OtpSentRo!
+  validateOtp(code: String!, phone: String!, reason: OtpReason!): OtpSentRo!
+  updateOtp(phone: String, reason: OtpReason, id: String!): OtpDto!
+  deleteOtp(id: String!): OtpDto!
 }
 
 input CreateProfileDto {

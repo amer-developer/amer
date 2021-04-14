@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { FindConditions } from 'typeorm';
 
-import { AwsS3Service } from '../../shared/services/aws-s3.service';
 import { ValidatorService } from '../../shared/services/validator.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { ProfilesPageDto } from './dto/profiles-page.dto';
@@ -15,7 +14,6 @@ export class ProfileService {
     constructor(
         public readonly profileRepository: ProfileRepository,
         public readonly validatorService: ValidatorService,
-        public readonly awsS3Service: AwsS3Service,
     ) {}
 
     /**
