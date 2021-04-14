@@ -84,4 +84,8 @@ export class UtilsService {
     static getColumnName(alias: string, column: string) {
         return column.indexOf('.') > 0 ? column : `${alias}.${column}`;
     }
+
+    static utcDate(date: Date) {
+        return new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+    }
 }
