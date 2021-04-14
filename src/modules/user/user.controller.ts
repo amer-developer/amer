@@ -13,7 +13,6 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RoleType } from '../../common/constants/role-type';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth, UUIDParam } from '../../decorators/http.decorators';
-import { TranslationService } from '../../shared/services/translation.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
 import { UsersPageOptionsDto } from './dto/users-page-options.dto';
@@ -24,20 +23,7 @@ import { UserService } from './user.service';
 @Controller('users')
 @ApiTags('users')
 export class UserController {
-    constructor(
-        private userService: UserService,
-        private readonly translationService: TranslationService,
-    ) {}
-
-    @Get('admin')
-    @Auth(RoleType.BUYER)
-    @HttpCode(HttpStatus.OK)
-    async admin(@AuthUser() user: UserEntity): Promise<string> {
-        const translation = await this.translationService.translate(
-            'keywords.admin',
-        );
-        return `${translation} ${user.name}`;
-    }
+    constructor(private userService: UserService) {}
 
     @Get()
     @Auth(RoleType.BUYER, RoleType.ADMIN)

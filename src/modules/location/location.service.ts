@@ -46,7 +46,10 @@ export class LocationService {
         let district: DistrictEntity;
         if (locationDto.districtID) {
             district = await this.districtService.findOne({
-                id: locationDto.cityID,
+                id: locationDto.districtID,
+                city: {
+                    id: locationDto.cityID,
+                },
             });
             if (!district) {
                 throw new HttpException(

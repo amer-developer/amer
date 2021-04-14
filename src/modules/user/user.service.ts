@@ -65,7 +65,24 @@ export class UserService {
         if (checkExist) {
             throw new UserExistException();
         }
-        const user = this.userRepository.create(userRegisterDto);
+        let location, profile;
+        if (userRegisterDto.location) {
+            location = await this.locationService.createLocation(
+                userRegisterDto.location,
+            );
+            delete userRegisterDto.location;
+        }
+        if (userRegisterDto.profile) {
+            profile = await this.profileService.createProfile(
+                userRegisterDto.profile,
+            );
+            delete userRegisterDto.profile;
+        }
+        const user = this.userRepository.create({
+            location,
+            profile,
+            ...userRegisterDto,
+        });
 
         return this.userRepository.save(user);
     }
@@ -96,15 +113,15 @@ export class UserService {
                 updatedUser.profile,
                 user.profile?.id,
             );
+            delete updatedUser.profile;
         }
         if (updatedUser.location) {
             location = await this.locationService.createLocation(
                 updatedUser.location,
                 user.location?.id,
             );
+            delete updatedUser.location;
         }
-        delete updatedUser.profile;
-        delete updatedUser.location;
         return this.userRepository.save({
             id,
             profile,
