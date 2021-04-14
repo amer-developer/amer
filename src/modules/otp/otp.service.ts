@@ -169,10 +169,12 @@ export class OtpService {
         if (!otp) {
             throw new OtpNotFoundException();
         }
-        const expiryTime = UtilsService.utcDate(new Date());
+        const currentTime = UtilsService.utcDate(new Date());
+        const expiryTime = otp.updatedAt;
         expiryTime.setMinutes(expiryTime.getMinutes() + this.expiryMinute);
         this.logger.debug(`Otp expiry date ${expiryTime.toString()}`);
-        if (expiryTime > otp.updatedAt) {
+        this.logger.debug(`Current date ${currentTime.toString()}`);
+        if (currentTime > expiryTime) {
             await this.otpRepository.save({
                 id: otp.id,
                 status: OtpStatus.EXPIRED,
@@ -227,6 +229,7 @@ export class OtpService {
                 OtpStatus.SENT,
                 OtpStatus.INVALID,
                 OtpStatus.TERMINATED,
+                OtpStatus.EXPIRED,
             ]),
             createdAt: MoreThanOrEqual(currentDate),
         });
