@@ -21,7 +21,7 @@ export class ProfileController {
     constructor(private profileService: ProfileService) {}
 
     @Get()
-    @Auth(RoleType.USER)
+    @Auth(RoleType.BUYER)
     @HttpCode(HttpStatus.OK)
     @ApiResponse({
         status: HttpStatus.OK,
@@ -36,7 +36,7 @@ export class ProfileController {
     }
 
     @Get(':id')
-    @Auth(RoleType.USER)
+    @Auth(RoleType.BUYER)
     @HttpCode(HttpStatus.OK)
     @ApiResponse({
         status: HttpStatus.OK,

@@ -12,7 +12,7 @@ export class UserEntity extends AbstractEntity<UserDto> {
     @Column({ nullable: false })
     name: string;
 
-    @Column({ type: 'enum', enum: RoleType, default: RoleType.USER })
+    @Column({ type: 'enum', enum: RoleType, default: RoleType.BUYER })
     role: RoleType;
 
     @Column({ nullable: true })

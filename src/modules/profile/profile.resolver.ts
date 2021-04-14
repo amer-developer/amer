@@ -22,7 +22,7 @@ export class ProfileResolver {
     }
 
     @Query(() => ProfileDto, { name: 'profile' })
-    @Auth(RoleType.USER)
+    @Auth(RoleType.BUYER)
     getProfile(@Args('id') id: string): Promise<ProfileDto> {
         return this.profileService.getProfile(id);
     }

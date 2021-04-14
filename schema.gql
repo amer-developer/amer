@@ -77,7 +77,8 @@ type UserDto {
 }
 
 enum RoleType {
-  USER
+  BUYER
+  SELLER
   ADMIN
 }
 

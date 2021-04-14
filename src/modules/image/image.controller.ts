@@ -37,7 +37,7 @@ export class ImageController {
     constructor(private imageService: ImageService) {}
 
     @Post()
-    @Auth(RoleType.USER, RoleType.ADMIN)
+    @Auth(RoleType.BUYER, RoleType.ADMIN)
     @ApiConsumes('multipart/form-data')
     @HttpCode(HttpStatus.OK)
     @ApiFile([{ name: 'file' }])
@@ -62,7 +62,7 @@ export class ImageController {
     }
 
     @Post('bulk')
-    @Auth(RoleType.USER, RoleType.ADMIN)
+    @Auth(RoleType.BUYER, RoleType.ADMIN)
     @ApiConsumes('multipart/form-data')
     @HttpCode(HttpStatus.OK)
     @ApiFile([{ name: 'files' }])
