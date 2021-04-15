@@ -15,6 +15,7 @@ import { ImageModule } from './modules/image/image.module';
 import { LocationModule } from './modules/location/location.module';
 import { OtpModule } from './modules/otp/otp.module';
 import { ProfileModule } from './modules/profile/profile.module';
+import { SMSModule } from './modules/sms/sms.module';
 import { UserModule } from './modules/user/user.module';
 import { ConfigService } from './shared/services/config.service';
 import { SharedModule } from './shared/shared.module';
@@ -29,6 +30,7 @@ import { SharedModule } from './shared/shared.module';
         DistrictModule,
         LocationModule,
         ImageModule,
+        SMSModule,
         OtpModule,
         GraphQLModule.forRootAsync({
             imports: [SharedModule],

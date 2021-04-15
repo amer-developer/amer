@@ -108,6 +108,32 @@ type LocationsPageDto {
   meta: PageMetaDto!
 }
 
+type SMSDto {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  phone: String!
+  body: String!
+  status: SMSStatus!
+}
+
+enum SMSStatus {
+  INITIATED
+  SENT
+  FAILED
+}
+
+type SMSPageDto {
+  data: [SMSDto!]!
+  meta: PageMetaDto!
+}
+
+type SMSSentRo {
+  phone: String!
+  body: String!
+  status: SMSStatus!
+}
+
 type OtpDto {
   id: String!
   createdAt: DateTime!
@@ -201,6 +227,8 @@ type Query {
   district(id: String!): DistrictDto!
   otps(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): OtpPageDto!
   otp(id: String!): OtpDto!
+  smss(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): SMSPageDto!
+  sms(id: String!): SMSDto!
   images(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): ImagesPageDto!
   image(id: String!): ImageDto!
 }
@@ -228,6 +256,9 @@ type Mutation {
   validateOtp(code: String!, phone: String!, reason: OtpReason!): OtpSentRo!
   updateOtp(phone: String, reason: OtpReason, id: String!): OtpDto!
   deleteOtp(id: String!): OtpDto!
+  sendSMS(phone: String!, body: String!): SMSSentRo!
+  updateSMS(phone: String, body: String, id: String!): SMSDto!
+  deleteSMS(id: String!): SMSDto!
   createImage(file: Upload, name: String, folder: ImageType!): ImageDto!
   updateImage(name: String, folder: ImageType, id: String!): ImageDto!
   deleteImage(id: String!): ImageDto!

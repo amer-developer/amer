@@ -3,8 +3,8 @@ import { HttpService, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from './config.service';
 
 @Injectable()
-export class SMSService {
-    private logger = new Logger(SMSService.name);
+export class ExternalSMSService {
+    private logger = new Logger(ExternalSMSService.name);
 
     private baseURL: string;
     private apiKey: string;

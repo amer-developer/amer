@@ -8,9 +8,9 @@ import { OtpExpiredException } from '../../exceptions/otp-expired.exception';
 import { OtpInvalidException } from '../../exceptions/otp-invalid.exception';
 import { OtpNotFoundException } from '../../exceptions/otp-not-found.exception';
 import { OtpRetryException } from '../../exceptions/otp-retry.exception';
+import { SMSService } from '../../modules/sms/sms.service';
 import { UtilsService } from '../../providers/utils.service';
 import { ConfigService } from '../../shared/services/config.service';
-import { SMSService } from '../../shared/services/sms.service';
 import { ValidatorService } from '../../shared/services/validator.service';
 import { CreateOtpDto } from './dto/create-otp.dto';
 import { OtpPageOptionsDto } from './dto/otp-page-options.dto';
@@ -74,10 +74,10 @@ export class OtpService {
                 throw new OtpRetryException();
             }
         }
-        const isSMSSent = await this.smsService.sendSMS(
-            otpDto.phone,
-            `Pin Code is: ${code}`,
-        );
+        const isSMSSent = await this.smsService.sendSMS({
+            phone: otpDto.phone,
+            body: `Pin Code is: ${code}`,
+        });
 
         if (!isSMSSent) {
             throw new HttpException(

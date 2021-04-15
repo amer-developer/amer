@@ -5,7 +5,7 @@ import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { CloudinaryService } from './modules/cloudinary/cloudinary.service';
 import { ConfigService } from './services/config.service';
 import { GeneratorService } from './services/generator.service';
-import { SMSService } from './services/sms.service';
+import { ExternalSMSService } from './services/sms.service';
 import { TranslationService } from './services/translation.service';
 import { ValidatorService } from './services/validator.service';
 
@@ -15,7 +15,7 @@ const providers = [
     GeneratorService,
     TranslationService,
     CloudinaryService,
-    SMSService,
+    ExternalSMSService,
 ];
 
 @Global()
