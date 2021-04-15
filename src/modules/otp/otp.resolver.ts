@@ -5,73 +5,76 @@ import { RoleType } from '../../common/constants/role-type';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth } from '../../decorators/http.decorators';
 import { UserEntity } from '../user/user.entity';
-import { CreateOtpDto } from './dto/create-otp.dto';
-import { OtpPageOptionsDto } from './dto/otp-page-options.dto';
-import { OtpPageDto } from './dto/otp-page.dto';
-import { OtpSentRo } from './dto/otp-send.ro';
-import { OtpDto } from './dto/otp.dto';
-import { UpdateOtpInput } from './dto/update-otp.dto';
-import { ValidateOtpDto } from './dto/validate-otp.dto';
-import { OtpService } from './otp.service';
+import { CreateOTPDto } from './dto/create-otp.dto';
+import { OTPPageOptionsDto } from './dto/otp-page-options.dto';
+import { OTPPageDto } from './dto/otp-page.dto';
+import { OTPSentRo } from './dto/otp-send.ro';
+import { OTPDto } from './dto/otp.dto';
+import { UpdateOTPInput } from './dto/update-otp.dto';
+import { ValidateOTPDto } from './dto/validate-otp.dto';
+import { OTPService } from './otp.service';
 
-@Resolver(() => OtpDto)
-export class OtpResolver {
-    private logger = new Logger(OtpResolver.name);
+@Resolver(() => OTPDto)
+export class OTPResolver {
+    private logger = new Logger(OTPResolver.name);
 
-    constructor(private otpService: OtpService) {}
+    constructor(private otpService: OTPService) {}
 
-    @Mutation(() => OtpSentRo, { name: 'sendOtp' })
-    async sendOtp(
+    @Mutation(() => OTPSentRo, { name: 'sendOTP' })
+    @Auth(RoleType.ADMIN)
+    sendOTP(
         @Args()
-        otp: CreateOtpDto,
-    ): Promise<OtpSentRo> {
+        otp: CreateOTPDto,
+    ): Promise<OTPSentRo> {
         this.logger.debug(`Creating a new ot, otp ${JSON.stringify(otp)}`);
-        return this.otpService.sendOtp(otp);
+        return this.otpService.sendOTP(otp);
     }
 
-    @Mutation(() => OtpSentRo, { name: 'validateOtp' })
-    async validateOtp(
+    @Mutation(() => OTPSentRo, { name: 'validateOTP' })
+    validateOTP(
         @Args()
-        otp: ValidateOtpDto,
-    ): Promise<OtpSentRo> {
+        otp: ValidateOTPDto,
+    ): Promise<OTPSentRo> {
         this.logger.debug(`Validating an otp, otp ${JSON.stringify(otp)}`);
         return this.otpService.validateOTP(otp);
     }
-    @Query(() => OtpPageDto, { name: 'otps' })
-    getOtpList(
-        @Args()
-        pageOptionsDto: OtpPageOptionsDto,
-    ): Promise<OtpPageDto> {
-        return this.otpService.getOtpList(pageOptionsDto);
-    }
-
-    @Query(() => OtpDto, { name: 'otp' })
-    getOtp(@Args('id', new ParseUUIDPipe()) id: string): Promise<OtpDto> {
-        return this.otpService.getOtp(id);
-    }
-
-    @Mutation(() => OtpDto, { name: 'updateOtp' })
+    @Query(() => OTPPageDto, { name: 'otpList' })
     @Auth(RoleType.ADMIN)
-    updateOtp(
+    getOTPList(
+        @Args()
+        pageOptionsDto: OTPPageOptionsDto,
+    ): Promise<OTPPageDto> {
+        return this.otpService.getOTPList(pageOptionsDto);
+    }
+
+    @Query(() => OTPDto, { name: 'otp' })
+    @Auth(RoleType.ADMIN)
+    getOTP(@Args('id', new ParseUUIDPipe()) id: string): Promise<OTPDto> {
+        return this.otpService.getOTP(id);
+    }
+
+    @Mutation(() => OTPDto, { name: 'updateOTP' })
+    @Auth(RoleType.ADMIN)
+    updateOTP(
         @Args('id', new ParseUUIDPipe()) id: string,
-        @Args() otp: UpdateOtpInput,
+        @Args() otp: UpdateOTPInput,
         @AuthUser() user: UserEntity,
-    ): Promise<OtpDto> {
+    ): Promise<OTPDto> {
         this.logger.debug(
             `Update otp, user: ${user.id}, otp ${JSON.stringify(otp)}`,
         );
 
-        return this.otpService.updateOtp(id, otp);
+        return this.otpService.updateOTP(id, otp);
     }
 
-    @Mutation(() => OtpDto, { name: 'deleteOtp' })
+    @Mutation(() => OTPDto, { name: 'deleteOTP' })
     @Auth(RoleType.ADMIN)
-    deleteOtp(
+    deleteOTP(
         @Args('id', new ParseUUIDPipe()) id: string,
         @AuthUser() user: UserEntity,
-    ): Promise<OtpDto> {
+    ): Promise<OTPDto> {
         this.logger.debug(`Delete otp, user: ${user.id}, otp: ${id}`);
 
-        return this.otpService.deleteOtp(id);
+        return this.otpService.deleteOTP(id);
     }
 }

@@ -3,19 +3,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { SharedModule } from '../../shared/shared.module';
 import { SMSModule } from '../sms/sms.module';
-import { OtpController } from './otp.controller';
-import { OtpRepository } from './otp.repository';
-import { OtpResolver } from './otp.resolver';
-import { OtpService } from './otp.service';
+import { OTPController } from './otp.controller';
+import { OTPRepository } from './otp.repository';
+import { OTPResolver } from './otp.resolver';
+import { OTPService } from './otp.service';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([OtpRepository]),
+        TypeOrmModule.forFeature([OTPRepository]),
         SMSModule,
         SharedModule,
     ],
-    controllers: [OtpController],
-    exports: [OtpService],
-    providers: [OtpService, OtpResolver],
+    controllers: [OTPController],
+    exports: [OTPService],
+    providers: [OTPService, OTPResolver],
 })
-export class OtpModule {}
+export class OTPModule {}

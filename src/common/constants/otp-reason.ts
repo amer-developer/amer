@@ -1,9 +1,9 @@
 import { registerEnumType } from '@nestjs/graphql';
 
-export enum OtpReason {
+export enum OTPReason {
     REGISTER = 'REGISTER',
 }
 
-registerEnumType(OtpReason, {
-    name: 'OtpReason',
+registerEnumType(OTPReason, {
+    name: 'OTPReason',
 });

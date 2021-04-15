@@ -134,23 +134,23 @@ type SMSSentRo {
   status: SMSStatus!
 }
 
-type OtpDto {
+type OTPDto {
   id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   code: String!
-  reason: OtpReason!
+  reason: OTPReason!
   attempt: Float!
   retry: Float!
   phone: String!
-  status: OtpStatus!
+  status: OTPStatus!
 }
 
-enum OtpReason {
+enum OTPReason {
   REGISTER
 }
 
-enum OtpStatus {
+enum OTPStatus {
   SENT
   VERIFIED
   INVALID
@@ -158,17 +158,17 @@ enum OtpStatus {
   TERMINATED
 }
 
-type OtpPageDto {
-  data: [OtpDto!]!
+type OTPPageDto {
+  data: [OTPDto!]!
   meta: PageMetaDto!
 }
 
-type OtpSentRo {
-  reason: OtpReason!
+type OTPSentRo {
+  reason: OTPReason!
   attempt: Float!
   retry: Float!
   phone: String!
-  status: OtpStatus!
+  status: OTPStatus!
 }
 
 type ProfilesPageDto {
@@ -225,9 +225,9 @@ type Query {
   country(id: String!): CountryDto!
   districts(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): DistrictsPageDto!
   district(id: String!): DistrictDto!
-  otps(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): OtpPageDto!
-  otp(id: String!): OtpDto!
-  smss(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): SMSPageDto!
+  otpList(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): OTPPageDto!
+  otp(id: String!): OTPDto!
+  smsList(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): SMSPageDto!
   sms(id: String!): SMSDto!
   images(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): ImagesPageDto!
   image(id: String!): ImageDto!
@@ -252,10 +252,10 @@ type Mutation {
   createDistrict(nameAR: String!, nameEN: String!, cityID: String!): DistrictDto!
   updateDistrict(nameAR: String, nameEN: String, cityID: String, id: String!): DistrictDto!
   deleteDistrict(id: String!): DistrictDto!
-  sendOtp(phone: String!, reason: OtpReason!): OtpSentRo!
-  validateOtp(code: String!, phone: String!, reason: OtpReason!): OtpSentRo!
-  updateOtp(phone: String, reason: OtpReason, id: String!): OtpDto!
-  deleteOtp(id: String!): OtpDto!
+  sendOTP(phone: String!, reason: OTPReason!): OTPSentRo!
+  validateOTP(code: String!, phone: String!, reason: OTPReason!): OTPSentRo!
+  updateOTP(phone: String, reason: OTPReason, id: String!): OTPDto!
+  deleteOTP(id: String!): OTPDto!
   sendSMS(phone: String!, body: String!): SMSSentRo!
   updateSMS(phone: String, body: String, id: String!): SMSDto!
   deleteSMS(id: String!): SMSDto!

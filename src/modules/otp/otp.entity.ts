@@ -1,17 +1,17 @@
 import { Column, Entity } from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
-import { OtpReason } from '../../common/constants/otp-reason';
-import { OtpStatus } from '../../common/constants/otp-status';
-import { OtpDto } from './dto/otp.dto';
+import { OTPReason } from '../../common/constants/otp-reason';
+import { OTPStatus } from '../../common/constants/otp-status';
+import { OTPDto } from './dto/otp.dto';
 
 @Entity({ name: 'otp' })
-export class OtpEntity extends AbstractEntity<OtpDto> {
+export class OTPEntity extends AbstractEntity<OTPDto> {
     @Column({ nullable: false })
     code: string;
 
-    @Column({ type: 'enum', enum: OtpReason, nullable: true })
-    reason: OtpReason;
+    @Column({ type: 'enum', enum: OTPReason, nullable: true })
+    reason: OTPReason;
 
     @Column({ nullable: false, default: 0 })
     attempt: number;
@@ -21,13 +21,13 @@ export class OtpEntity extends AbstractEntity<OtpDto> {
 
     @Column({
         type: 'enum',
-        enum: OtpStatus,
+        enum: OTPStatus,
         nullable: false,
     })
-    status: OtpStatus;
+    status: OTPStatus;
 
     @Column({ nullable: false })
     phone: string;
 
-    dtoClass = OtpDto;
+    dtoClass = OTPDto;
 }

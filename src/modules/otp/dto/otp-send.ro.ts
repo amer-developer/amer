@@ -2,14 +2,14 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsPhoneNumber } from 'class-validator';
 
-import { OtpReason } from '../../../common/constants/otp-reason';
-import { OtpStatus } from '../../../common/constants/otp-status';
+import { OTPReason } from '../../../common/constants/otp-reason';
+import { OTPStatus } from '../../../common/constants/otp-status';
 
 @ObjectType()
-export class OtpSentRo {
-    @Field(() => OtpReason)
-    @ApiProperty({ required: true, enum: OtpReason })
-    reason: OtpReason;
+export class OTPSentRo {
+    @Field(() => OTPReason)
+    @ApiProperty({ required: true, enum: OTPReason })
+    reason: OTPReason;
 
     @Field({ nullable: false })
     @ApiProperty()
@@ -24,16 +24,16 @@ export class OtpSentRo {
     @IsPhoneNumber('ZZ')
     phone: string;
 
-    @Field(() => OtpStatus)
-    @ApiProperty({ required: true, enum: OtpStatus })
-    status: OtpStatus;
+    @Field(() => OTPStatus)
+    @ApiProperty({ required: true, enum: OTPStatus })
+    status: OTPStatus;
 
     constructor(
-        reason: OtpReason,
+        reason: OTPReason,
         attempt: number,
         retry: number,
         phone: string,
-        status: OtpStatus,
+        status: OTPStatus,
     ) {
         this.reason = reason;
         this.attempt = attempt;

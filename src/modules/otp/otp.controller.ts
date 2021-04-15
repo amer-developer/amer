@@ -17,34 +17,35 @@ import { RoleType } from '../../common/constants/role-type';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth, UUIDParam } from '../../decorators/http.decorators';
 import { UserEntity } from '../user/user.entity';
-import { CreateOtpDto } from './dto/create-otp.dto';
-import { OtpPageOptionsDto } from './dto/otp-page-options.dto';
-import { OtpPageDto } from './dto/otp-page.dto';
-import { OtpSentRo } from './dto/otp-send.ro';
-import { OtpDto } from './dto/otp.dto';
-import { UpdateOtpDto } from './dto/update-otp.dto';
-import { ValidateOtpDto } from './dto/validate-otp.dto';
-import { OtpService } from './otp.service';
+import { CreateOTPDto } from './dto/create-otp.dto';
+import { OTPPageOptionsDto } from './dto/otp-page-options.dto';
+import { OTPPageDto } from './dto/otp-page.dto';
+import { OTPSentRo } from './dto/otp-send.ro';
+import { OTPDto } from './dto/otp.dto';
+import { UpdateOTPDto } from './dto/update-otp.dto';
+import { ValidateOTPDto } from './dto/validate-otp.dto';
+import { OTPService } from './otp.service';
 
 @Controller('otp')
 @ApiTags('otp')
-export class OtpController {
-    private logger = new Logger(OtpController.name);
-    constructor(private otpService: OtpService) {}
+export class OTPController {
+    private logger = new Logger(OTPController.name);
+    constructor(private otpService: OTPService) {}
 
     @Post()
     @HttpCode(HttpStatus.OK)
+    @Auth(RoleType.ADMIN)
     @ApiResponse({
         status: HttpStatus.OK,
         description: 'New otp',
-        type: OtpSentRo,
+        type: OTPSentRo,
     })
-    async sendOtp(
+    async sendOTP(
         @Body()
-        otp: CreateOtpDto,
-    ): Promise<OtpSentRo> {
+        otp: CreateOTPDto,
+    ): Promise<OTPSentRo> {
         this.logger.debug(`Creating a new otp, otp ${JSON.stringify(otp)}`);
-        return this.otpService.sendOtp(otp);
+        return this.otpService.sendOTP(otp);
     }
 
     @Post('validate')
@@ -52,12 +53,13 @@ export class OtpController {
     @ApiResponse({
         status: HttpStatus.OK,
         description: 'New otp',
-        type: OtpSentRo,
+        type: OTPSentRo,
     })
+    @Auth(RoleType.ADMIN)
     async validate(
         @Body()
-        otp: ValidateOtpDto,
-    ): Promise<OtpSentRo> {
+        otp: ValidateOTPDto,
+    ): Promise<OTPSentRo> {
         this.logger.debug(`Validating an otp, otp ${JSON.stringify(otp)}`);
         return this.otpService.validateOTP(otp);
     }
@@ -67,13 +69,14 @@ export class OtpController {
     @ApiResponse({
         status: HttpStatus.OK,
         description: 'Get otp list',
-        type: OtpPageDto,
+        type: OTPPageDto,
     })
-    getOtpList(
+    @Auth(RoleType.ADMIN)
+    getOTPList(
         @Query(new ValidationPipe({ transform: true }))
-        pageOptionsDto: OtpPageOptionsDto,
-    ): Promise<OtpPageDto> {
-        return this.otpService.getOtpList(pageOptionsDto);
+        pageOptionsDto: OTPPageOptionsDto,
+    ): Promise<OTPPageDto> {
+        return this.otpService.getOTPList(pageOptionsDto);
     }
 
     @Get(':id')
@@ -81,10 +84,11 @@ export class OtpController {
     @ApiResponse({
         status: HttpStatus.OK,
         description: 'Get a otp',
-        type: OtpDto,
+        type: OTPDto,
     })
-    getOtp(@UUIDParam('id') otpId: string): Promise<OtpDto> {
-        return this.otpService.getOtp(otpId);
+    @Auth(RoleType.ADMIN)
+    getOTP(@UUIDParam('id') otpId: string): Promise<OTPDto> {
+        return this.otpService.getOTP(otpId);
     }
 
     @Put(':id')
@@ -93,18 +97,19 @@ export class OtpController {
     @ApiResponse({
         status: HttpStatus.OK,
         description: 'Updated otp',
-        type: OtpDto,
+        type: OTPDto,
     })
-    updateOtp(
+    @Auth(RoleType.ADMIN)
+    updateOTP(
         @UUIDParam('id') otpId: string,
-        @Body() otp: UpdateOtpDto,
+        @Body() otp: UpdateOTPDto,
         @AuthUser() user: UserEntity,
-    ): Promise<OtpDto> {
+    ): Promise<OTPDto> {
         this.logger.debug(
             `Update otp, user: ${user.id}, otp ${JSON.stringify(otp)}`,
         );
 
-        return this.otpService.updateOtp(otpId, otp);
+        return this.otpService.updateOTP(otpId, otp);
     }
 
     @Delete(':id')
@@ -113,14 +118,15 @@ export class OtpController {
     @ApiResponse({
         status: HttpStatus.OK,
         description: 'Deleted otp',
-        type: OtpDto,
+        type: OTPDto,
     })
-    deleteOtp(
+    @Auth(RoleType.ADMIN)
+    deleteOTP(
         @UUIDParam('id') id: string,
         @AuthUser() user: UserEntity,
-    ): Promise<OtpDto> {
+    ): Promise<OTPDto> {
         this.logger.debug(`Delete otp, user: ${user.id}, otp: ${id}`);
 
-        return this.otpService.deleteOtp(id);
+        return this.otpService.deleteOTP(id);
     }
 }

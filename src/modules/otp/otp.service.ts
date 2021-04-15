@@ -1,36 +1,36 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { FindConditions, FindManyOptions, In, MoreThanOrEqual } from 'typeorm';
 
-import { OtpReason } from '../../common/constants/otp-reason';
-import { OtpStatus } from '../../common/constants/otp-status';
-import { OtpMaxAttemptException } from '../../exceptions/otp-attempt.exception';
-import { OtpExpiredException } from '../../exceptions/otp-expired.exception';
-import { OtpInvalidException } from '../../exceptions/otp-invalid.exception';
-import { OtpNotFoundException } from '../../exceptions/otp-not-found.exception';
-import { OtpRetryException } from '../../exceptions/otp-retry.exception';
+import { OTPReason } from '../../common/constants/otp-reason';
+import { OTPStatus } from '../../common/constants/otp-status';
+import { OTPMaxAttemptException } from '../../exceptions/otp-attempt.exception';
+import { OTPExpiredException } from '../../exceptions/otp-expired.exception';
+import { OTPInvalidException } from '../../exceptions/otp-invalid.exception';
+import { OTPNotFoundException } from '../../exceptions/otp-not-found.exception';
+import { OTPRetryException } from '../../exceptions/otp-retry.exception';
 import { SMSService } from '../../modules/sms/sms.service';
 import { UtilsService } from '../../providers/utils.service';
 import { ConfigService } from '../../shared/services/config.service';
 import { ValidatorService } from '../../shared/services/validator.service';
-import { CreateOtpDto } from './dto/create-otp.dto';
-import { OtpPageOptionsDto } from './dto/otp-page-options.dto';
-import { OtpPageDto } from './dto/otp-page.dto';
-import { OtpSentRo } from './dto/otp-send.ro';
-import { UpdateOtpDto } from './dto/update-otp.dto';
-import { ValidateOtpDto } from './dto/validate-otp.dto';
-import { OtpEntity } from './otp.entity';
-import { OtpRepository } from './otp.repository';
+import { CreateOTPDto } from './dto/create-otp.dto';
+import { OTPPageOptionsDto } from './dto/otp-page-options.dto';
+import { OTPPageDto } from './dto/otp-page.dto';
+import { OTPSentRo } from './dto/otp-send.ro';
+import { UpdateOTPDto } from './dto/update-otp.dto';
+import { ValidateOTPDto } from './dto/validate-otp.dto';
+import { OTPEntity } from './otp.entity';
+import { OTPRepository } from './otp.repository';
 
 @Injectable()
-export class OtpService {
-    private logger = new Logger(OtpService.name);
+export class OTPService {
+    private logger = new Logger(OTPService.name);
     private maxRetry: number;
     private maxAttempt: number;
     private minBetween: number;
     private expiryMinute: number;
 
     constructor(
-        public readonly otpRepository: OtpRepository,
+        public readonly otpRepository: OTPRepository,
         public readonly validatorService: ValidatorService,
         public readonly smsService: SMSService,
         private configService: ConfigService,
@@ -44,18 +44,18 @@ export class OtpService {
     /**
      * Find single otp
      */
-    findOne(findData: FindConditions<OtpEntity>): Promise<OtpEntity> {
+    findOne(findData: FindConditions<OTPEntity>): Promise<OTPEntity> {
         return this.otpRepository.findOne(findData);
     }
 
     /**
      * Find single otp
      */
-    find(findData: FindManyOptions<OtpEntity>): Promise<OtpEntity[]> {
+    find(findData: FindManyOptions<OTPEntity>): Promise<OTPEntity[]> {
         return this.otpRepository.find(findData);
     }
 
-    async sendOtp(otpDto: CreateOtpDto): Promise<OtpSentRo> {
+    async sendOTP(otpDto: CreateOTPDto): Promise<OTPSentRo> {
         const previousOTP = await this.isOTOAlreadySent(
             otpDto.phone,
             otpDto.reason,
@@ -71,7 +71,7 @@ export class OtpService {
                 `OTP Date after adding ${otpDateAdjusted.toString()} current date: ${currentDate.toString()}`,
             );
             if (otpDateAdjusted >= currentDate) {
-                throw new OtpRetryException();
+                throw new OTPRetryException();
             }
         }
         const isSMSSent = await this.smsService.sendSMS({
@@ -90,7 +90,7 @@ export class OtpService {
             ...otpDto,
             code,
             id: previousOTP?.id,
-            status: OtpStatus.SENT,
+            status: OTPStatus.SENT,
             retry: previousOTP
                 ? (previousOTP.retry + 1) % (this.maxRetry + 1)
                 : 0,
@@ -98,7 +98,7 @@ export class OtpService {
 
         const savedEntity = await this.otpRepository.save(otp);
 
-        return new OtpSentRo(
+        return new OTPSentRo(
             savedEntity.reason,
             savedEntity.attempt,
             savedEntity.retry,
@@ -107,7 +107,7 @@ export class OtpService {
         );
     }
 
-    async getOtpList(pageOptionsDto: OtpPageOptionsDto): Promise<OtpPageDto> {
+    async getOTPList(pageOptionsDto: OTPPageOptionsDto): Promise<OTPPageDto> {
         this.logger.debug(JSON.stringify(pageOptionsDto));
         let queryBuilder = this.otpRepository.createQueryBuilder('otp');
 
@@ -124,16 +124,16 @@ export class OtpService {
         return items.toPageDto(pageMetaDto);
     }
 
-    async getOtp(id: string) {
+    async getOTP(id: string) {
         const otpEntity = await this.findOne({ id });
 
         return otpEntity.toDto();
     }
 
-    async updateOtp(id: string, otp: UpdateOtpDto) {
+    async updateOTP(id: string, otp: UpdateOTPDto) {
         const otpEntity = await this.findOne({ id });
         if (!otpEntity) {
-            throw new HttpException('Otp not found', HttpStatus.NOT_FOUND);
+            throw new HttpException('OTP not found', HttpStatus.NOT_FOUND);
         }
 
         await this.otpRepository.save({
@@ -141,16 +141,16 @@ export class OtpService {
             ...otp,
         });
 
-        let updatedOtp = otpEntity.toDto();
-        updatedOtp = { ...updatedOtp, ...otp };
+        let updatedOTP = otpEntity.toDto();
+        updatedOTP = { ...updatedOTP, ...otp };
 
-        return updatedOtp;
+        return updatedOTP;
     }
 
-    async deleteOtp(id: string) {
+    async deleteOTP(id: string) {
         const otpEntity = await this.findOne({ id });
         if (!otpEntity) {
-            throw new HttpException('Otp not found', HttpStatus.NOT_FOUND);
+            throw new HttpException('OTP not found', HttpStatus.NOT_FOUND);
         }
         await this.otpRepository.delete({
             id: otpEntity.id,
@@ -158,37 +158,37 @@ export class OtpService {
         return otpEntity.toDto();
     }
 
-    public async validateOTP(validateOTP: ValidateOtpDto) {
+    public async validateOTP(validateOTP: ValidateOTPDto) {
         const { code, phone, reason } = validateOTP;
         const otp = await this.findOne({
             phone,
             reason,
-            status: In([OtpStatus.SENT, OtpStatus.INVALID]),
+            status: In([OTPStatus.SENT, OTPStatus.INVALID]),
         });
         this.logger.debug(`Found this otp ${JSON.stringify(otp)}`);
         if (!otp) {
-            throw new OtpNotFoundException();
+            throw new OTPNotFoundException();
         }
         const currentTime = UtilsService.utcDate(new Date());
         const expiryTime = otp.updatedAt;
         expiryTime.setMinutes(expiryTime.getMinutes() + this.expiryMinute);
-        this.logger.debug(`Otp expiry date ${expiryTime.toString()}`);
+        this.logger.debug(`OTP expiry date ${expiryTime.toString()}`);
         this.logger.debug(`Current date ${currentTime.toString()}`);
         if (currentTime > expiryTime) {
             await this.otpRepository.save({
                 id: otp.id,
-                status: OtpStatus.EXPIRED,
+                status: OTPStatus.EXPIRED,
             });
-            throw new OtpExpiredException();
+            throw new OTPExpiredException();
         }
         if (otp.attempt >= this.maxAttempt) {
             await this.otpRepository.save({
                 id: otp.id,
-                status: OtpStatus.TERMINATED,
+                status: OTPStatus.TERMINATED,
             });
-            throw new OtpMaxAttemptException();
+            throw new OTPMaxAttemptException();
         }
-        let updatedOtp = await this.otpRepository.save({
+        let updatedOTP = await this.otpRepository.save({
             id: otp.id,
             attempt: otp.attempt + 1,
         });
@@ -196,45 +196,45 @@ export class OtpService {
             await this.otpRepository.save({
                 id: otp.id,
                 status:
-                    updatedOtp.attempt === this.maxAttempt
-                        ? OtpStatus.TERMINATED
-                        : OtpStatus.INVALID,
+                    updatedOTP.attempt === this.maxAttempt
+                        ? OTPStatus.TERMINATED
+                        : OTPStatus.INVALID,
             });
-            this.logger.debug(`Updated otp: ${JSON.stringify(updatedOtp)}`);
-            if (updatedOtp.attempt === this.maxAttempt) {
-                throw new OtpMaxAttemptException();
+            this.logger.debug(`Updated otp: ${JSON.stringify(updatedOTP)}`);
+            if (updatedOTP.attempt === this.maxAttempt) {
+                throw new OTPMaxAttemptException();
             }
-            throw new OtpInvalidException();
+            throw new OTPInvalidException();
         }
-        updatedOtp = await this.otpRepository.save({
+        updatedOTP = await this.otpRepository.save({
             id: otp.id,
-            status: OtpStatus.VERIFIED,
+            status: OTPStatus.VERIFIED,
         });
-        return new OtpSentRo(
+        return new OTPSentRo(
             otp.reason,
-            updatedOtp.attempt,
+            updatedOTP.attempt,
             otp.retry,
             otp.phone,
-            updatedOtp.status,
+            updatedOTP.status,
         );
     }
 
-    private async isOTOAlreadySent(phone: string, reason: OtpReason) {
+    private async isOTOAlreadySent(phone: string, reason: OTPReason) {
         const currentDate = UtilsService.utcDate(new Date());
         currentDate.setHours(0, 0, 0, 0);
         const otp = await this.findOne({
             phone,
             reason,
             status: In([
-                OtpStatus.SENT,
-                OtpStatus.INVALID,
-                OtpStatus.TERMINATED,
-                OtpStatus.EXPIRED,
+                OTPStatus.SENT,
+                OTPStatus.INVALID,
+                OTPStatus.TERMINATED,
+                OTPStatus.EXPIRED,
             ]),
             createdAt: MoreThanOrEqual(currentDate),
         });
         if (otp && otp.retry >= this.maxRetry) {
-            throw new OtpMaxAttemptException();
+            throw new OTPMaxAttemptException();
         }
         return otp;
     }

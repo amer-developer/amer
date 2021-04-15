@@ -3,20 +3,20 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsPhoneNumber } from 'class-validator';
 
-import { OtpReason } from '../../../common/constants/otp-reason';
-import { OtpStatus } from '../../../common/constants/otp-status';
+import { OTPReason } from '../../../common/constants/otp-reason';
+import { OTPStatus } from '../../../common/constants/otp-status';
 import { AbstractDto } from '../../../common/dto/AbstractDto';
-import { OtpEntity } from '../otp.entity';
+import { OTPEntity } from '../otp.entity';
 
 @ObjectType()
-export class OtpDto extends AbstractDto {
+export class OTPDto extends AbstractDto {
     @Field({ nullable: false })
     @ApiProperty()
     code: string;
 
-    @Field(() => OtpReason)
-    @ApiProperty({ required: true, enum: OtpReason })
-    reason: OtpReason;
+    @Field(() => OTPReason)
+    @ApiProperty({ required: true, enum: OTPReason })
+    reason: OTPReason;
 
     @Field({ nullable: false })
     @ApiProperty()
@@ -31,11 +31,11 @@ export class OtpDto extends AbstractDto {
     @IsPhoneNumber('ZZ')
     phone: string;
 
-    @Field(() => OtpStatus)
-    @ApiProperty({ required: true, enum: OtpStatus })
-    status: OtpStatus;
+    @Field(() => OTPStatus)
+    @ApiProperty({ required: true, enum: OTPStatus })
+    status: OTPStatus;
 
-    constructor(otp: OtpEntity) {
+    constructor(otp: OTPEntity) {
         super(otp);
         this.code = otp.code;
         this.reason = otp.reason;

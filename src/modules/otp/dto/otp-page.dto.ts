@@ -2,22 +2,22 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { PageMetaDto } from '../../../common/dto/PageMetaDto';
-import { OtpDto } from './otp.dto';
+import { OTPDto } from './otp.dto';
 
 @ObjectType()
-export class OtpPageDto {
-    @Field(() => [OtpDto])
+export class OTPPageDto {
+    @Field(() => [OTPDto])
     @ApiProperty({
-        type: OtpDto,
+        type: OTPDto,
         isArray: true,
     })
-    readonly data: OtpDto[];
+    readonly data: OTPDto[];
 
     @Field(() => PageMetaDto)
     @ApiProperty()
     readonly meta: PageMetaDto;
 
-    constructor(data: OtpDto[], meta: PageMetaDto) {
+    constructor(data: OTPDto[], meta: PageMetaDto) {
         this.data = data;
         this.meta = meta;
     }

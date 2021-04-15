@@ -32,6 +32,7 @@ export class SMSController {
     constructor(private smsService: SMSService) {}
 
     @Post()
+    @Auth(RoleType.ADMIN)
     @HttpCode(HttpStatus.OK)
     @ApiResponse({
         status: HttpStatus.OK,
@@ -47,6 +48,7 @@ export class SMSController {
     }
 
     @Get()
+    @Auth(RoleType.ADMIN)
     @HttpCode(HttpStatus.OK)
     @ApiResponse({
         status: HttpStatus.OK,
@@ -61,6 +63,7 @@ export class SMSController {
     }
 
     @Get(':id')
+    @Auth(RoleType.ADMIN)
     @HttpCode(HttpStatus.OK)
     @ApiResponse({
         status: HttpStatus.OK,

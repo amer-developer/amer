@@ -3,10 +3,10 @@ import { ArgsType, Field } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsPhoneNumber, IsString } from 'class-validator';
 
-import { OtpReason } from '../../../common/constants/otp-reason';
+import { OTPReason } from '../../../common/constants/otp-reason';
 
 @ArgsType()
-export class ValidateOtpDto {
+export class ValidateOTPDto {
     @Field()
     @ApiProperty()
     @IsString()
@@ -17,8 +17,8 @@ export class ValidateOtpDto {
     @IsPhoneNumber('ZZ')
     phone: string;
 
-    @Field(() => OtpReason)
-    @ApiProperty({ required: true, enum: OtpReason })
-    @IsEnum(OtpReason)
-    reason: OtpReason;
+    @Field(() => OTPReason)
+    @ApiProperty({ required: true, enum: OTPReason })
+    @IsEnum(OTPReason)
+    reason: OTPReason;
 }

@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { FindConditions, FindOneOptions } from 'typeorm';
 
-import { OtpReason } from '../../common/constants/otp-reason';
+import { OTPReason } from '../../common/constants/otp-reason';
 import { RoleType } from '../../common/constants/role-type';
 import { UserStatus } from '../../common/constants/user-status';
 import { UserExistException } from '../../exceptions/user-exist.exception';
@@ -9,7 +9,7 @@ import { UserNotFoundException } from '../../exceptions/user-not-found.exception
 import { ValidatorService } from '../../shared/services/validator.service';
 import { RegisterDto } from '../auth/dto/register.dto';
 import { LocationService } from '../location/location.service';
-import { OtpService } from '../otp/otp.service';
+import { OTPService } from '../otp/otp.service';
 import { ProfileService } from '../profile/profile.service';
 import { ActivateUserDto } from './dto/activate-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -26,7 +26,7 @@ export class UserService {
         public readonly validatorService: ValidatorService,
         public readonly profileService: ProfileService,
         public readonly locationService: LocationService,
-        public readonly otpService: OtpService,
+        public readonly otpService: OTPService,
     ) {}
 
     /**
@@ -89,9 +89,9 @@ export class UserService {
             ...userRegisterDto,
         });
 
-        await this.otpService.sendOtp({
+        await this.otpService.sendOTP({
             phone: userRegisterDto.phone,
-            reason: OtpReason.REGISTER,
+            reason: OTPReason.REGISTER,
         });
 
         return this.userRepository.save(user);
@@ -150,7 +150,7 @@ export class UserService {
         await this.otpService.validateOTP({
             phone: activateDto.phone,
             code: activateDto.otp,
-            reason: OtpReason.REGISTER,
+            reason: OTPReason.REGISTER,
         });
         return this.userRepository.save({
             id: user.id,

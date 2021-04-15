@@ -20,6 +20,7 @@ export class SMSResolver {
     constructor(private smsService: SMSService) {}
 
     @Mutation(() => SMSSentRo, { name: 'sendSMS' })
+    @Auth(RoleType.ADMIN)
     async sendSMS(
         @Args()
         sms: CreateSMSDto,
@@ -28,7 +29,8 @@ export class SMSResolver {
         return this.smsService.sendSMS(sms);
     }
 
-    @Query(() => SMSPageDto, { name: 'smss' })
+    @Query(() => SMSPageDto, { name: 'smsList' })
+    @Auth(RoleType.ADMIN)
     getSMSList(
         @Args()
         pageOptionsDto: SMSPageOptionsDto,
@@ -37,6 +39,7 @@ export class SMSResolver {
     }
 
     @Query(() => SMSDto, { name: 'sms' })
+    @Auth(RoleType.ADMIN)
     getSMS(@Args('id', new ParseUUIDPipe()) id: string): Promise<SMSDto> {
         return this.smsService.getSMS(id);
     }

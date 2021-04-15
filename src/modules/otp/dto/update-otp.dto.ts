@@ -2,9 +2,9 @@
 import { ArgsType, PartialType as GLPartialType } from '@nestjs/graphql';
 import { PartialType } from '@nestjs/swagger';
 
-import { CreateOtpDto } from './create-otp.dto';
+import { CreateOTPDto } from './create-otp.dto';
 
 @ArgsType()
-export class UpdateOtpInput extends GLPartialType(CreateOtpDto) {}
+export class UpdateOTPInput extends GLPartialType(CreateOTPDto) {}
 
-export class UpdateOtpDto extends PartialType(CreateOtpDto) {}
+export class UpdateOTPDto extends PartialType(CreateOTPDto) {}

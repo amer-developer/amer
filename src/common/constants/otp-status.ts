@@ -1,6 +1,6 @@
 import { registerEnumType } from '@nestjs/graphql';
 
-export enum OtpStatus {
+export enum OTPStatus {
     SENT = 'SENT',
     VERIFIED = 'VERIFIED',
     INVALID = 'INVALID',
@@ -8,6 +8,6 @@ export enum OtpStatus {
     TERMINATED = 'TERMINATED',
 }
 
-registerEnumType(OtpStatus, {
-    name: 'OtpStatus',
+registerEnumType(OTPStatus, {
+    name: 'OTPStatus',
 });

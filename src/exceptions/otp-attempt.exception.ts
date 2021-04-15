@@ -2,7 +2,7 @@
 
 import { BadRequestException } from '@nestjs/common';
 
-export class OtpMaxAttemptException extends BadRequestException {
+export class OTPMaxAttemptException extends BadRequestException {
     constructor(error?: string) {
         super('error.otp_max_attempt', error);
     }
