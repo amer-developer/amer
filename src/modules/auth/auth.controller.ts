@@ -17,9 +17,13 @@ import { UserDto } from '../user/dto/user.dto';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { ChangePasswordRo } from './dto/change-password.ro';
 import { LoginDto } from './dto/login.dto';
 import { LoginRo } from './dto/login.ro';
 import { RegisterDto } from './dto/register.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ResetPasswordRo } from './dto/reset-password.ro';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -49,6 +53,30 @@ export class AuthController {
         const createdUser = await this.userService.createUser(userRegisterDto);
 
         return createdUser.toDto();
+    }
+
+    @Post('reset-password')
+    @HttpCode(HttpStatus.OK)
+    @ApiOkResponse({
+        type: ResetPasswordRo,
+        description: 'Successfully reseted',
+    })
+    async resetPassword(
+        @Body() resetPasswordDto: ResetPasswordDto,
+    ): Promise<ResetPasswordRo> {
+        return this.userService.resetPassword(resetPasswordDto);
+    }
+
+    @Post('change-password')
+    @HttpCode(HttpStatus.OK)
+    @ApiOkResponse({
+        type: ChangePasswordRo,
+        description: 'Successfully changed password',
+    })
+    async changePassword(
+        @Body() changePasswordDto: ChangePasswordDto,
+    ): Promise<ChangePasswordRo> {
+        return this.authService.changePassword(changePasswordDto);
     }
 
     @Get('me')

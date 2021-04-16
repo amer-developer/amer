@@ -7,7 +7,11 @@ import { UserStatus } from '../../common/constants/user-status';
 import { UserExistException } from '../../exceptions/user-exist.exception';
 import { UserNotFoundException } from '../../exceptions/user-not-found.exception';
 import { ValidatorService } from '../../shared/services/validator.service';
+import { ChangePasswordDto } from '../auth/dto/change-password.dto';
+import { ChangePasswordRo } from '../auth/dto/change-password.ro';
 import { RegisterDto } from '../auth/dto/register.dto';
+import { ResetPasswordDto } from '../auth/dto/reset-password.dto';
+import { ResetPasswordRo } from '../auth/dto/reset-password.ro';
 import { LocationService } from '../location/location.service';
 import { OTPService } from '../otp/otp.service';
 import { ProfileService } from '../profile/profile.service';
@@ -83,15 +87,16 @@ export class UserService {
             );
             delete userRegisterDto.profile;
         }
+
+        void this.otpService.sendOTP({
+            phone: userRegisterDto.phone,
+            reason: OTPReason.REGISTER,
+        });
+
         const user = this.userRepository.create({
             location,
             profile,
             ...userRegisterDto,
-        });
-
-        await this.otpService.sendOTP({
-            phone: userRegisterDto.phone,
-            reason: OTPReason.REGISTER,
         });
 
         return this.userRepository.save(user);
@@ -184,5 +189,45 @@ export class UserService {
         }
 
         return userEntity.toDto();
+    }
+
+    async resetPassword(resetPasswordDto: ResetPasswordDto) {
+        const userEntity = await this.findOne({
+            phone: resetPasswordDto.phone,
+        });
+        if (!userEntity) {
+            throw new UserNotFoundException();
+        }
+
+        await this.otpService.sendOTP({
+            phone: resetPasswordDto.phone,
+            reason: OTPReason.RESET_PASSWORD,
+        });
+
+        return new ResetPasswordRo('password.reset');
+    }
+
+    async changePassword(changePasswordDto: ChangePasswordDto) {
+        const userEntity = await this.findOne({
+            phone: changePasswordDto.phone,
+        });
+        if (!userEntity) {
+            throw new UserNotFoundException();
+        }
+
+        if (changePasswordDto.otp) {
+            await this.otpService.validateOTP({
+                code: changePasswordDto.otp,
+                phone: changePasswordDto.phone,
+                reason: OTPReason.RESET_PASSWORD,
+            });
+        }
+
+        await this.userRepository.save({
+            id: userEntity.id,
+            password: changePasswordDto.password,
+        });
+
+        return new ChangePasswordRo('password.changed');
     }
 }

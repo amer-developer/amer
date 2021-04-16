@@ -148,6 +148,7 @@ type OTPDto {
 
 enum OTPReason {
   REGISTER
+  RESET_PASSWORD
 }
 
 enum OTPStatus {
@@ -179,6 +180,14 @@ type ProfilesPageDto {
 type UsersPageDto {
   data: [UserDto!]!
   meta: PageMetaDto!
+}
+
+type ChangePasswordRo {
+  message: String!
+}
+
+type ResetPasswordRo {
+  message: String!
 }
 
 type TokenRo {
@@ -241,6 +250,8 @@ enum Order {
 type Mutation {
   login(phone: String!, password: String!): LoginRo!
   register(name: String!, email: String, password: String!, phone: String!, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
+  resetPassword(phone: String!): ResetPasswordRo!
+  changePassword(phone: String!, otp: String!, oldPassword: String!, password: String!): ChangePasswordRo!
   updateLocation(id: String!): LocationDto!
   deleteLocation(id: String!): LocationDto!
   createCity(nameAR: String!, nameEN: String!, countryCode: String!): CityDto!

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { UserStatus } from '../../common/constants/user-status';
+import { PasswordChangeInputException } from '../../exceptions/password-change-input.exception';
 import { UserBlockedException } from '../../exceptions/user-blocked.exception';
 import { UserInactiveException } from '../../exceptions/user-inactive.exception';
 import { UserNotFoundException } from '../../exceptions/user-not-found.exception';
@@ -10,6 +11,7 @@ import { ConfigService } from '../../shared/services/config.service';
 import { UserDto } from '../user/dto/user.dto';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { LoginDto } from './dto/login.dto';
 import { TokenRo } from './dto/token.ro';
 
@@ -49,5 +51,27 @@ export class AuthService {
             throw new UserBlockedException();
         }
         return user;
+    }
+
+    async changePassword(changePasswordDto: ChangePasswordDto) {
+        const { oldPassword, otp, phone } = changePasswordDto;
+        if ((oldPassword && otp) || (!oldPassword && !otp)) {
+            throw new PasswordChangeInputException();
+        }
+        const userEntity = await this.userService.findOne({
+            phone,
+        });
+        if (!userEntity) {
+            throw new UserNotFoundException();
+        }
+
+        if (changePasswordDto.oldPassword) {
+            await this.validateUser({
+                phone,
+                password: changePasswordDto.oldPassword,
+            });
+        }
+
+        return this.userService.changePassword(changePasswordDto);
     }
 }
