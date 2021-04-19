@@ -34,7 +34,6 @@ export class OTPController {
 
     @Post()
     @HttpCode(HttpStatus.OK)
-    @Auth(RoleType.ADMIN)
     @ApiResponse({
         status: HttpStatus.OK,
         description: 'New otp',

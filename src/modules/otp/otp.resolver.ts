@@ -21,7 +21,6 @@ export class OTPResolver {
     constructor(private otpService: OTPService) {}
 
     @Mutation(() => OTPSentRo, { name: 'sendOTP' })
-    @Auth(RoleType.ADMIN)
     sendOTP(
         @Args()
         otp: CreateOTPDto,
