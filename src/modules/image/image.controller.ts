@@ -37,7 +37,6 @@ export class ImageController {
     constructor(private imageService: ImageService) {}
 
     @Post()
-    @Auth(RoleType.BUYER, RoleType.ADMIN)
     @ApiConsumes('multipart/form-data')
     @HttpCode(HttpStatus.OK)
     @ApiFile([{ name: 'file' }])
@@ -54,7 +53,7 @@ export class ImageController {
         @UploadedFile() file: IFile,
     ): Promise<ImageDto> {
         this.logger.debug(
-            `Creating a new image, user: ${user.id}, image ${JSON.stringify(
+            `Creating a new image, user: ${user?.id}, image ${JSON.stringify(
                 image,
             )}`,
         );
