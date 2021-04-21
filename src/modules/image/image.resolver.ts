@@ -21,17 +21,15 @@ export class ImageResolver {
     constructor(private imageService: ImageService) {}
 
     @Mutation(() => ImageDto, { name: 'createImage' })
-    @Auth(RoleType.ADMIN)
     createImage(
         @Args()
         image: CreateImageDto,
-
         @Args('file', { type: () => GraphQLUpload, nullable: true })
         file: IFile,
         @AuthUser() user: UserEntity,
     ): Promise<ImageDto> {
         this.logger.debug(
-            `Creating a new image, user: ${user.id}, image ${JSON.stringify(
+            `Creating a new image, user: ${user?.id}, image ${JSON.stringify(
                 image,
             )}`,
         );
