@@ -185,13 +185,11 @@ type UsersPageDto {
 type ChangePasswordRo {
   phone: String!
   message: String!
-  phone: String!
 }
 
 type ResetPasswordRo {
   phone: String!
   message: String!
-  phone: String!
 }
 
 type TokenRo {
@@ -255,7 +253,7 @@ type Mutation {
   login(phone: String!, password: String!): LoginRo!
   register(name: String!, email: String, password: String!, phone: String!, profile: CreateProfileDto, location: CreateLocationDto): LoginRo!
   resetPassword(phone: String!): ResetPasswordRo!
-  changePassword(phone: String!, otp: String!, oldPassword: String!, password: String!): ChangePasswordRo!
+  changePassword(phone: String!, otp: String, oldPassword: String, password: String!): ChangePasswordRo!
   createUser(name: String!, email: String, password: String!, phone: String!, status: UserStatus!, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
   me(name: String, email: String, password: String, phone: String, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
   activate(phone: String!, otp: String!): UserDto!
