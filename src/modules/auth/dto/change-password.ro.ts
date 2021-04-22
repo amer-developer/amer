@@ -16,7 +16,7 @@ export class ChangePasswordRo {
     message: string;
 
     constructor(message: string, phone: string) {
-        this.phone = phone;
         this.message = message;
+        this.phone = phone;
     }
 }

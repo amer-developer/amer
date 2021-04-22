@@ -30,11 +30,12 @@ export class AuthResolver {
         return new LoginRo(userEntity.toDto(), token);
     }
 
-    @Mutation(() => UserDto, { name: 'register' })
-    async userRegister(@Args() userRegisterDto: RegisterDto): Promise<UserDto> {
+    @Mutation(() => LoginRo, { name: 'register' })
+    async userRegister(@Args() userRegisterDto: RegisterDto): Promise<LoginRo> {
         const createdUser = await this.userService.createUser(userRegisterDto);
 
-        return createdUser.toDto();
+        const token = await this.authService.createToken(createdUser);
+        return new LoginRo(createdUser.toDto(), token);
     }
 
     @Mutation(() => ResetPasswordRo, { name: 'resetPassword' })

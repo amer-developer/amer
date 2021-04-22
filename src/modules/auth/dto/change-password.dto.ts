@@ -14,13 +14,13 @@ export class ChangePasswordDto {
     @IsPhoneNumber('ZZ')
     phone: string;
 
-    @Field()
+    @Field({ nullable: true })
     @ApiProperty({ required: false })
     @IsOptional()
     @IsString()
     otp: string;
 
-    @Field()
+    @Field({ nullable: true })
     @ApiProperty({ required: false })
     @IsOptional()
     @IsString()

@@ -97,7 +97,7 @@ export class UserService {
         return this.userRepository.save(user);
     }
 
-    sentOtp(phone: string, reason: OTPReason) {
+    sendOtp(phone: string, reason: OTPReason) {
         return this.otpService.sendOTP({
             phone,
             reason,
@@ -232,7 +232,7 @@ export class UserService {
 
         return new ChangePasswordRo(
             'password.changed',
-            changePasswordDto.phone,
+            changePasswordDto.password,
         );
     }
 }

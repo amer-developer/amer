@@ -185,11 +185,13 @@ type UsersPageDto {
 type ChangePasswordRo {
   phone: String!
   message: String!
+  phone: String!
 }
 
 type ResetPasswordRo {
   phone: String!
   message: String!
+  phone: String!
 }
 
 type TokenRo {
@@ -251,7 +253,7 @@ enum Order {
 
 type Mutation {
   login(phone: String!, password: String!): LoginRo!
-  register(name: String!, email: String, password: String!, phone: String!, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
+  register(name: String!, email: String, password: String!, phone: String!, profile: CreateProfileDto, location: CreateLocationDto): LoginRo!
   resetPassword(phone: String!): ResetPasswordRo!
   changePassword(phone: String!, otp: String!, oldPassword: String!, password: String!): ChangePasswordRo!
   createUser(name: String!, email: String, password: String!, phone: String!, status: UserStatus!, profile: CreateProfileDto, location: CreateLocationDto): UserDto!

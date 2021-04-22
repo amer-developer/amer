@@ -49,12 +49,13 @@ export class AuthController {
 
     @Post('register')
     @HttpCode(HttpStatus.OK)
-    @ApiOkResponse({ type: UserDto, description: 'Successfully Registered' })
-    async userRegister(@Body() userRegisterDto: RegisterDto): Promise<UserDto> {
+    @ApiOkResponse({ type: LoginRo, description: 'Successfully Registered' })
+    async userRegister(@Body() userRegisterDto: RegisterDto): Promise<LoginRo> {
         const createdUser = await this.userService.createUser(userRegisterDto);
-        void this.userService.sentOtp(createdUser.phone, OTPReason.REGISTER);
+        void this.userService.sendOtp(createdUser.phone, OTPReason.REGISTER);
 
-        return createdUser.toDto();
+        const token = await this.authService.createToken(createdUser);
+        return new LoginRo(createdUser.toDto(), token);
     }
 
     @Post('reset-password')
