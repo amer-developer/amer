@@ -204,7 +204,7 @@ export class UserService {
             reason: OTPReason.RESET_PASSWORD,
         });
 
-        return new ResetPasswordRo('password.reset');
+        return new ResetPasswordRo('password.reset', resetPasswordDto.phone);
     }
 
     async changePassword(changePasswordDto: ChangePasswordDto) {
@@ -228,6 +228,9 @@ export class UserService {
             password: changePasswordDto.password,
         });
 
-        return new ChangePasswordRo('password.changed');
+        return new ChangePasswordRo(
+            'password.changed',
+            changePasswordDto.password,
+        );
     }
 }
