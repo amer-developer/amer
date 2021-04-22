@@ -88,11 +88,6 @@ export class UserService {
             delete userRegisterDto.profile;
         }
 
-        void this.otpService.sendOTP({
-            phone: userRegisterDto.phone,
-            reason: OTPReason.REGISTER,
-        });
-
         const user = this.userRepository.create({
             location,
             profile,
@@ -100,6 +95,13 @@ export class UserService {
         });
 
         return this.userRepository.save(user);
+    }
+
+    sentOtp(phone: string, reason: OTPReason) {
+        return this.otpService.sendOTP({
+            phone,
+            reason,
+        });
     }
 
     async updateUser(id: string, updatedUser: UpdateUserDto) {
@@ -204,7 +206,7 @@ export class UserService {
             reason: OTPReason.RESET_PASSWORD,
         });
 
-        return new ResetPasswordRo('password.reset');
+        return new ResetPasswordRo('password.reset', resetPasswordDto.phone);
     }
 
     async changePassword(changePasswordDto: ChangePasswordDto) {
@@ -228,6 +230,9 @@ export class UserService {
             password: changePasswordDto.password,
         });
 
-        return new ChangePasswordRo('password.changed');
+        return new ChangePasswordRo(
+            'password.changed',
+            changePasswordDto.phone,
+        );
     }
 }

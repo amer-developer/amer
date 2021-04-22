@@ -4,6 +4,7 @@ import {
     Get,
     HttpCode,
     HttpStatus,
+    Post,
     Put,
     Query,
     ValidationPipe,
@@ -14,6 +15,7 @@ import { RoleType } from '../../common/constants/role-type';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth, UUIDParam } from '../../decorators/http.decorators';
 import { ActivateUserDto } from './dto/activate-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
 import { UsersPageOptionsDto } from './dto/users-page-options.dto';
@@ -25,6 +27,18 @@ import { UserService } from './user.service';
 @ApiTags('users')
 export class UserController {
     constructor(private userService: UserService) {}
+
+    @Post('')
+    @HttpCode(HttpStatus.OK)
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: UserDto,
+        description: 'Successfully Created',
+    })
+    async userRegister(@Body() createUserDto: CreateUserDto): Promise<UserDto> {
+        const createdUser = await this.userService.createUser(createUserDto);
+        return createdUser.toDto();
+    }
 
     @Get()
     @Auth(RoleType.BUYER, RoleType.ADMIN)
@@ -54,7 +68,7 @@ export class UserController {
     }
 
     @Put('me')
-    @Auth(RoleType.BUYER, RoleType.ADMIN)
+    @Auth(RoleType.BUYER, RoleType.SELLER, RoleType.ADMIN)
     @HttpCode(HttpStatus.OK)
     updateCurrentUser(
         @AuthUser() currentUser: UserEntity,

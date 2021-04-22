@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
+import { OTPReason } from '../../common/constants/otp-reason';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { AuthGuard } from '../../guards/auth.guard';
 import { AuthUserInterceptor } from '../../interceptors/auth-user-interceptor.service';
@@ -51,6 +52,7 @@ export class AuthController {
     @ApiOkResponse({ type: UserDto, description: 'Successfully Registered' })
     async userRegister(@Body() userRegisterDto: RegisterDto): Promise<UserDto> {
         const createdUser = await this.userService.createUser(userRegisterDto);
+        void this.userService.sentOtp(createdUser.phone, OTPReason.REGISTER);
 
         return createdUser.toDto();
     }
