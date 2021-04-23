@@ -1,5 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
+import { OTPReason } from '../../common/constants/otp-reason';
 import { RoleType } from '../../common/constants/role-type';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth } from '../../decorators/http.decorators';
@@ -33,6 +34,7 @@ export class AuthResolver {
     @Mutation(() => LoginRo, { name: 'register' })
     async userRegister(@Args() userRegisterDto: RegisterDto): Promise<LoginRo> {
         const createdUser = await this.userService.createUser(userRegisterDto);
+        void this.userService.sendOtp(createdUser.phone, OTPReason.REGISTER);
 
         const token = await this.authService.createToken(createdUser);
         return new LoginRo(createdUser.toDto(), token);
