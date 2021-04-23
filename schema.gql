@@ -255,9 +255,9 @@ type Mutation {
   resetPassword(phone: String!): ResetPasswordRo!
   changePassword(phone: String!, otp: String, oldPassword: String, password: String!): ChangePasswordRo!
   createUser(name: String!, email: String, password: String!, phone: String!, status: UserStatus!, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
-  me(name: String, email: String, password: String, phone: String, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
+  me(name: String, email: String, password: String, phone: String, status: UserStatus, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
   activate(phone: String!, otp: String!): UserDto!
-  updateUser(id: String!, name: String, email: String, password: String, phone: String, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
+  updateUser(id: String!, name: String, email: String, password: String, phone: String, status: UserStatus, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
   updateLocation(id: String!): LocationDto!
   deleteLocation(id: String!): LocationDto!
   createCity(nameAR: String!, nameEN: String!, countryCode: String!): CityDto!
