@@ -4,6 +4,7 @@ import { FindConditions, FindOneOptions } from 'typeorm';
 import { OTPReason } from '../../common/constants/otp-reason';
 import { RoleType } from '../../common/constants/role-type';
 import { UserStatus } from '../../common/constants/user-status';
+import { GetOptionsDto } from '../../common/dto/GetOptionsDto';
 import { UserExistException } from '../../exceptions/user-exist.exception';
 import { UserNotFoundException } from '../../exceptions/user-not-found.exception';
 import { ValidatorService } from '../../shared/services/validator.service';
@@ -184,8 +185,11 @@ export class UserService {
         return items.toPageDto(pageMetaDto);
     }
 
-    async getUser(id: string) {
-        const userEntity = await this.findOne({ id });
+    async getUser(id: string, options?: GetOptionsDto) {
+        const userEntity = await this.findOne(
+            { id },
+            { relations: options.includes },
+        );
         if (!userEntity) {
             throw new UserNotFoundException();
         }

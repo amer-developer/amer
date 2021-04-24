@@ -225,7 +225,7 @@ type ImagesPageDto {
 type Query {
   me: UserDto!
   users(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): UsersPageDto!
-  user(id: String!): UserDto!
+  user(include: String, id: String!): UserDto!
   profiles(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): ProfilesPageDto!
   profile(id: String!): ProfileDto!
   locations(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): LocationsPageDto!

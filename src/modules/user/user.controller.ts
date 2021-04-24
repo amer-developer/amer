@@ -12,6 +12,7 @@ import {
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { RoleType } from '../../common/constants/role-type';
+import { GetOptionsDto } from '../../common/dto/GetOptionsDto';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth, UUIDParam } from '../../decorators/http.decorators';
 import { ActivateUserDto } from './dto/activate-user.dto';
@@ -29,6 +30,7 @@ export class UserController {
     constructor(private userService: UserService) {}
 
     @Post('')
+    @Auth(RoleType.ADMIN)
     @HttpCode(HttpStatus.OK)
     @ApiResponse({
         status: HttpStatus.OK,
@@ -41,7 +43,6 @@ export class UserController {
     }
 
     @Get()
-    @Auth(RoleType.BUYER, RoleType.ADMIN)
     @HttpCode(HttpStatus.OK)
     @ApiResponse({
         status: HttpStatus.OK,
@@ -56,15 +57,18 @@ export class UserController {
     }
 
     @Get(':id')
-    @Auth(RoleType.BUYER, RoleType.ADMIN)
     @HttpCode(HttpStatus.OK)
     @ApiResponse({
         status: HttpStatus.OK,
         description: 'Get a user',
         type: UserDto,
     })
-    getUser(@UUIDParam('id') userId: string): Promise<UserDto> {
-        return this.userService.getUser(userId);
+    getUser(
+        @UUIDParam('id') userId: string,
+        @Query(new ValidationPipe({ transform: true }))
+        getOptionsDto: GetOptionsDto,
+    ): Promise<UserDto> {
+        return this.userService.getUser(userId, getOptionsDto);
     }
 
     @Put('me')

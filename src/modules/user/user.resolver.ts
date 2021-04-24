@@ -1,6 +1,7 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 import { RoleType } from '../../common/constants/role-type';
+import { GetOptionsDto } from '../../common/dto/GetOptionsDto';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth } from '../../decorators/http.decorators';
 import { ActivateUserDto } from './dto/activate-user.dto';
@@ -17,6 +18,7 @@ export class UserResolver {
     constructor(private userService: UserService) {}
 
     @Mutation(() => UserDto, { name: 'createUser' })
+    @Auth(RoleType.ADMIN)
     async userRegister(@Args() createUserDto: CreateUserDto): Promise<UserDto> {
         const createdUser = await this.userService.createUser(createUserDto);
         return createdUser.toDto();
@@ -31,9 +33,12 @@ export class UserResolver {
     }
 
     @Query(() => UserDto, { name: 'user' })
-    @Auth(RoleType.ADMIN, RoleType.BUYER)
-    getUser(@Args('id') id: string): Promise<UserDto> {
-        return this.userService.getUser(id);
+    getUser(
+        @Args('id') id: string,
+        @Args()
+        getOptionsDto: GetOptionsDto,
+    ): Promise<UserDto> {
+        return this.userService.getUser(id, getOptionsDto);
     }
 
     @Mutation(() => UserDto, { name: 'me' })
