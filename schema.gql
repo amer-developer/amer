@@ -177,6 +177,11 @@ type ProfilesPageDto {
   meta: PageMetaDto!
 }
 
+type ActivateUserRO {
+  user: UserDto!
+  otp: OTPSentRo!
+}
+
 type UsersPageDto {
   data: [UserDto!]!
   meta: PageMetaDto!
@@ -185,6 +190,7 @@ type UsersPageDto {
 type ChangePasswordRo {
   phone: String!
   message: String!
+  otp: OTPSentRo!
 }
 
 type ResetPasswordRo {
@@ -256,7 +262,7 @@ type Mutation {
   changePassword(phone: String!, otp: String, oldPassword: String, password: String!): ChangePasswordRo!
   createUser(name: String!, email: String, password: String!, phone: String!, status: UserStatus!, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
   me(name: String, email: String, password: String, phone: String, status: UserStatus, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
-  activate(phone: String!, otp: String!): UserDto!
+  activate(phone: String!, otp: String!): ActivateUserRO!
   updateUser(id: String!, name: String, email: String, password: String, phone: String, status: UserStatus, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
   updateLocation(id: String!): LocationDto!
   deleteLocation(id: String!): LocationDto!

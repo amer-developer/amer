@@ -5,6 +5,7 @@ import { GetOptionsDto } from '../../common/dto/GetOptionsDto';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth } from '../../decorators/http.decorators';
 import { ActivateUserDto } from './dto/activate-user.dto';
+import { ActivateUserRO } from './dto/activate-user.ro';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserInput } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
@@ -50,7 +51,7 @@ export class UserResolver {
         return this.userService.updateUser(currentUser.id, user);
     }
 
-    @Mutation(() => UserDto, { name: 'activate' })
+    @Mutation(() => ActivateUserRO, { name: 'activate' })
     activateUser(@Args() activateDto: ActivateUserDto) {
         return this.userService.activateUser(activateDto);
     }

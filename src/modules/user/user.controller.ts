@@ -16,6 +16,7 @@ import { GetOptionsDto } from '../../common/dto/GetOptionsDto';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth, UUIDParam } from '../../decorators/http.decorators';
 import { ActivateUserDto } from './dto/activate-user.dto';
+import { ActivateUserRO } from './dto/activate-user.ro';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
@@ -83,6 +84,11 @@ export class UserController {
 
     @Put('activate')
     @HttpCode(HttpStatus.OK)
+    @ApiResponse({
+        status: HttpStatus.OK,
+        description: 'User activated',
+        type: ActivateUserRO,
+    })
     activateUser(@Body() activateDto: ActivateUserDto) {
         return this.userService.activateUser(activateDto);
     }

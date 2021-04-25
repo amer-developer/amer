@@ -17,6 +17,7 @@ import { LocationService } from '../location/location.service';
 import { OTPService } from '../otp/otp.service';
 import { ProfileService } from '../profile/profile.service';
 import { ActivateUserDto } from './dto/activate-user.dto';
+import { ActivateUserRO } from './dto/activate-user.ro';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersPageOptionsDto } from './dto/users-page-options.dto';
 import { UsersPageDto } from './dto/users-page.dto';
@@ -155,15 +156,17 @@ export class UserService {
         if (!user) {
             throw new UserNotFoundException();
         }
-        await this.otpService.validateOTP({
+        const otp = await this.otpService.validateOTP({
             phone: activateDto.phone,
             code: activateDto.otp,
             reason: OTPReason.REGISTER,
         });
-        return this.userRepository.save({
+        await this.userRepository.save({
             id: user.id,
             status: UserStatus.ACTIVE,
         });
+        user.status = UserStatus.ACTIVE;
+        return new ActivateUserRO(user.toDto(), otp);
     }
 
     async getUsers(pageOptionsDto: UsersPageOptionsDto): Promise<UsersPageDto> {
@@ -221,8 +224,10 @@ export class UserService {
             throw new UserNotFoundException();
         }
 
+        let otp;
+
         if (changePasswordDto.otp) {
-            await this.otpService.validateOTP({
+            otp = await this.otpService.validateOTP({
                 code: changePasswordDto.otp,
                 phone: changePasswordDto.phone,
                 reason: OTPReason.RESET_PASSWORD,
@@ -237,6 +242,7 @@ export class UserService {
         return new ChangePasswordRo(
             'password.changed',
             changePasswordDto.password,
+            otp,
         );
     }
 }
