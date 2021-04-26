@@ -47,7 +47,7 @@ export class ImageService {
         );
         const image = this.imageRepository.create({
             ...imageDto,
-            url: uploadedFile[0].url,
+            url: uploadedFile[0].secure_url,
         });
 
         const savedEntity = await this.imageRepository.save(image);
@@ -67,7 +67,7 @@ export class ImageService {
             );
             const image = this.imageRepository.create({
                 ...imageDto,
-                url: uploadedFile[0].url,
+                url: uploadedFile[0].secure_url,
             });
 
             const savedEntity = await this.imageRepository.save(image);
