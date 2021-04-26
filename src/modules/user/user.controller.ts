@@ -1,9 +1,11 @@
 import {
     Body,
     Controller,
+    Delete,
     Get,
     HttpCode,
     HttpStatus,
+    Logger,
     Post,
     Put,
     Query,
@@ -28,6 +30,7 @@ import { UserService } from './user.service';
 @Controller('users')
 @ApiTags('users')
 export class UserController {
+    private logger = new Logger(UserController.name);
     constructor(private userService: UserService) {}
 
     @Post('')
@@ -98,5 +101,21 @@ export class UserController {
     @HttpCode(HttpStatus.OK)
     updateUser(@Body() user: UpdateUserDto, @UUIDParam('id') userId: string) {
         return this.userService.updateUser(userId, user);
+    }
+
+    @Delete(':id')
+    @Auth(RoleType.ADMIN)
+    @HttpCode(HttpStatus.OK)
+    @ApiResponse({
+        status: HttpStatus.OK,
+        description: 'Deleted country',
+        type: UserDto,
+    })
+    deleteCountry(
+        @UUIDParam('id') id: string,
+        @AuthUser() user: UserEntity,
+    ): Promise<UserDto> {
+        this.logger.debug(`Delete user, current user: ${user.id}, user: ${id}`);
+        return this.userService.deleteUser(id);
     }
 }

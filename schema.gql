@@ -86,6 +86,7 @@ enum UserStatus {
   ACTIVE
   INACTIVE
   BLOCKED
+  DELETED
 }
 
 type CountriesPageDto {

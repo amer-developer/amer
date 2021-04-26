@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Not } from 'typeorm';
 
 import { UserStatus } from '../../common/constants/user-status';
 import { PasswordChangeInputException } from '../../exceptions/password-change-input.exception';
@@ -34,6 +35,7 @@ export class AuthService {
         const user = await this.userService.findOne(
             {
                 phone: userLoginDto.phone,
+                status: Not(UserStatus.DELETED),
             },
             { relations: ['profile'] },
         );
@@ -60,6 +62,7 @@ export class AuthService {
         }
         const userEntity = await this.userService.findOne({
             phone,
+            status: Not(UserStatus.DELETED),
         });
         if (!userEntity) {
             throw new UserNotFoundException();

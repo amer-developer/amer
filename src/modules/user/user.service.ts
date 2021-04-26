@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { FindConditions, FindOneOptions } from 'typeorm';
+import { FindConditions, FindOneOptions, Not } from 'typeorm';
 
 import { OTPReason } from '../../common/constants/otp-reason';
 import { RoleType } from '../../common/constants/role-type';
@@ -50,6 +50,9 @@ export class UserService {
         role?: RoleType,
     ): Promise<UserEntity | undefined> {
         const queryBuilder = this.userRepository.createQueryBuilder('user');
+        queryBuilder.andWhere('user.status != :status', {
+            status: UserStatus.DELETED,
+        });
 
         if (options.email) {
             queryBuilder.orWhere('user.email = :email', {
@@ -151,7 +154,10 @@ export class UserService {
 
     async activateUser(activateDto: ActivateUserDto) {
         this.logger.debug(`Activate user: ${activateDto.phone}`);
-        const user = await this.findOne({ phone: activateDto.phone });
+        const user = await this.findOne({
+            phone: activateDto.phone,
+            status: Not(UserStatus.DELETED),
+        });
         this.logger.debug(`User: ${JSON.stringify(user)}`);
         if (!user) {
             throw new UserNotFoundException();
@@ -203,6 +209,7 @@ export class UserService {
     async resetPassword(resetPasswordDto: ResetPasswordDto) {
         const userEntity = await this.findOne({
             phone: resetPasswordDto.phone,
+            status: Not(UserStatus.DELETED),
         });
         if (!userEntity) {
             throw new UserNotFoundException();
@@ -219,6 +226,7 @@ export class UserService {
     async changePassword(changePasswordDto: ChangePasswordDto) {
         const userEntity = await this.findOne({
             phone: changePasswordDto.phone,
+            status: Not(UserStatus.DELETED),
         });
         if (!userEntity) {
             throw new UserNotFoundException();
@@ -244,5 +252,18 @@ export class UserService {
             changePasswordDto.password,
             otp,
         );
+    }
+
+    async deleteUser(id: string) {
+        const userEntity = await this.findOne({ id });
+        if (!userEntity) {
+            throw new UserNotFoundException();
+        }
+        userEntity.status = UserStatus.DELETED;
+        await this.userRepository.save({
+            id: userEntity.id,
+            status: UserStatus.DELETED,
+        });
+        return userEntity.toDto();
     }
 }
