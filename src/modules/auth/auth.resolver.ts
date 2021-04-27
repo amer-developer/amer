@@ -56,7 +56,19 @@ export class AuthResolver {
 
     @Query(() => UserDto, { name: 'me' })
     @Auth(RoleType.ADMIN, RoleType.BUYER)
-    getCurrentUser(@AuthUser() user: UserEntity) {
-        return user.toDto();
+    async getCurrentUser(@AuthUser() user: UserEntity) {
+        const currentUser = await this.userService.findOne(
+            { id: user.id },
+            {
+                relations: [
+                    'profile',
+                    'location',
+                    'location.country',
+                    'location.city',
+                    'location.district',
+                ],
+            },
+        );
+        return currentUser.toDto();
     }
 }
