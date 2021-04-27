@@ -37,7 +37,15 @@ export class AuthService {
                 phone: userLoginDto.phone,
                 status: Not(UserStatus.DELETED),
             },
-            { relations: ['profile'] },
+            {
+                relations: [
+                    'profile',
+                    'location',
+                    'location.country',
+                    'location.city',
+                    'location.district',
+                ],
+            },
         );
         const isPasswordValid = await UtilsService.validateHash(
             userLoginDto.password,

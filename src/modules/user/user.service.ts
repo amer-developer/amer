@@ -55,12 +55,12 @@ export class UserService {
         });
 
         if (options.email) {
-            queryBuilder.orWhere('user.email = :email', {
+            queryBuilder.andWhere('user.email = :email', {
                 email: options.email,
             });
         }
         if (options.phone) {
-            queryBuilder.orWhere('user.phone = :phone', {
+            queryBuilder.andWhere('user.phone = :phone', {
                 phone: options.phone,
             });
         }
