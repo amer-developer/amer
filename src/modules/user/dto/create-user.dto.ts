@@ -10,6 +10,7 @@ import {
     MinLength,
 } from 'class-validator';
 
+import { RoleType } from '../../../common/constants/role-type';
 import { UserStatus } from '../../../common/constants/user-status';
 import { CreateLocationDto } from '../../location/dto/create-location.dto';
 import { CreateProfileDto } from '../../profile/dto/create-profile.dto';
@@ -47,6 +48,15 @@ export class CreateUserDto {
     })
     @IsOptional()
     status: UserStatus;
+    
+    @Field(() => RoleType, { nullable: true })
+    @ApiProperty({
+        required: true,
+        enum: RoleType,
+        default: RoleType.BUYER,
+    })
+    @IsOptional()
+    role: RoleType;
 
     @Field(() => CreateProfileDto, { nullable: true })
     @ApiProperty({ required: false, type: () => CreateProfileDto })
