@@ -16,6 +16,7 @@ import { ImageModule } from './modules/image/image.module';
 import { LocationModule } from './modules/location/location.module';
 import { OTPModule } from './modules/otp/otp.module';
 import { ProfileModule } from './modules/profile/profile.module';
+import { RequestModule } from './modules/request/request.module';
 import { SMSModule } from './modules/sms/sms.module';
 import { SubCategoryModule } from './modules/sub-category/sub-category.module';
 import { UserModule } from './modules/user/user.module';
@@ -36,6 +37,7 @@ import { SharedModule } from './shared/shared.module';
         OTPModule,
         CategoryModule,
         SubCategoryModule,
+        RequestModule,
         GraphQLModule.forRootAsync({
             imports: [SharedModule],
             useFactory: (configService: ConfigService) =>

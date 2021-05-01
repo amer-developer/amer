@@ -101,5 +101,6 @@
     "each value in ": "كل قيمة في ",
     "maximal allowed date for ": "الحد الأقصى المسموح به للتاريخ ",
     "minimal allowed date for ": "الحد الأدنى من التاريخ المسموح به ",
-    "nested property $property must be either object or array": "يجب أن تكون الخاصية المتداخلة $property إما كائن أو مصفوفة"
+    "nested property $property must be either object or array": "يجب أن تكون الخاصية المتداخلة $property إما كائن أو مصفوفة",
+    "is_uuid": "المعرف غير صحيح"
 }

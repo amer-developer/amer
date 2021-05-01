@@ -36,7 +36,7 @@ export class SubCategoryController {
     @ApiResponse({
         status: HttpStatus.OK,
         description: 'New subCategory',
-        type: SubCategoriesPageDto,
+        type: SubCategoryDto,
     })
     createSubCategory(
         @Body()
