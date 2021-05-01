@@ -8,6 +8,7 @@ import path from 'path';
 
 import { contextMiddleware } from './middlewares';
 import { AuthModule } from './modules/auth/auth.module';
+import { CategoryModule } from './modules/category/category.module';
 import { CityModule } from './modules/city/city.module';
 import { CountryModule } from './modules/country/country.module';
 import { DistrictModule } from './modules/district/district.module';
@@ -16,6 +17,7 @@ import { LocationModule } from './modules/location/location.module';
 import { OTPModule } from './modules/otp/otp.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { SMSModule } from './modules/sms/sms.module';
+import { SubCategoryModule } from './modules/sub-category/sub-category.module';
 import { UserModule } from './modules/user/user.module';
 import { ConfigService } from './shared/services/config.service';
 import { SharedModule } from './shared/shared.module';
@@ -32,6 +34,8 @@ import { SharedModule } from './shared/shared.module';
         ImageModule,
         SMSModule,
         OTPModule,
+        CategoryModule,
+        SubCategoryModule,
         GraphQLModule.forRootAsync({
             imports: [SharedModule],
             useFactory: (configService: ConfigService) =>

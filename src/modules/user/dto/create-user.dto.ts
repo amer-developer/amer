@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
     IsEmail,
+    IsEnum,
     IsObject,
     IsOptional,
     IsPhoneNumber,
@@ -46,15 +47,17 @@ export class CreateUserDto {
         enum: UserStatus,
         default: UserStatus.INACTIVE,
     })
+    @IsEnum(UserStatus)
     @IsOptional()
     status: UserStatus;
-    
+
     @Field(() => RoleType, { nullable: true })
     @ApiProperty({
         required: true,
         enum: RoleType,
         default: RoleType.BUYER,
     })
+    @IsEnum(RoleType)
     @IsOptional()
     role: RoleType;
 

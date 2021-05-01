@@ -209,6 +209,43 @@ type LoginRo {
   token: TokenRo!
 }
 
+type CategoryDto {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  nameAR: String!
+  nameEN: String!
+  status: CategoryStatus!
+  subCategories: [SubCategoryDto!]
+}
+
+enum CategoryStatus {
+  ACTIVE
+  INACTIVE
+  DELETED
+}
+
+type SubCategoryDto {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  nameAR: String!
+  nameEN: String!
+  category: CategoryDto
+  status: SubCategoryStatus!
+}
+
+enum SubCategoryStatus {
+  ACTIVE
+  INACTIVE
+  DELETED
+}
+
+type CategoriesPageDto {
+  data: [CategoryDto!]!
+  meta: PageMetaDto!
+}
+
 type ImageDto {
   id: String!
   createdAt: DateTime!
@@ -226,6 +263,11 @@ enum ImageType {
 
 type ImagesPageDto {
   data: [ImageDto!]!
+  meta: PageMetaDto!
+}
+
+type SubCategoriesPageDto {
+  data: [SubCategoryDto!]!
   meta: PageMetaDto!
 }
 
@@ -249,6 +291,10 @@ type Query {
   sms(id: String!): SMSDto!
   images(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): ImagesPageDto!
   image(id: String!): ImageDto!
+  categories(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): CategoriesPageDto!
+  category(id: String!): CategoryDto!
+  subCategories(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): SubCategoriesPageDto!
+  subCategory(id: String!): SubCategoryDto!
 }
 
 enum Order {
@@ -261,10 +307,10 @@ type Mutation {
   register(name: String!, email: String, password: String!, phone: String!, profile: CreateProfileDto, location: CreateLocationDto): LoginRo!
   resetPassword(phone: String!): ResetPasswordRo!
   changePassword(phone: String!, otp: String, oldPassword: String, password: String!): ChangePasswordRo!
-  createUser(name: String!, email: String, password: String!, phone: String!, status: UserStatus!, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
-  me(name: String, email: String, password: String, phone: String, status: UserStatus, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
+  createUser(name: String!, email: String, password: String!, phone: String!, status: UserStatus!, role: RoleType, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
+  me(name: String, email: String, password: String, phone: String, status: UserStatus, role: RoleType, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
   activate(phone: String!, otp: String!): ActivateUserRO!
-  updateUser(id: String!, name: String, email: String, password: String, phone: String, status: UserStatus, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
+  updateUser(id: String!, name: String, email: String, password: String, phone: String, status: UserStatus, role: RoleType, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
   updateLocation(id: String!): LocationDto!
   deleteLocation(id: String!): LocationDto!
   createCity(nameAR: String!, nameEN: String!, countryCode: String!): CityDto!
@@ -286,6 +332,12 @@ type Mutation {
   createImage(file: Upload, name: String, folder: ImageType!): ImageDto!
   updateImage(name: String, folder: ImageType, id: String!): ImageDto!
   deleteImage(id: String!): ImageDto!
+  createCategory(nameAR: String!, nameEN: String!, status: CategoryStatus): CategoryDto!
+  updateCategory(nameAR: String, nameEN: String, status: CategoryStatus, id: String!): CategoryDto!
+  deleteCategory(id: String!): CategoryDto!
+  createSubCategory(nameAR: String!, nameEN: String!, categoryID: String!, status: SubCategoryStatus): SubCategoryDto!
+  updateSubCategory(nameAR: String, nameEN: String, categoryID: String, status: SubCategoryStatus, id: String!): SubCategoryDto!
+  deleteSubCategory(id: String!): SubCategoryDto!
 }
 
 input CreateProfileDto {

@@ -6,7 +6,7 @@ import { IsPhoneNumber, IsString } from 'class-validator';
 @ArgsType()
 export class LoginDto {
     @Field()
-    @ApiProperty()
+    @ApiProperty({ example: '+966500878033' })
     @IsPhoneNumber('ZZ')
     phone: string;
 
