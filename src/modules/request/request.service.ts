@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { FindConditions, FindOneOptions } from 'typeorm';
 
 import { ImageFolder } from '../../common/constants/image-folder';
+import { RequestStatus } from '../../common/constants/request-status';
 import { GetOptionsDto } from '../../common/dto/GetOptionsDto';
 import { RequestNotFoundException } from '../../exceptions/request-not-found.exception';
 import { SubCategoryNotInCategoryException } from '../../exceptions/sub-category-not-in-category.exception';
@@ -158,9 +159,11 @@ export class RequestService {
         if (!requestEntity) {
             throw new RequestNotFoundException();
         }
-        await this.requestRepository.delete({
+        await this.requestRepository.save({
             id: requestEntity.id,
+            status: RequestStatus.DELETED,
         });
+        requestEntity.status = RequestStatus.DELETED;
         return requestEntity.toDto();
     }
 
