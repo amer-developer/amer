@@ -73,7 +73,14 @@ export class SubCategoryService {
     }
 
     async getSubCategory(id: string) {
-        const subCategoryEntity = await this.findOne({ id });
+        const subCategoryEntity = await this.findOne(
+            { id },
+            { relations: ['category'] },
+        );
+
+        if (!subCategoryEntity) {
+            throw new SubCategoryNotFoundException();
+        }
 
         return subCategoryEntity.toDto();
     }

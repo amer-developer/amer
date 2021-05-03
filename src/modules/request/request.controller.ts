@@ -14,6 +14,7 @@ import {
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { RoleType } from '../../common/constants/role-type';
+import { GetOptionsDto } from '../../common/dto/GetOptionsDto';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth, UUIDParam } from '../../decorators/http.decorators';
 import { UserEntity } from '../user/user.entity';
@@ -43,12 +44,15 @@ export class RequestController {
         request: CreateRequestDto,
         @AuthUser() user: UserEntity,
     ): Promise<RequestDto> {
+        if (user.role !== RoleType.ADMIN) {
+            delete request.ownerID;
+        }
         this.logger.debug(
             `Creating a new request, user: ${user.id}, request ${JSON.stringify(
                 request,
             )}`,
         );
-        return this.requestService.createRequest(request, user);
+        return this.requestService.createRequest(request, user.toDto());
     }
 
     @Get()
@@ -72,8 +76,12 @@ export class RequestController {
         description: 'Get a request',
         type: RequestDto,
     })
-    getRequest(@UUIDParam('id') requestId: string): Promise<RequestDto> {
-        return this.requestService.getRequest(requestId);
+    getRequest(
+        @UUIDParam('id') requestId: string,
+        @Query(new ValidationPipe({ transform: true }))
+        getOptionsDto: GetOptionsDto,
+    ): Promise<RequestDto> {
+        return this.requestService.getRequest(requestId, getOptionsDto);
     }
 
     @Put(':id')
@@ -89,13 +97,21 @@ export class RequestController {
         @Body() request: UpdateRequestDto,
         @AuthUser() user: UserEntity,
     ): Promise<RequestDto> {
+        if (user.role !== RoleType.ADMIN) {
+            delete request.ownerID;
+        }
+
         this.logger.debug(
             `Update request, user: ${user.id}, request ${JSON.stringify(
                 request,
             )}`,
         );
 
-        return this.requestService.updateRequest(requestId, request);
+        return this.requestService.updateRequest(
+            requestId,
+            request,
+            user.toDto(),
+        );
     }
 
     @Delete(':id')

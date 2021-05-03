@@ -197,7 +197,7 @@ export class UserService {
     async getUser(id: string, options?: GetOptionsDto) {
         const userEntity = await this.findOne(
             { id },
-            { relations: options.includes },
+            { relations: options?.includes },
         );
         if (!userEntity) {
             throw new UserNotFoundException();

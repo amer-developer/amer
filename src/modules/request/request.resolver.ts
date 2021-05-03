@@ -2,6 +2,7 @@ import { Logger, ParseUUIDPipe } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 import { RoleType } from '../../common/constants/role-type';
+import { GetOptionsDto } from '../../common/dto/GetOptionsDto';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth } from '../../decorators/http.decorators';
 import { UserEntity } from '../user/user.entity';
@@ -25,12 +26,15 @@ export class RequestResolver {
         request: CreateRequestDto,
         @AuthUser() user: UserEntity,
     ): Promise<RequestDto> {
+        if (user.role !== RoleType.ADMIN) {
+            delete request.ownerID;
+        }
         this.logger.debug(
             `Creating a new request, user: ${user.id}, request ${JSON.stringify(
                 request,
             )}`,
         );
-        return this.requestService.createRequest(request, user);
+        return this.requestService.createRequest(request, user.toDto());
     }
     @Query(() => RequestsPageDto, { name: 'requests' })
     getRequests(
@@ -43,8 +47,9 @@ export class RequestResolver {
     @Query(() => RequestDto, { name: 'request' })
     getRequest(
         @Args('id', new ParseUUIDPipe()) id: string,
+        @Args({ nullable: true }) getOptionsDto: GetOptionsDto,
     ): Promise<RequestDto> {
-        return this.requestService.getRequest(id);
+        return this.requestService.getRequest(id, getOptionsDto);
     }
 
     @Mutation(() => RequestDto, { name: 'updateRequest' })
@@ -54,13 +59,16 @@ export class RequestResolver {
         @Args() request: UpdateRequestInput,
         @AuthUser() user: UserEntity,
     ): Promise<RequestDto> {
+        if (user.role !== RoleType.ADMIN) {
+            delete request.ownerID;
+        }
         this.logger.debug(
             `Update request, user: ${user.id}, request ${JSON.stringify(
                 request,
             )}`,
         );
 
-        return this.requestService.updateRequest(id, request);
+        return this.requestService.updateRequest(id, request, user.toDto());
     }
 
     @Mutation(() => RequestDto, { name: 'deleteRequest' })

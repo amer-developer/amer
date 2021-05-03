@@ -64,9 +64,8 @@ export class CreateRequestDto {
     @IsOptional()
     subCategoryID: string;
 
-    @Field(() => CreateLocationDto, { nullable: true })
-    @ApiProperty({ required: false, type: () => CreateLocationDto })
-    @IsOptional()
+    @Field(() => CreateLocationDto, { nullable: false })
+    @ApiProperty({ required: true, type: () => CreateLocationDto })
     @Type(() => CreateLocationDto)
     @IsObject({ each: true })
     @ValidateNested()
@@ -81,4 +80,10 @@ export class CreateRequestDto {
     @IsEnum(RequestStatus)
     @IsOptional()
     status: RequestStatus;
+
+    @Field({ nullable: true })
+    @ApiProperty({ required: false })
+    @IsUUID()
+    @IsOptional()
+    ownerID: string;
 }

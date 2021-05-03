@@ -97,12 +97,18 @@ export class RequestDto extends AbstractDto {
         if (request.images) {
             this.images = request.images.toDtos();
         }
-        this.location = request.location.toDto();
-        this.status = request.status;
-        this.category = request.category.toDto();
+        if (request.location) {
+            this.location = request.location.toDto();
+        }
+        if (request.category) {
+            this.category = request.category.toDto();
+        }
         if (request.subCategory) {
             this.subCategory = request.subCategory.toDto();
         }
-        this.owner = request.owner.toDto();
+        if (request.owner) {
+            this.owner = request.owner.toDto();
+        }
+        this.status = request.status;
     }
 }

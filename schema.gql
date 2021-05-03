@@ -325,7 +325,7 @@ type Query {
   subCategories(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): SubCategoriesPageDto!
   subCategory(id: String!): SubCategoryDto!
   requests(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): RequestsPageDto!
-  request(id: String!): RequestDto!
+  request(include: String, id: String!): RequestDto!
 }
 
 enum Order {
@@ -369,8 +369,8 @@ type Mutation {
   createSubCategory(nameAR: String!, nameEN: String!, categoryID: String!, status: SubCategoryStatus): SubCategoryDto!
   updateSubCategory(nameAR: String, nameEN: String, categoryID: String, status: SubCategoryStatus, id: String!): SubCategoryDto!
   deleteSubCategory(id: String!): SubCategoryDto!
-  createRequest(title: String!, description: String, budgetMin: Float, budgetMax: Float, budgetCurrency: String, images: [String!], categoryID: String!, subCategoryID: String, location: CreateLocationDto, status: RequestStatus!): RequestDto!
-  updateRequest(title: String, description: String, budgetMin: Float, budgetMax: Float, budgetCurrency: String, images: [String!], categoryID: String, subCategoryID: String, location: CreateLocationDto, status: RequestStatus, id: String!): RequestDto!
+  createRequest(title: String!, description: String, budgetMin: Float, budgetMax: Float, budgetCurrency: String, images: [String!], categoryID: String!, subCategoryID: String, location: CreateLocationDto!, status: RequestStatus!, ownerID: String): RequestDto!
+  updateRequest(title: String, description: String, budgetMin: Float, budgetMax: Float, budgetCurrency: String, images: [String!], categoryID: String, subCategoryID: String, location: CreateLocationDto, status: RequestStatus, ownerID: String, id: String!): RequestDto!
   deleteRequest(id: String!): RequestDto!
 }
 

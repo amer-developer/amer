@@ -6,7 +6,7 @@ import {
     Logger,
 } from '@nestjs/common';
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
-import { FindConditions } from 'typeorm';
+import { FindConditions, FindOneOptions } from 'typeorm';
 
 import { FileNotImageException } from '../../exceptions/file-not-image.exception';
 import { IFile } from '../../interfaces/IFile';
@@ -32,8 +32,11 @@ export class ImageService {
     /**
      * Find single image
      */
-    findOne(findData: FindConditions<ImageEntity>): Promise<ImageEntity> {
-        return this.imageRepository.findOne(findData);
+    findOne(
+        findData: FindConditions<ImageEntity>,
+        findOneOptions?: FindOneOptions<ImageEntity>,
+    ): Promise<ImageEntity> {
+        return this.imageRepository.findOne(findData, findOneOptions);
     }
 
     async createImage(
