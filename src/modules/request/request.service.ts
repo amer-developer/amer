@@ -1,12 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { FindConditions, FindOneOptions } from 'typeorm';
 
-import { ImageFolder } from '../../common/constants/image-folder';
 import { RequestStatus } from '../../common/constants/request-status';
 import { GetOptionsDto } from '../../common/dto/GetOptionsDto';
 import { RequestNotFoundException } from '../../exceptions/request-not-found.exception';
-import { SubCategoryNotInCategoryException } from '../../exceptions/sub-category-not-in-category.exception';
-import { ValidatorService } from '../../shared/services/validator.service';
 import { CategoryService } from '../category/category.service';
 import { CategoryDto } from '../category/dto/category.dto';
 import { ImageDto } from '../image/dto/image.dto';
@@ -30,7 +27,6 @@ export class RequestService {
     private logger = new Logger(RequestService.name);
     constructor(
         public readonly requestRepository: RequestRepository,
-        public readonly validatorService: ValidatorService,
         public readonly locationService: LocationService,
         public readonly categoryService: CategoryService,
         public readonly subCategoryService: SubCategoryService,
@@ -173,7 +169,7 @@ export class RequestService {
         locationID?: string,
     ) {
         let locationDto: LocationDto;
-        let imagesDtos: ImageDto[];
+        const imagesDtos: ImageDto[] = [];
         let category: CategoryDto;
         let subCategory: SubCategoryDto;
         let owner = user;
@@ -190,16 +186,16 @@ export class RequestService {
         if (subCategoryID) {
             subCategory = await this.subCategoryService.getSubCategory(
                 subCategoryID,
+                categoryID,
             );
-            if (subCategory.category.id !== category.id) {
-                throw new SubCategoryNotInCategoryException();
-            }
         }
         if (images) {
-            for (const url of images) {
-                const image = await this.imageService.findOne({
-                    url,
-                    folder: ImageFolder.REQUEST,
+            this.logger.log(requestDto.imagesItems);
+            this.logger.log(images);
+            for (const item of requestDto.imagesItems) {
+                this.logger.log(item);
+                const image = await this.imageService.findImage({
+                    url: item.item,
                 });
                 imagesDtos.push(image);
             }

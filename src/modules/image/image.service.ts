@@ -6,7 +6,7 @@ import {
     Logger,
 } from '@nestjs/common';
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
-import { FindConditions, FindOneOptions } from 'typeorm';
+import { FindConditions, FindManyOptions, FindOneOptions } from 'typeorm';
 
 import { FileNotImageException } from '../../exceptions/file-not-image.exception';
 import { IFile } from '../../interfaces/IFile';
@@ -28,6 +28,15 @@ export class ImageService {
         public readonly validatorService: ValidatorService,
         public readonly cloudinary: CloudinaryService,
     ) {}
+
+    /**
+     * Find in image
+     */
+    find(
+        findManyOptions: FindManyOptions<ImageEntity>,
+    ): Promise<ImageEntity[]> {
+        return this.imageRepository.find(findManyOptions);
+    }
 
     /**
      * Find single image
@@ -100,10 +109,24 @@ export class ImageService {
         return items.toPageDto(pageMetaDto);
     }
 
-    async getImage(id: string) {
-        const imageEntity = await this.findOne({ id });
-
+    async getImage(id: string, url?: string) {
+        const imageEntity = url
+            ? await this.findOne({ url })
+            : await this.findOne({ id });
+        if (!imageEntity) {
+            throw new HttpException('Image not found', HttpStatus.NOT_FOUND);
+        }
         return imageEntity.toDto();
+    }
+
+    async findImage(image: Partial<ImageDto>) {
+        const imagesEntity = await this.find({
+            where: [{ id: image.id }, { url: image.url }],
+        });
+        if (!imagesEntity || imagesEntity.length === 0) {
+            throw new HttpException('Image not found', HttpStatus.NOT_FOUND);
+        }
+        return imagesEntity[0].toDto();
     }
 
     async updateImage(id: string, image: UpdateImageDto) {

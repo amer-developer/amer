@@ -3,6 +3,7 @@ import { FindConditions } from 'typeorm';
 
 import { ValidatorService } from '../../shared/services/validator.service';
 import { CityService } from '../city/city.service';
+import { CityDto } from '../city/dto/city.dto';
 import { DistrictEntity } from '../district/district.entity';
 import { DistrictService } from '../district/district.service';
 import { CreateLocationDto } from './dto/create-location.dto';
@@ -32,34 +33,55 @@ export class LocationService {
 
     async createLocation(
         locationDto: CreateLocationDto,
-        id?: string,
+        existingID?: string,
     ): Promise<LocationDto> {
-        const city = await this.citiesService.findOne(
-            {
-                id: locationDto.cityID,
-            },
-            { relations: ['country'] },
-        );
-        if (!city) {
-            throw new HttpException('City not found', HttpStatus.NOT_FOUND);
+        if (locationDto.cityID && locationDto.districtID) {
+            throw new HttpException('One is required', HttpStatus.BAD_REQUEST);
+        }
+
+        let city: CityDto;
+
+        if (locationDto.cityID) {
+            city = await this.citiesService.findOne(
+                {
+                    id: locationDto.cityID,
+                },
+                { relations: ['country'] },
+            );
+            if (!city) {
+                throw new HttpException('City not found', HttpStatus.NOT_FOUND);
+            }
         }
         let district: DistrictEntity;
         if (locationDto.districtID) {
-            district = await this.districtService.findOne({
-                id: locationDto.districtID,
-                city: {
-                    id: locationDto.cityID,
+            district = await this.districtService.findOne(
+                {
+                    id: locationDto.districtID,
                 },
-            });
+                {
+                    relations: ['city'],
+                },
+            );
             if (!district) {
                 throw new HttpException(
                     'District not found',
                     HttpStatus.NOT_FOUND,
                 );
             }
+            if (
+                locationDto.cityID &&
+                district.city &&
+                district.city.id !== locationDto.cityID
+            ) {
+                throw new HttpException(
+                    'District does not belong to city',
+                    HttpStatus.NOT_FOUND,
+                );
+            }
+            city = district.city.toDto();
         }
         const location = this.locationRepository.create({
-            id,
+            id: existingID,
             ...locationDto,
             city,
             district,

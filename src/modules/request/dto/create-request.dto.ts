@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 'use strict';
 import { ArgsType, Field } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
@@ -10,11 +11,16 @@ import {
     IsOptional,
     IsString,
     IsUUID,
+    Length,
     ValidateNested,
 } from 'class-validator';
 
 import { RequestStatus } from '../../../common/constants/request-status';
 import { CreateLocationDto } from '../../location/dto/create-location.dto';
+
+export class Item {
+    item: string;
+}
 
 @ArgsType()
 export class CreateRequestDto {
@@ -42,16 +48,30 @@ export class CreateRequestDto {
     budgetMax: number;
 
     @Field({ nullable: true })
-    @ApiProperty({ required: false, default: 'SAR' })
+    @ApiProperty({
+        required: false,
+        default: 'SAR',
+        maxLength: 3,
+        minLength: 3,
+    })
     @IsString()
+    @Length(3, 3)
     @IsOptional()
     budgetCurrency: string;
 
     @Field(() => [String], { nullable: true })
-    @ApiProperty({ required: false, isArray: true, type: [String] })
+    @ApiProperty({ required: false, isArray: true, type: 'string' })
     @IsArray()
     @IsOptional()
     images: string[];
+
+    get imagesItems(): Item[] {
+        return this.images
+            ? this.images.map((val) => ({
+                  item: val,
+              }))
+            : [];
+    }
 
     @Field({ nullable: false })
     @ApiProperty({ required: true })

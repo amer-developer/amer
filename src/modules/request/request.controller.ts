@@ -52,6 +52,7 @@ export class RequestController {
                 request,
             )}`,
         );
+        this.logger.debug(request.images);
         return this.requestService.createRequest(request, user.toDto());
     }
 

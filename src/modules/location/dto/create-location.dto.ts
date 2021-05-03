@@ -19,8 +19,9 @@ export class CreateLocationDto {
 
     @Field({ nullable: false })
     @ApiProperty({ required: true })
+    @IsOptional()
     @IsUUID()
-    cityID: string;
+    cityID?: string;
 
     @Field({ nullable: true })
     @ApiProperty({ required: false })
