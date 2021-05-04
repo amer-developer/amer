@@ -27,7 +27,7 @@ export class RequestEntity extends AbstractEntity<RequestDto> {
     @Column('decimal', { nullable: true })
     budgetMin: number;
 
-    @Column({ nullable: true })
+    @Column('decimal', { nullable: true })
     budgetMax: number;
 
     @Column({ nullable: false, default: 'SAR', length: 3 })

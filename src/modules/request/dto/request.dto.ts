@@ -1,6 +1,7 @@
 'use strict';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
     IsEnum,
     IsNumber,
@@ -35,12 +36,14 @@ export class RequestDto extends AbstractDto {
     @ApiProperty({ required: false })
     @IsNumber({ maxDecimalPlaces: 2 })
     @IsOptional()
+    @Type(() => Number)
     budgetMin: number;
 
     @Field({ nullable: true })
     @ApiProperty({ required: false })
     @IsNumber({ maxDecimalPlaces: 2 })
     @IsOptional()
+    @Type(() => Number)
     budgetMax: number;
 
     @Field({ nullable: true })
