@@ -16,11 +16,8 @@ import {
 } from 'class-validator';
 
 import { RequestStatus } from '../../../common/constants/request-status';
+import { CreateImageDto } from '../../image/dto/create-image.dto';
 import { CreateLocationDto } from '../../location/dto/create-location.dto';
-
-export class Item {
-    item: string;
-}
 
 @ArgsType()
 export class CreateRequestDto {
@@ -59,19 +56,17 @@ export class CreateRequestDto {
     @IsOptional()
     budgetCurrency: string;
 
-    @Field(() => [String], { nullable: true })
-    @ApiProperty({ required: false, isArray: true, type: 'string' })
+    @Field(() => [CreateImageDto], { nullable: true })
+    @ApiProperty({
+        required: false,
+        isArray: true,
+        type: () => CreateImageDto,
+    })
     @IsArray()
     @IsOptional()
-    images: string[];
-
-    get imagesItems(): Item[] {
-        return this.images
-            ? this.images.map((val) => ({
-                  item: val,
-              }))
-            : [];
-    }
+    @Type(() => CreateImageDto)
+    @ValidateNested({ each: true })
+    images: CreateImageDto[];
 
     @Field({ nullable: false })
     @ApiProperty({ required: true })

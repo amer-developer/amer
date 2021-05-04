@@ -33,7 +33,7 @@ export class RequestEntity extends AbstractEntity<RequestDto> {
     @Column({ nullable: false, default: 'SAR', length: 3 })
     budgetCurrency: string;
 
-    @OneToMany(() => ImageEntity, (image) => image.request)
+    @OneToMany(() => ImageEntity, (image) => image.request, { cascade: true })
     images: ImageEntity[];
 
     @Column({

@@ -1,12 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { FindConditions, FindOneOptions } from 'typeorm';
 
+import { ImageFolder } from '../../common/constants/image-folder';
 import { RequestStatus } from '../../common/constants/request-status';
 import { GetOptionsDto } from '../../common/dto/GetOptionsDto';
 import { RequestNotFoundException } from '../../exceptions/request-not-found.exception';
 import { CategoryService } from '../category/category.service';
 import { CategoryDto } from '../category/dto/category.dto';
-import { ImageDto } from '../image/dto/image.dto';
+import { CreateImageDto } from '../image/dto/create-image.dto';
 import { ImageService } from '../image/image.service';
 import { LocationDto } from '../location/dto/location.dto';
 import { LocationService } from '../location/location.service';
@@ -79,14 +80,18 @@ export class RequestService {
             .leftJoinAndSelect('request.category', 'category')
             .leftJoinAndSelect('request.subCategory', 'subCategory')
             .leftJoinAndSelect('request.location', 'location')
+            .leftJoinAndSelect('location.country', 'country')
+            .leftJoinAndSelect('location.city', 'city')
+            .leftJoinAndSelect('location.district', 'district')
             .leftJoinAndSelect('request.owner', 'owner')
             .leftJoinAndSelect('owner.profile', 'profile');
 
         if (pageOptionsDto.q) {
-            queryBuilder = queryBuilder.searchByString(pageOptionsDto.q, [
-                'title',
-                'description',
-            ]);
+            queryBuilder = queryBuilder.searchByString(
+                pageOptionsDto.q,
+                ['title', 'description'],
+                true,
+            );
         }
 
         const { items, pageMetaDto } = await queryBuilder.paginate(
@@ -169,9 +174,9 @@ export class RequestService {
         locationID?: string,
     ) {
         let locationDto: LocationDto;
-        const imagesDtos: ImageDto[] = [];
         let category: CategoryDto;
         let subCategory: SubCategoryDto;
+        let imagesDto: CreateImageDto[];
         let owner = user;
         const {
             categoryID,
@@ -189,19 +194,14 @@ export class RequestService {
                 categoryID,
             );
         }
-        if (images) {
-            this.logger.log(requestDto.imagesItems);
-            this.logger.log(images);
-            for (const item of requestDto.imagesItems) {
-                this.logger.log(item);
-                const image = await this.imageService.findImage({
-                    url: item.item,
-                });
-                imagesDtos.push(image);
-            }
-        }
         if (ownerID) {
             owner = await this.userService.getUser(ownerID);
+        }
+        if (images) {
+            imagesDto = images.map((item) => ({
+                ...item,
+                folder: ImageFolder.REQUEST,
+            }));
         }
         if (location) {
             locationDto = await this.locationService.createLocation(
@@ -214,7 +214,7 @@ export class RequestService {
             category,
             subCategory,
             owner,
-            images: imagesDtos,
+            images: imagesDto,
             location: locationDto,
         };
     }

@@ -60,6 +60,24 @@ export class ImageController {
         return this.imageService.createImage(image, file);
     }
 
+    @Post('upload')
+    @ApiConsumes('multipart/form-data')
+    @HttpCode(HttpStatus.OK)
+    @ApiFile([{ name: 'file' }])
+    @UseInterceptors(FileInterceptor('file'))
+    @ApiResponse({
+        status: HttpStatus.OK,
+        description: 'New image',
+        type: ImageDto,
+    })
+    uploadImage(
+        @AuthUser() user: UserEntity,
+        @UploadedFile() file: IFile,
+    ): Promise<ImageDto> {
+        this.logger.debug(`Creating a new image, user: ${user?.id}`);
+        return this.imageService.createImage(new CreateImageDto(), file);
+    }
+
     @Post('bulk')
     @Auth(RoleType.BUYER, RoleType.ADMIN)
     @ApiConsumes('multipart/form-data')

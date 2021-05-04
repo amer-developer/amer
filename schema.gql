@@ -360,8 +360,9 @@ type Mutation {
   sendSMS(phone: String!, body: String!): SMSSentRo!
   updateSMS(phone: String, body: String, id: String!): SMSDto!
   deleteSMS(id: String!): SMSDto!
-  createImage(file: Upload, name: String, folder: ImageType!): ImageDto!
-  updateImage(name: String, folder: ImageType, id: String!): ImageDto!
+  createImage(file: Upload, id: String, url: String, name: String, folder: ImageType): ImageDto!
+  uploadImage(file: Upload): ImageDto!
+  updateImage(id: String!): ImageDto!
   deleteImage(id: String!): ImageDto!
   createCategory(nameAR: String!, nameEN: String!, status: CategoryStatus): CategoryDto!
   updateCategory(nameAR: String, nameEN: String, status: CategoryStatus, id: String!): CategoryDto!
@@ -369,8 +370,8 @@ type Mutation {
   createSubCategory(nameAR: String!, nameEN: String!, categoryID: String!, status: SubCategoryStatus): SubCategoryDto!
   updateSubCategory(nameAR: String, nameEN: String, categoryID: String, status: SubCategoryStatus, id: String!): SubCategoryDto!
   deleteSubCategory(id: String!): SubCategoryDto!
-  createRequest(title: String!, description: String, budgetMin: Float, budgetMax: Float, budgetCurrency: String, images: [String!], categoryID: String!, subCategoryID: String, location: CreateLocationDto!, status: RequestStatus!, ownerID: String): RequestDto!
-  updateRequest(title: String, description: String, budgetMin: Float, budgetMax: Float, budgetCurrency: String, images: [String!], categoryID: String, subCategoryID: String, location: CreateLocationDto, status: RequestStatus, ownerID: String, id: String!): RequestDto!
+  createRequest(title: String!, description: String, budgetMin: Float, budgetMax: Float, budgetCurrency: String, images: [CreateImageDto!], categoryID: String!, subCategoryID: String, location: CreateLocationDto!, status: RequestStatus!, ownerID: String): RequestDto!
+  updateRequest(title: String, description: String, budgetMin: Float, budgetMax: Float, budgetCurrency: String, images: [CreateImageDto!], categoryID: String, subCategoryID: String, location: CreateLocationDto, status: RequestStatus, ownerID: String, id: String!): RequestDto!
   deleteRequest(id: String!): RequestDto!
 }
 
@@ -388,3 +389,10 @@ input CreateLocationDto {
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+input CreateImageDto {
+  id: String
+  url: String
+  name: String
+  folder: ImageType
+}

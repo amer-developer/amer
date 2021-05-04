@@ -50,16 +50,14 @@ export class ImageService {
 
     async createImage(
         imageDto: CreateImageDto,
-        file: IFile,
+        file?: IFile,
     ): Promise<ImageDto> {
-        const uploadedFile = await this.uploadImage(
-            [file],
-            imageDto.name,
-            imageDto.folder,
-        );
+        if (file) {
+            const uploadedFile = await this.uploadImage([file]);
+            imageDto.url = uploadedFile[0].secure_url;
+        }
         const image = this.imageRepository.create({
             ...imageDto,
-            url: uploadedFile[0].secure_url,
         });
 
         const savedEntity = await this.imageRepository.save(image);
@@ -96,9 +94,8 @@ export class ImageService {
 
         if (pageOptionsDto.q) {
             queryBuilder = queryBuilder.searchByString(pageOptionsDto.q, [
-                'nameAR',
-                'nameEN',
-                'code',
+                'url',
+                'name',
             ]);
         }
 
@@ -151,10 +148,14 @@ export class ImageService {
         if (!imageEntity) {
             throw new HttpException('Image not found', HttpStatus.NOT_FOUND);
         }
-        await this.imageRepository.delete({
+        await this.delete({
             id: imageEntity.id,
         });
         return imageEntity.toDto();
+    }
+
+    async delete(findConditions: FindConditions<ImageEntity>) {
+        return this.imageRepository.delete(findConditions);
     }
 
     public async uploadImage(files: IFile[], name?: string, type?: string) {

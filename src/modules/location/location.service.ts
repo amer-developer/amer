@@ -59,7 +59,7 @@ export class LocationService {
                     id: locationDto.districtID,
                 },
                 {
-                    relations: ['city'],
+                    relations: ['city', 'city.country'],
                 },
             );
             if (!district) {
