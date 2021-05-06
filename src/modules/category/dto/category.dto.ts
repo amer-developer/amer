@@ -11,12 +11,12 @@ import { CategoryEntity } from '../category.entity';
 @ObjectType()
 export class CategoryDto extends AbstractDto {
     @Field({ nullable: false })
-    @ApiProperty()
+    @ApiProperty({ required: true })
     @IsString()
     nameAR: string;
 
     @Field({ nullable: false })
-    @ApiProperty()
+    @ApiProperty({ required: true })
     @IsString()
     nameEN: string;
 
@@ -25,7 +25,7 @@ export class CategoryDto extends AbstractDto {
     status: CategoryStatus;
 
     @Field(() => [SubCategoryDto], { nullable: true })
-    @ApiProperty()
+    @ApiProperty({ required: false, type: () => [SubCategoryDto] })
     @IsObject()
     @IsOptional()
     subCategories: SubCategoryDto[];

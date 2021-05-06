@@ -2,7 +2,7 @@ import { registerEnumType } from '@nestjs/graphql';
 
 export enum ImageFolder {
     PROFILE = 'PROFILE',
-    POST = 'POST',
+    REQUEST = 'REQUEST',
     OFFER = 'OFFER',
 }
 

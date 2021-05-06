@@ -36,8 +36,7 @@ export class UserResolver {
     @Query(() => UserDto, { name: 'user' })
     getUser(
         @Args('id') id: string,
-        @Args()
-        getOptionsDto: GetOptionsDto,
+        @Args({ nullable: true }) getOptionsDto: GetOptionsDto,
     ): Promise<UserDto> {
         return this.userService.getUser(id, getOptionsDto);
     }

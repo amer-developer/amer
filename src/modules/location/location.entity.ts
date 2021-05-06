@@ -4,6 +4,7 @@ import { AbstractEntity } from '../../common/abstract.entity';
 import { CityEntity } from '../city/city.entity';
 import { CountryEntity } from '../country/country.entity';
 import { DistrictEntity } from '../district/district.entity';
+import { RequestEntity } from '../request/request.entity';
 import { UserEntity } from '../user/user.entity';
 import { LocationDto } from './dto/location.dto';
 
@@ -26,6 +27,9 @@ export class LocationEntity extends AbstractEntity<LocationDto> {
 
     @OneToOne(() => UserEntity, (user) => user.location)
     user: UserEntity;
+
+    @OneToOne(() => UserEntity, (user) => user.location)
+    request: RequestEntity;
 
     dtoClass = LocationDto;
 }

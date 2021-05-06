@@ -28,7 +28,11 @@ declare global {
 
 declare module 'typeorm' {
     interface QueryBuilder<Entity> {
-        searchByString(q: string, columnNames: string[]): this;
+        searchByString(
+            q: string,
+            columnNames: string[],
+            fullSearch?: boolean,
+        ): this;
     }
 
     interface SelectQueryBuilder<Entity> {
@@ -52,20 +56,34 @@ Array.prototype.toPageDto = function (pageMetaDto: PageMetaDto) {
     return new PageDto(this.toDtos(), pageMetaDto);
 };
 
-QueryBuilder.prototype.searchByString = function (q, columnNames) {
+QueryBuilder.prototype.searchByString = function (q, columnNames, fullSearch) {
     if (!q) {
         return this;
     }
-    this.andWhere(
-        new Brackets((qb) => {
-            for (const item of columnNames) {
-                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                qb.orWhere(`${this.alias}.${item} ILIKE :q`);
-            }
-        }),
-    );
-
-    this.setParameter('q', `%${q}%`);
+    if (fullSearch) {
+        q = q.trim().replace(/ /g, ' & ');
+        this.andWhere(
+            new Brackets((qb) => {
+                for (const item of columnNames) {
+                    qb.orWhere(
+                        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                        `to_tsvector(${this.alias}.${item}) @@ plainto_tsquery(:q)`,
+                    );
+                }
+            }),
+        );
+        this.setParameter('q', q);
+    } else {
+        this.andWhere(
+            new Brackets((qb) => {
+                for (const item of columnNames) {
+                    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                    qb.orWhere(`${this.alias}.${item} ILIKE :q`);
+                }
+            }),
+        );
+        this.setParameter('q', `%${q}%`);
+    }
 
     return this;
 };

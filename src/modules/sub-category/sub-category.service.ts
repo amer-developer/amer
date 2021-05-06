@@ -3,6 +3,7 @@ import { FindConditions, FindOneOptions } from 'typeorm';
 
 import { CategoryNotFoundException } from '../../exceptions/category-not-found.exception';
 import { SubCategoryNotFoundException } from '../../exceptions/sub-category-not-found.exception';
+import { SubCategoryNotInCategoryException } from '../../exceptions/sub-category-not-in-category.exception';
 import { ValidatorService } from '../../shared/services/validator.service';
 import { CategoryService } from '../category/category.service';
 import { CreateSubCategoryDto } from './dto/create-sub-category.dto';
@@ -72,8 +73,23 @@ export class SubCategoryService {
         return items.toPageDto(pageMetaDto);
     }
 
-    async getSubCategory(id: string) {
-        const subCategoryEntity = await this.findOne({ id });
+    async getSubCategory(id: string, categoryID?: string) {
+        const subCategoryEntity = await this.findOne(
+            { id },
+            { relations: ['category'] },
+        );
+
+        if (!subCategoryEntity) {
+            throw new SubCategoryNotFoundException();
+        }
+
+        if (
+            categoryID &&
+            subCategoryEntity.category &&
+            subCategoryEntity.category.id !== categoryID
+        ) {
+            throw new SubCategoryNotInCategoryException();
+        }
 
         return subCategoryEntity.toDto();
     }

@@ -6,7 +6,7 @@ import {
     Logger,
 } from '@nestjs/common';
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
-import { FindConditions } from 'typeorm';
+import { FindConditions, FindManyOptions, FindOneOptions } from 'typeorm';
 
 import { FileNotImageException } from '../../exceptions/file-not-image.exception';
 import { IFile } from '../../interfaces/IFile';
@@ -30,24 +30,34 @@ export class ImageService {
     ) {}
 
     /**
+     * Find in image
+     */
+    find(
+        findManyOptions: FindManyOptions<ImageEntity>,
+    ): Promise<ImageEntity[]> {
+        return this.imageRepository.find(findManyOptions);
+    }
+
+    /**
      * Find single image
      */
-    findOne(findData: FindConditions<ImageEntity>): Promise<ImageEntity> {
-        return this.imageRepository.findOne(findData);
+    findOne(
+        findData: FindConditions<ImageEntity>,
+        findOneOptions?: FindOneOptions<ImageEntity>,
+    ): Promise<ImageEntity> {
+        return this.imageRepository.findOne(findData, findOneOptions);
     }
 
     async createImage(
         imageDto: CreateImageDto,
-        file: IFile,
+        file?: IFile,
     ): Promise<ImageDto> {
-        const uploadedFile = await this.uploadImage(
-            [file],
-            imageDto.name,
-            imageDto.folder,
-        );
+        if (file) {
+            const uploadedFile = await this.uploadImage([file]);
+            imageDto.url = uploadedFile[0].secure_url;
+        }
         const image = this.imageRepository.create({
             ...imageDto,
-            url: uploadedFile[0].secure_url,
         });
 
         const savedEntity = await this.imageRepository.save(image);
@@ -84,9 +94,8 @@ export class ImageService {
 
         if (pageOptionsDto.q) {
             queryBuilder = queryBuilder.searchByString(pageOptionsDto.q, [
-                'nameAR',
-                'nameEN',
-                'code',
+                'url',
+                'name',
             ]);
         }
 
@@ -97,10 +106,24 @@ export class ImageService {
         return items.toPageDto(pageMetaDto);
     }
 
-    async getImage(id: string) {
-        const imageEntity = await this.findOne({ id });
-
+    async getImage(id: string, url?: string) {
+        const imageEntity = url
+            ? await this.findOne({ url })
+            : await this.findOne({ id });
+        if (!imageEntity) {
+            throw new HttpException('Image not found', HttpStatus.NOT_FOUND);
+        }
         return imageEntity.toDto();
+    }
+
+    async findImage(image: Partial<ImageDto>) {
+        const imagesEntity = await this.find({
+            where: [{ id: image.id }, { url: image.url }],
+        });
+        if (!imagesEntity || imagesEntity.length === 0) {
+            throw new HttpException('Image not found', HttpStatus.NOT_FOUND);
+        }
+        return imagesEntity[0].toDto();
     }
 
     async updateImage(id: string, image: UpdateImageDto) {
@@ -125,10 +148,14 @@ export class ImageService {
         if (!imageEntity) {
             throw new HttpException('Image not found', HttpStatus.NOT_FOUND);
         }
-        await this.imageRepository.delete({
+        await this.delete({
             id: imageEntity.id,
         });
         return imageEntity.toDto();
+    }
+
+    async delete(findConditions: FindConditions<ImageEntity>) {
+        return this.imageRepository.delete(findConditions);
     }
 
     public async uploadImage(files: IFile[], name?: string, type?: string) {

@@ -32,7 +32,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
             r.error = STATUS_CODES[statusCode];
             const validationErrors = r.message as ValidationError[];
             const errors = await this.validationFilter(validationErrors);
-            r.errors = errors;
+            r.errors = errors ?? validationErrors;
             delete r.message;
         }
 

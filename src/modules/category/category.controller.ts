@@ -36,7 +36,7 @@ export class CategoryController {
     @ApiResponse({
         status: HttpStatus.OK,
         description: 'New category',
-        type: CategoriesPageDto,
+        type: CategoryDto,
     })
     createCategory(
         @Body()

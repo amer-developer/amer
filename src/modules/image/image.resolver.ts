@@ -35,6 +35,17 @@ export class ImageResolver {
         );
         return this.imageService.createImage(image, file);
     }
+
+    @Mutation(() => ImageDto, { name: 'uploadImage' })
+    uploadImage(
+        @Args('file', { type: () => GraphQLUpload, nullable: true })
+        file: IFile,
+        @AuthUser() user: UserEntity,
+    ): Promise<ImageDto> {
+        this.logger.debug(`Creating a new image, user: ${user?.id}`);
+        return this.imageService.createImage(new CreateImageDto(), file);
+    }
+
     @Query(() => ImagesPageDto, { name: 'images' })
     getImages(
         @Args()
