@@ -14,6 +14,7 @@ import {
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { RoleType } from '../../common/constants/role-type';
+import { GetOptionsDto } from '../../common/dto/GetOptionsDto';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth, UUIDParam } from '../../decorators/http.decorators';
 import { UserEntity } from '../user/user.entity';
@@ -44,6 +45,7 @@ export class StoreController {
         @AuthUser() user: UserEntity,
     ): Promise<StoreDto> {
         if (user.role !== RoleType.ADMIN) {
+            storeRequest.users = storeRequest.users ?? [];
             storeRequest.users.push({ id: user.id });
             storeRequest.users.map((st) => ({ ...st, role: RoleType.SELLER }));
         }
@@ -76,8 +78,12 @@ export class StoreController {
         description: 'Get a store',
         type: StoreDto,
     })
-    getStore(@UUIDParam('id') storeId: string): Promise<StoreDto> {
-        return this.storeService.getStore(storeId);
+    getStore(
+        @UUIDParam('id') storeId: string,
+        @Query(new ValidationPipe({ transform: true }))
+        getOptionsDto: GetOptionsDto,
+    ): Promise<StoreDto> {
+        return this.storeService.getStore(storeId, getOptionsDto);
     }
 
     @Put(':id')

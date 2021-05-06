@@ -110,6 +110,27 @@ type ProfileDto {
   avatar: String
 }
 
+type StoreDto {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  storeNumber: Float!
+  name: String!
+  bio: String
+  avatar: String
+  category: CategoryDto!
+  subCategory: SubCategoryDto!
+  location: LocationDto
+  users: [UserDto!]
+  status: StoreStatus
+}
+
+enum StoreStatus {
+  ACTIVE
+  INACTIVE
+  DELETED
+}
+
 type UserDto {
   id: String!
   createdAt: DateTime!
@@ -121,6 +142,7 @@ type UserDto {
   status: UserStatus!
   profile: ProfileDto
   location: LocationDto
+  store: StoreDto
 }
 
 enum RoleType {
@@ -158,26 +180,6 @@ enum RequestStatus {
   ACTIVE
   INACTIVE
   EXPIRED
-  DELETED
-}
-
-type StoreDto {
-  id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  storeNumber: Float!
-  bio: String
-  avatar: String
-  category: CategoryDto!
-  subCategory: SubCategoryDto!
-  location: LocationDto
-  users: [UserDto!]
-  status: StoreStatus
-}
-
-enum StoreStatus {
-  ACTIVE
-  INACTIVE
   DELETED
 }
 
@@ -388,8 +390,8 @@ type Mutation {
   sendSMS(phone: String!, body: String!): SMSSentRo!
   updateSMS(phone: String, body: String, id: String!): SMSDto!
   deleteSMS(id: String!): SMSDto!
-  createStore(bio: String, avatar: String, categoryID: String!, subCategoryID: String, location: CreateLocationDto!, users: [CreateUserDto!], status: StoreStatus): StoreDto!
-  updateStore(bio: String, avatar: String, categoryID: String, subCategoryID: String, location: CreateLocationDto, users: [CreateUserDto!], status: StoreStatus, id: String!): StoreDto!
+  createStore(name: String!, bio: String, avatar: String, categoryID: String!, subCategoryID: String, location: CreateLocationDto!, users: [CreateUserDto!], status: StoreStatus = ACTIVE): StoreDto!
+  updateStore(name: String, bio: String, avatar: String, categoryID: String, subCategoryID: String, location: CreateLocationDto, users: [CreateUserDto!], status: StoreStatus = ACTIVE, id: String!): StoreDto!
   deleteStore(id: String!): StoreDto!
   createCategory(nameAR: String!, nameEN: String!, status: CategoryStatus): CategoryDto!
   updateCategory(nameAR: String, nameEN: String, status: CategoryStatus, id: String!): CategoryDto!

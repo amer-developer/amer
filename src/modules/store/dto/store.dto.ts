@@ -28,6 +28,11 @@ export class StoreDto extends AbstractDto {
     @Type(() => Number)
     storeNumber: number;
 
+    @Field({ nullable: false })
+    @ApiProperty({ required: true })
+    @IsString()
+    name: string;
+
     @Field({ nullable: true })
     @ApiProperty({ required: false })
     @IsOptional()
@@ -82,11 +87,18 @@ export class StoreDto extends AbstractDto {
     constructor(store: StoreEntity) {
         super(store);
         this.storeNumber = store.storeNumber;
+        this.name = store.name;
         this.bio = store.bio;
         this.avatar = store.avatar;
-        this.category = store.category;
-        this.subCategory = store.subCategory;
-        this.location = store.location;
+        if (store.category) {
+            this.category = store.category.toDto();
+        }
+        if (store.subCategory) {
+            this.subCategory = store.subCategory.toDto();
+        }
+        if (store.location) {
+            this.location = store.location.toDto();
+        }
         this.status = store.status;
         if (store.users) {
             this.users = store.users.toDtos();

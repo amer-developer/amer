@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { FindConditions, FindOneOptions } from 'typeorm';
 
+import { GetOptionsDto } from '../../common/dto/GetOptionsDto';
 import { StoreNotFoundException } from '../../exceptions/store-not-found.exception';
 import { ValidatorService } from '../../shared/services/validator.service';
 import { CategoryService } from '../category/category.service';
@@ -81,8 +82,11 @@ export class StoreService {
         return items.toPageDto(pageMetaDto);
     }
 
-    async getStore(id: string) {
-        const storeEntity = await this.findOne({ id });
+    async getStore(id: string, options?: GetOptionsDto) {
+        const storeEntity = await this.findOne(
+            { id },
+            { relations: options?.includes },
+        );
 
         if (!storeEntity) {
             throw new StoreNotFoundException();
@@ -140,7 +144,7 @@ export class StoreService {
         let locationDto: LocationDto;
         let category: CategoryDto;
         let subCategory: SubCategoryDto;
-        let usersDto: UserDto[];
+        const usersDto: UserDto[] = [];
         const { categoryID, subCategoryID, users, location } = requestDto;
         if (categoryID) {
             category = await this.categoryService.getCategory(categoryID);

@@ -20,7 +20,6 @@ import { RequestDto } from './dto/request.dto';
 export class RequestEntity extends AbstractEntity<RequestDto> {
     @Column({
         nullable: false,
-        default: 'nextval(`request_number_sequence`)',
     })
     requestNumber: number;
 

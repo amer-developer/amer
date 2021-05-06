@@ -19,9 +19,11 @@ import { StoreDto } from './dto/store.dto';
 export class StoreEntity extends AbstractEntity<StoreDto> {
     @Column({
         nullable: false,
-        default: 'nextval(`store_number_sequence`)',
     })
     storeNumber: number;
+
+    @Column({ nullable: false })
+    name: string;
 
     @Column({ nullable: true })
     avatar: string;

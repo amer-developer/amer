@@ -18,6 +18,11 @@ import { CreateUserDto } from '../../user/dto/create-user.dto';
 
 @ArgsType()
 export class CreateStoreDto {
+    @Field()
+    @ApiProperty({ minLength: 4 })
+    @IsString()
+    readonly name: string;
+
     @Field({ nullable: true })
     @ApiProperty({ required: false })
     @IsOptional()
@@ -68,5 +73,5 @@ export class CreateStoreDto {
     })
     @IsEnum(StoreStatus)
     @IsOptional()
-    status: StoreStatus;
+    status: StoreStatus = StoreStatus.ACTIVE;
 }
