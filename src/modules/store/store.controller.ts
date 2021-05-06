@@ -31,7 +31,7 @@ export class StoreController {
     constructor(private storeService: StoreService) {}
 
     @Post()
-    @Auth(RoleType.ADMIN)
+    @Auth(RoleType.ADMIN, RoleType.SELLER)
     @HttpCode(HttpStatus.OK)
     @ApiResponse({
         status: HttpStatus.OK,
@@ -40,15 +40,19 @@ export class StoreController {
     })
     createStore(
         @Body()
-        store: CreateStoreDto,
+        storeRequest: CreateStoreDto,
         @AuthUser() user: UserEntity,
     ): Promise<StoreDto> {
+        if (user.role !== RoleType.ADMIN) {
+            storeRequest.users.push({ id: user.id });
+            storeRequest.users.map((st) => ({ ...st, role: RoleType.SELLER }));
+        }
         this.logger.debug(
             `Creating a new store, user: ${user.id}, store ${JSON.stringify(
-                store,
+                storeRequest,
             )}`,
         );
-        return this.storeService.createStore(store);
+        return this.storeService.createStore(storeRequest);
     }
 
     @Get()

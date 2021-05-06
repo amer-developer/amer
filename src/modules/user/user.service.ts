@@ -18,6 +18,7 @@ import { OTPService } from '../otp/otp.service';
 import { ProfileService } from '../profile/profile.service';
 import { ActivateUserDto } from './dto/activate-user.dto';
 import { ActivateUserRO } from './dto/activate-user.ro';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
 import { UsersPageOptionsDto } from './dto/users-page-options.dto';
@@ -70,6 +71,25 @@ export class UserService {
         }
 
         return queryBuilder.getOne();
+    }
+
+    createUserFromDto(createUserDto: CreateUserDto): Promise<UserEntity> {
+        const {
+            name,
+            email,
+            password,
+            phone,
+            profile,
+            location,
+        } = createUserDto;
+        return this.createUser({
+            name,
+            email,
+            password,
+            phone,
+            profile,
+            location,
+        });
     }
 
     async createUser(userRegisterDto: RegisterDto): Promise<UserEntity> {

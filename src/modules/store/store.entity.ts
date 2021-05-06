@@ -48,7 +48,9 @@ export class StoreEntity extends AbstractEntity<StoreDto> {
     })
     status: StoreStatus;
 
-    @OneToMany(() => UserEntity, (user) => user.store)
+    @OneToMany(() => UserEntity, (user) => user.store, {
+        cascade: true,
+    })
     users: UserEntity[];
 
     dtoClass = StoreDto;

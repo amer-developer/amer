@@ -91,7 +91,7 @@ export class StoreService {
         return storeEntity.toDto();
     }
 
-    async updateStore(id: string, store: UpdateStoreDto) {
+    async updateStore(id: string, storeDto: UpdateStoreDto) {
         const storeEntity = await this.findOne(
             { id },
             { relations: ['location'] },
@@ -105,11 +105,11 @@ export class StoreService {
             subCategory,
             location,
             users,
-        } = await this.validateRequestInputs(store, storeEntity.location.id);
+        } = await this.validateRequestInputs(storeDto, storeEntity.location.id);
 
-        await this.storeRepository.save({
+        const store = await this.storeRepository.save({
             id: storeEntity.id,
-            ...store,
+            ...storeDto,
             category,
             subCategory,
             location,
