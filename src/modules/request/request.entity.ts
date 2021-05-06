@@ -45,7 +45,7 @@ export class RequestEntity extends AbstractEntity<RequestDto> {
     @Column({
         type: 'enum',
         enum: RequestStatus,
-        default: RequestStatus.INACTIVE,
+        default: RequestStatus.ACTIVE,
     })
     status: RequestStatus;
 

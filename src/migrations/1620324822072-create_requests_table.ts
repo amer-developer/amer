@@ -17,7 +17,7 @@ export class CreateRequestsTable1620324822072 implements MigrationInterface {
             `CREATE TABLE "requests" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(),
             "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "request_number" character varying NOT NULL DEFAULT nextval('request_number_sequence'),
             "title" character varying NOT NULL, "description" character varying, "budget_min" numeric, "budget_max" numeric, "budget_currency"
-            character varying(3) NOT NULL DEFAULT 'SAR', "status" "requests_status_enum" NOT NULL DEFAULT 'INACTIVE', "category_id" uuid,
+            character varying(3) NOT NULL DEFAULT 'SAR', "status" "requests_status_enum" NOT NULL DEFAULT 'ACTIVE', "category_id" uuid,
             "sub_category_id" uuid, "location_id" uuid, "owner_id" uuid, CONSTRAINT "REL_369d2523b6e48eb1246f825eab" UNIQUE ("location_id"),
             CONSTRAINT "PK_0428f484e96f9e6a55955f29b5f" PRIMARY KEY ("id"))`,
         );

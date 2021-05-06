@@ -8,6 +8,7 @@ import {
     IsOptional,
     IsPhoneNumber,
     IsString,
+    IsUUID,
     MinLength,
 } from 'class-validator';
 
@@ -18,6 +19,12 @@ import { CreateProfileDto } from '../../profile/dto/create-profile.dto';
 
 @ArgsType()
 export class CreateUserDto {
+    @Field({ nullable: true })
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsUUID()
+    readonly id: string;
+
     @Field()
     @ApiProperty({ minLength: 4 })
     @IsString()
