@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreateRequestsTable1619890345961 implements MigrationInterface {
-    name = 'createRequestsTable1619890345961';
+export class CreateRequestsTable1620324822072 implements MigrationInterface {
+    name = 'createRequestsTable1620324822072';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(
@@ -11,12 +11,15 @@ export class CreateRequestsTable1619890345961 implements MigrationInterface {
             "CREATE TYPE \"requests_status_enum\" AS ENUM('ACTIVE', 'INACTIVE', 'EXPIRED', 'DELETED')",
         );
         await queryRunner.query(
+            'CREATE SEQUENCE request_number_sequence START WITH 1 INCREMENT BY 1 MAXVALUE 2147483647 MINVALUE 1;',
+        );
+        await queryRunner.query(
             `CREATE TABLE "requests" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-             "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "title" character varying NOT NULL, "description" character varying,
-             "budget_min" numeric, "budget_max" integer, "budget_currency" character varying NOT NULL DEFAULT 'SAR',
-             "status" "requests_status_enum" NOT NULL DEFAULT 'INACTIVE', "category_id" uuid, "sub_category_id" uuid,
-             "location_id" uuid, "owner_id" uuid, CONSTRAINT "REL_369d2523b6e48eb1246f825eab" UNIQUE ("location_id"),
-             CONSTRAINT "PK_0428f484e96f9e6a55955f29b5f" PRIMARY KEY ("id"))`,
+            "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "request_number" character varying NOT NULL DEFAULT nextval('request_number_sequence'),
+            "title" character varying NOT NULL, "description" character varying, "budget_min" numeric, "budget_max" numeric, "budget_currency"
+            character varying(3) NOT NULL DEFAULT 'SAR', "status" "requests_status_enum" NOT NULL DEFAULT 'INACTIVE', "category_id" uuid,
+            "sub_category_id" uuid, "location_id" uuid, "owner_id" uuid, CONSTRAINT "REL_369d2523b6e48eb1246f825eab" UNIQUE ("location_id"),
+            CONSTRAINT "PK_0428f484e96f9e6a55955f29b5f" PRIMARY KEY ("id"))`,
         );
         await queryRunner.query('ALTER TABLE "images" ADD "request_id" uuid');
         await queryRunner.query(
@@ -31,28 +34,28 @@ export class CreateRequestsTable1619890345961 implements MigrationInterface {
         await queryRunner.query('DROP TYPE "images_folder_enum_old"');
         await queryRunner.query('COMMENT ON COLUMN "images"."folder" IS NULL');
         await queryRunner.query(
-            `ALTER TABLE "sub_categories" ADD CONSTRAINT "FK_7a424f07f46010d3441442f7764" FOREIGN KEY ("category_id")
-             REFERENCES "categories"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+            `ALTER TABLE "sub_categories" ADD CONSTRAINT "FK_7a424f07f46010d3441442f7764" 
+            FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
         );
         await queryRunner.query(
-            `ALTER TABLE "images" ADD CONSTRAINT "FK_3829ef886b6fb957045bd062802" FOREIGN KEY ("request_id") REFERENCES 
-            "requests"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+            `ALTER TABLE "images" ADD CONSTRAINT "FK_3829ef886b6fb957045bd062802" FOREIGN KEY ("request_id") 
+            REFERENCES "requests"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
         );
         await queryRunner.query(
-            `ALTER TABLE "requests" ADD CONSTRAINT "FK_fe7f7a72de26bcefaa0344f7b4a" FOREIGN KEY ("category_id") REFERENCES 
-            "categories"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+            `ALTER TABLE "requests" ADD CONSTRAINT "FK_fe7f7a72de26bcefaa0344f7b4a" FOREIGN KEY ("category_id") 
+            REFERENCES "categories"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
         );
         await queryRunner.query(
             `ALTER TABLE "requests" ADD CONSTRAINT "FK_ee4826732542cacde90b5a3e420" FOREIGN KEY ("sub_category_id") 
             REFERENCES "sub_categories"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
         );
         await queryRunner.query(
-            `ALTER TABLE "requests" ADD CONSTRAINT "FK_369d2523b6e48eb1246f825eab1" FOREIGN KEY ("location_id") REFERENCES 
-            "locations"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+            `ALTER TABLE "requests" ADD CONSTRAINT "FK_369d2523b6e48eb1246f825eab1" FOREIGN KEY ("location_id") 
+            REFERENCES "locations"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
         );
         await queryRunner.query(
-            `ALTER TABLE "requests" ADD CONSTRAINT "FK_6188acb1c47a8e58b7058293642" FOREIGN KEY ("owner_id") REFERENCES 
-            "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+            `ALTER TABLE "requests" ADD CONSTRAINT "FK_6188acb1c47a8e58b7058293642" FOREIGN KEY ("owner_id") 
+            REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
         );
     }
 
@@ -90,10 +93,11 @@ export class CreateRequestsTable1619890345961 implements MigrationInterface {
             'ALTER TABLE "images" DROP COLUMN "request_id"',
         );
         await queryRunner.query('DROP TABLE "requests"');
+        await queryRunner.query('DROP SEQUENCE request_number_sequence');
         await queryRunner.query('DROP TYPE "requests_status_enum"');
         await queryRunner.query(
-            `ALTER TABLE "sub_categories" ADD CONSTRAINT "FK_5fdeaec083b0032b77b7d5a201d" FOREIGN KEY ("category_id") REFERENCES
-             "categories"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+            `ALTER TABLE "sub_categories" ADD CONSTRAINT "FK_5fdeaec083b0032b77b7d5a201d" FOREIGN KEY ("category_id") 
+            REFERENCES "categories"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
         );
     }
 }

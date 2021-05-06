@@ -23,6 +23,12 @@ import { RequestEntity } from '../request.entity';
 export class RequestDto extends AbstractDto {
     @Field({ nullable: false })
     @ApiProperty({ required: true })
+    @IsNumber()
+    @Type(() => Number)
+    requestNumber: number;
+
+    @Field({ nullable: false })
+    @ApiProperty({ required: true })
     @IsString()
     title: string;
 
@@ -92,6 +98,7 @@ export class RequestDto extends AbstractDto {
 
     constructor(request: RequestEntity) {
         super(request);
+        this.requestNumber = request.requestNumber;
         this.title = request.title;
         this.description = request.description;
         this.budgetMin = request.budgetMin;

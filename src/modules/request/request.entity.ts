@@ -18,6 +18,12 @@ import { RequestDto } from './dto/request.dto';
 
 @Entity({ name: 'requests' })
 export class RequestEntity extends AbstractEntity<RequestDto> {
+    @Column({
+        nullable: false,
+        default: 'nextval(`request_number_sequence`)',
+    })
+    requestNumber: number;
+
     @Column({ nullable: false })
     title: string;
 

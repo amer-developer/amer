@@ -140,6 +140,7 @@ type RequestDto {
   id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  requestNumber: Float!
   title: String!
   description: String
   budgetMin: Float
