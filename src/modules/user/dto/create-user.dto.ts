@@ -1,4 +1,4 @@
-import { ArgsType, Field } from '@nestjs/graphql';
+import { ArgsType, Field, InputType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -8,6 +8,7 @@ import {
     IsOptional,
     IsPhoneNumber,
     IsString,
+    IsUUID,
     MinLength,
 } from 'class-validator';
 
@@ -17,29 +18,36 @@ import { CreateLocationDto } from '../../location/dto/create-location.dto';
 import { CreateProfileDto } from '../../profile/dto/create-profile.dto';
 
 @ArgsType()
+@InputType()
 export class CreateUserDto {
+    @Field({ nullable: true })
+    @ApiProperty({ required: false })
+    @IsOptional()
+    @IsUUID()
+    readonly id?: string;
+
     @Field()
     @ApiProperty({ minLength: 4 })
     @IsString()
-    readonly name: string;
+    readonly name?: string;
 
     @Field({ nullable: true })
     @ApiProperty({ required: false })
     @IsString()
     @IsEmail()
     @IsOptional()
-    readonly email: string;
+    readonly email?: string;
 
     @Field()
     @ApiProperty({ minLength: 6 })
     @IsString()
     @MinLength(6)
-    readonly password: string;
+    readonly password?: string;
 
     @Field()
     @ApiProperty()
     @IsPhoneNumber('ZZ')
-    phone: string;
+    phone?: string;
 
     @Field(() => UserStatus)
     @ApiProperty({
@@ -49,7 +57,7 @@ export class CreateUserDto {
     })
     @IsEnum(UserStatus)
     @IsOptional()
-    status: UserStatus;
+    status?: UserStatus;
 
     @Field(() => RoleType, { nullable: true })
     @ApiProperty({
@@ -59,18 +67,18 @@ export class CreateUserDto {
     })
     @IsEnum(RoleType)
     @IsOptional()
-    role: RoleType;
+    role?: RoleType;
 
     @Field(() => CreateProfileDto, { nullable: true })
     @ApiProperty({ required: false, type: () => CreateProfileDto })
     @IsOptional()
     @IsObject()
-    profile: CreateProfileDto;
+    profile?: CreateProfileDto;
 
     @Field(() => CreateLocationDto, { nullable: true })
     @ApiProperty({ required: false, type: () => CreateLocationDto })
     @IsOptional()
     @Type(() => CreateLocationDto)
     @IsObject({ each: true })
-    location: CreateLocationDto;
+    location?: CreateLocationDto;
 }

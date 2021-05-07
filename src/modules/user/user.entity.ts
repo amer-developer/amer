@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
+import {
+    Column,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    OneToMany,
+    OneToOne,
+} from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
 import { RoleType } from '../../common/constants/role-type';
@@ -6,6 +13,7 @@ import { UserStatus } from '../../common/constants/user-status';
 import { LocationEntity } from '../location/location.entity';
 import { ProfileEntity } from '../profile/profile.entity';
 import { RequestEntity } from '../request/request.entity';
+import { StoreEntity } from '../store/store.entity';
 import { UserDto } from './dto/user.dto';
 
 @Entity({ name: 'users' })
@@ -40,6 +48,9 @@ export class UserEntity extends AbstractEntity<UserDto> {
 
     @OneToMany(() => RequestEntity, (request) => request.owner)
     requests: RequestEntity[];
+
+    @ManyToOne(() => StoreEntity, (store) => store.users)
+    store: StoreEntity;
 
     dtoClass = UserDto;
 }

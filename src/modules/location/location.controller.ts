@@ -30,27 +30,6 @@ export class LocationController {
     private logger = new Logger(LocationController.name);
     constructor(private locationService: LocationService) {}
 
-    // @Post()
-    // @Auth(RoleType.ADMIN)
-    // @HttpCode(HttpStatus.OK)
-    // @ApiResponse({
-    //     status: HttpStatus.OK,
-    //     description: 'New location',
-    //     type: LocationsPageDto,
-    // })
-    // createLocation(
-    //     @Body()
-    //     location: CreateLocationDto,
-    //     @AuthUser() user: UserEntity,
-    // ): Promise<LocationDto> {
-    //     this.logger.debug(
-    //         `Creating a new location, user: ${
-    //             user.id
-    //         }, location ${JSON.stringify(location)}`,
-    //     );
-    //     return this.locationService.createLocation(location);
-    // }
-
     @Get()
     @HttpCode(HttpStatus.OK)
     @ApiResponse({

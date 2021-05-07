@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { FindConditions, FindOneOptions } from 'typeorm';
 
+import { GetOptionsDto } from '../../common/dto/GetOptionsDto';
 import { ValidatorService } from '../../shared/services/validator.service';
 import { CountryService } from '../country/country.service';
 import { CityEntity } from './city.entity';
@@ -63,8 +64,15 @@ export class CityService {
         return items.toPageDto(pageMetaDto);
     }
 
-    async getCity(id: string) {
-        const cityEntity = await this.findOne({ id });
+    async getCity(id: string, options?: GetOptionsDto) {
+        const cityEntity = await this.findOne(
+            { id },
+            { relations: options?.includes },
+        );
+
+        if (!cityEntity) {
+            throw new HttpException('City not found', HttpStatus.NOT_FOUND);
+        }
 
         return cityEntity.toDto();
     }

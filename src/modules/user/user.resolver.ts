@@ -21,7 +21,9 @@ export class UserResolver {
     @Mutation(() => UserDto, { name: 'createUser' })
     @Auth(RoleType.ADMIN)
     async userRegister(@Args() createUserDto: CreateUserDto): Promise<UserDto> {
-        const createdUser = await this.userService.createUser(createUserDto);
+        const createdUser = await this.userService.createUserFromDto(
+            createUserDto,
+        );
         return createdUser.toDto();
     }
 

@@ -11,13 +11,13 @@ export class CreateRequestsTable1620324822072 implements MigrationInterface {
             "CREATE TYPE \"requests_status_enum\" AS ENUM('ACTIVE', 'INACTIVE', 'EXPIRED', 'DELETED')",
         );
         await queryRunner.query(
-            'CREATE SEQUENCE request_number_sequence START WITH 1 INCREMENT BY 1 MAXVALUE 2147483647 MINVALUE 1;',
+            'CREATE SEQUENCE request_reference_sequence START WITH 1 INCREMENT BY 1 MAXVALUE 2147483647 MINVALUE 1;',
         );
         await queryRunner.query(
             `CREATE TABLE "requests" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(),
-            "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "request_number" character varying NOT NULL DEFAULT nextval('request_number_sequence'),
+            "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "reference" character varying NOT NULL DEFAULT nextval('request_reference_sequence'),
             "title" character varying NOT NULL, "description" character varying, "budget_min" numeric, "budget_max" numeric, "budget_currency"
-            character varying(3) NOT NULL DEFAULT 'SAR', "status" "requests_status_enum" NOT NULL DEFAULT 'INACTIVE', "category_id" uuid,
+            character varying(3) NOT NULL DEFAULT 'SAR', "status" "requests_status_enum" NOT NULL DEFAULT 'ACTIVE', "category_id" uuid,
             "sub_category_id" uuid, "location_id" uuid, "owner_id" uuid, CONSTRAINT "REL_369d2523b6e48eb1246f825eab" UNIQUE ("location_id"),
             CONSTRAINT "PK_0428f484e96f9e6a55955f29b5f" PRIMARY KEY ("id"))`,
         );
@@ -93,7 +93,7 @@ export class CreateRequestsTable1620324822072 implements MigrationInterface {
             'ALTER TABLE "images" DROP COLUMN "request_id"',
         );
         await queryRunner.query('DROP TABLE "requests"');
-        await queryRunner.query('DROP SEQUENCE request_number_sequence');
+        await queryRunner.query('DROP SEQUENCE request_reference_sequence');
         await queryRunner.query('DROP TYPE "requests_status_enum"');
         await queryRunner.query(
             `ALTER TABLE "sub_categories" ADD CONSTRAINT "FK_5fdeaec083b0032b77b7d5a201d" FOREIGN KEY ("category_id") 

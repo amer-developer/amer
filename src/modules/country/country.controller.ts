@@ -14,6 +14,7 @@ import {
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { RoleType } from '../../common/constants/role-type';
+import { GetOptionsDto } from '../../common/dto/GetOptionsDto';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth, UUIDParam } from '../../decorators/http.decorators';
 import { UserEntity } from '../user/user.entity';
@@ -72,8 +73,12 @@ export class CountryController {
         description: 'Get a country',
         type: CountryDto,
     })
-    getCountry(@UUIDParam('id') countryId: string): Promise<CountryDto> {
-        return this.countryService.getCountry(countryId);
+    getCountry(
+        @UUIDParam('id') countryId: string,
+        @Query(new ValidationPipe({ transform: true }))
+        getOptionsDto: GetOptionsDto,
+    ): Promise<CountryDto> {
+        return this.countryService.getCountry(countryId, getOptionsDto);
     }
 
     @Put(':id')

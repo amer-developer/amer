@@ -14,6 +14,7 @@ import { UserStatus } from '../../../common/constants/user-status';
 import { AbstractDto } from '../../../common/dto/AbstractDto';
 import { LocationDto } from '../../location/dto/location.dto';
 import { ProfileDto } from '../../profile/dto/profile.dto';
+import { StoreDto } from '../../store/dto/store.dto';
 import { UserEntity } from '../user.entity';
 
 @ObjectType()
@@ -58,6 +59,12 @@ export class UserDto extends AbstractDto {
     @IsObject()
     location: LocationDto;
 
+    @Field(() => StoreDto, { nullable: true })
+    @ApiProperty({ required: false, type: () => StoreDto })
+    @IsOptional()
+    @IsObject()
+    store: StoreDto;
+
     constructor(user: UserEntity) {
         super(user);
         this.name = user.name;
@@ -70,6 +77,9 @@ export class UserDto extends AbstractDto {
         }
         if (user.location) {
             this.location = user.location.toDto();
+        }
+        if (user.store) {
+            this.store = user.store.toDto();
         }
     }
 }

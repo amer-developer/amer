@@ -25,7 +25,7 @@ export class RequestDto extends AbstractDto {
     @ApiProperty({ required: true })
     @IsNumber()
     @Type(() => Number)
-    requestNumber: number;
+    reference: number;
 
     @Field({ nullable: false })
     @ApiProperty({ required: true })
@@ -98,7 +98,7 @@ export class RequestDto extends AbstractDto {
 
     constructor(request: RequestEntity) {
         super(request);
-        this.requestNumber = request.requestNumber;
+        this.reference = request.reference;
         this.title = request.title;
         this.description = request.description;
         this.budgetMin = request.budgetMin;

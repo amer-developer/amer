@@ -1,6 +1,6 @@
 {
     "name": "amer-backend",
-    "version": "7.0.1",
+    "version": "0.1.1",
     "description": "Amer backend built with NestJS, Typescript, Postgres, TypeORM",
     "author": "Saud Alhelali <alhelali@saud.tech>",
     "license": "MIT",    

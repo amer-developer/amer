@@ -20,9 +20,8 @@ import { RequestDto } from './dto/request.dto';
 export class RequestEntity extends AbstractEntity<RequestDto> {
     @Column({
         nullable: false,
-        default: 'nextval(`request_number_sequence`)',
     })
-    requestNumber: number;
+    reference: number;
 
     @Column({ nullable: false })
     title: string;
@@ -45,7 +44,7 @@ export class RequestEntity extends AbstractEntity<RequestDto> {
     @Column({
         type: 'enum',
         enum: RequestStatus,
-        default: RequestStatus.INACTIVE,
+        default: RequestStatus.ACTIVE,
     })
     status: RequestStatus;
 

@@ -18,6 +18,7 @@ import { OTPModule } from './modules/otp/otp.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { RequestModule } from './modules/request/request.module';
 import { SMSModule } from './modules/sms/sms.module';
+import { StoreModule } from './modules/store/store.module';
 import { SubCategoryModule } from './modules/sub-category/sub-category.module';
 import { UserModule } from './modules/user/user.module';
 import { ConfigService } from './shared/services/config.service';
@@ -28,6 +29,7 @@ import { SharedModule } from './shared/shared.module';
         AuthModule,
         UserModule,
         ProfileModule,
+        StoreModule,
         CountryModule,
         CityModule,
         DistrictModule,

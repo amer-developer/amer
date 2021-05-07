@@ -18,7 +18,9 @@ import { OTPService } from '../otp/otp.service';
 import { ProfileService } from '../profile/profile.service';
 import { ActivateUserDto } from './dto/activate-user.dto';
 import { ActivateUserRO } from './dto/activate-user.ro';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserDto } from './dto/user.dto';
 import { UsersPageOptionsDto } from './dto/users-page-options.dto';
 import { UsersPageDto } from './dto/users-page.dto';
 import { UserEntity } from './user.entity';
@@ -69,6 +71,25 @@ export class UserService {
         }
 
         return queryBuilder.getOne();
+    }
+
+    createUserFromDto(createUserDto: CreateUserDto): Promise<UserEntity> {
+        const {
+            name,
+            email,
+            password,
+            phone,
+            profile,
+            location,
+        } = createUserDto;
+        return this.createUser({
+            name,
+            email,
+            password,
+            phone,
+            profile,
+            location,
+        });
     }
 
     async createUser(userRegisterDto: RegisterDto): Promise<UserEntity> {
@@ -194,7 +215,7 @@ export class UserService {
         return items.toPageDto(pageMetaDto);
     }
 
-    async getUser(id: string, options?: GetOptionsDto) {
+    async getUser(id: string, options?: GetOptionsDto): Promise<UserDto> {
         const userEntity = await this.findOne(
             { id },
             { relations: options?.includes },

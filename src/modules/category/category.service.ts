@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { FindConditions } from 'typeorm';
+import { FindConditions, FindOneOptions } from 'typeorm';
 
+import { GetOptionsDto } from '../../common/dto/GetOptionsDto';
 import { CategoryNotFoundException } from '../../exceptions/category-not-found.exception';
 import { ValidatorService } from '../../shared/services/validator.service';
 import { CategoryEntity } from './category.entity';
@@ -22,8 +23,11 @@ export class CategoryService {
     /**
      * Find single category
      */
-    findOne(findData: FindConditions<CategoryEntity>): Promise<CategoryEntity> {
-        return this.categoryRepository.findOne(findData);
+    findOne(
+        findData: FindConditions<CategoryEntity>,
+        findOptions?: FindOneOptions<CategoryEntity>,
+    ): Promise<CategoryEntity> {
+        return this.categoryRepository.findOne(findData, findOptions);
     }
 
     async createCategory(categoryDto: CreateCategoryDto): Promise<CategoryDto> {
@@ -56,8 +60,11 @@ export class CategoryService {
         return items.toPageDto(pageMetaDto);
     }
 
-    async getCategory(id: string) {
-        const categoryEntity = await this.findOne({ id });
+    async getCategory(id: string, options?: GetOptionsDto) {
+        const categoryEntity = await this.findOne(
+            { id },
+            { relations: options?.includes },
+        );
 
         if (!categoryEntity) {
             throw new CategoryNotFoundException();

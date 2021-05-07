@@ -18,20 +18,6 @@ export class LocationResolver {
 
     constructor(private locationService: LocationService) {}
 
-    // @Mutation(() => LocationDto, { name: 'createLocation' })
-    // @Auth(RoleType.ADMIN)
-    // createLocation(
-    //     @Args()
-    //     location: CreateLocationDto,
-    //     @AuthUser() user: UserEntity,
-    // ): Promise<LocationDto> {
-    //     this.logger.debug(
-    //         `Creating a new location, user: ${
-    //             user.id
-    //         }, location ${JSON.stringify(location)}`,
-    //     );
-    //     return this.locationService.createLocation(location);
-    // }
     @Query(() => LocationsPageDto, { name: 'locations' })
     getLocations(
         @Args()

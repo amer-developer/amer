@@ -110,6 +110,27 @@ type ProfileDto {
   avatar: String
 }
 
+type StoreDto {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  reference: Float!
+  name: String!
+  bio: String
+  avatar: String
+  category: CategoryDto!
+  subCategory: SubCategoryDto!
+  location: LocationDto
+  users: [UserDto!]
+  status: StoreStatus
+}
+
+enum StoreStatus {
+  ACTIVE
+  INACTIVE
+  DELETED
+}
+
 type UserDto {
   id: String!
   createdAt: DateTime!
@@ -121,6 +142,7 @@ type UserDto {
   status: UserStatus!
   profile: ProfileDto
   location: LocationDto
+  store: StoreDto
 }
 
 enum RoleType {
@@ -140,7 +162,7 @@ type RequestDto {
   id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
-  requestNumber: Float!
+  reference: Float!
   title: String!
   description: String
   budgetMin: Float
@@ -301,6 +323,11 @@ type RequestsPageDto {
   meta: PageMetaDto!
 }
 
+type StoresPageDto {
+  data: [StoreDto!]!
+  meta: PageMetaDto!
+}
+
 type Query {
   me: UserDto!
   users(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): UsersPageDto!
@@ -319,12 +346,14 @@ type Query {
   otp(id: String!): OTPDto!
   smsList(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): SMSPageDto!
   sms(id: String!): SMSDto!
-  images(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): ImagesPageDto!
-  image(id: String!): ImageDto!
+  stores(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): StoresPageDto!
+  store(id: String!): StoreDto!
   categories(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): CategoriesPageDto!
   category(id: String!): CategoryDto!
   subCategories(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): SubCategoriesPageDto!
   subCategory(id: String!): SubCategoryDto!
+  images(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): ImagesPageDto!
+  image(id: String!): ImageDto!
   requests(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): RequestsPageDto!
   request(include: String, id: String!): RequestDto!
 }
@@ -339,10 +368,10 @@ type Mutation {
   register(name: String!, email: String, password: String!, phone: String!, profile: CreateProfileDto, location: CreateLocationDto): LoginRo!
   resetPassword(phone: String!): ResetPasswordRo!
   changePassword(phone: String!, otp: String, oldPassword: String, password: String!): ChangePasswordRo!
-  createUser(name: String!, email: String, password: String!, phone: String!, status: UserStatus!, role: RoleType, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
-  me(name: String, email: String, password: String, phone: String, status: UserStatus, role: RoleType, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
+  createUser(id: String, name: String!, email: String, password: String!, phone: String!, status: UserStatus!, role: RoleType, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
+  me(id: String, name: String, email: String, password: String, phone: String, status: UserStatus, role: RoleType, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
   activate(phone: String!, otp: String!): ActivateUserRO!
-  updateUser(id: String!, name: String, email: String, password: String, phone: String, status: UserStatus, role: RoleType, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
+  updateUser(id: String, name: String, email: String, password: String, phone: String, status: UserStatus, role: RoleType, profile: CreateProfileDto, location: CreateLocationDto): UserDto!
   updateLocation(id: String!): LocationDto!
   deleteLocation(id: String!): LocationDto!
   createCity(nameAR: String!, nameEN: String!, countryCode: String!): CityDto!
@@ -361,16 +390,19 @@ type Mutation {
   sendSMS(phone: String!, body: String!): SMSSentRo!
   updateSMS(phone: String, body: String, id: String!): SMSDto!
   deleteSMS(id: String!): SMSDto!
-  createImage(file: Upload, id: String, url: String, name: String, folder: ImageType): ImageDto!
-  uploadImage(file: Upload): ImageDto!
-  updateImage(id: String!): ImageDto!
-  deleteImage(id: String!): ImageDto!
+  createStore(name: String!, bio: String, avatar: String, categoryID: String!, subCategoryID: String, location: CreateLocationDto!, users: [CreateUserDto!], status: StoreStatus = ACTIVE): StoreDto!
+  updateStore(name: String, bio: String, avatar: String, categoryID: String, subCategoryID: String, location: CreateLocationDto, users: [CreateUserDto!], status: StoreStatus = ACTIVE, id: String!): StoreDto!
+  deleteStore(id: String!): StoreDto!
   createCategory(nameAR: String!, nameEN: String!, status: CategoryStatus): CategoryDto!
   updateCategory(nameAR: String, nameEN: String, status: CategoryStatus, id: String!): CategoryDto!
   deleteCategory(id: String!): CategoryDto!
   createSubCategory(nameAR: String!, nameEN: String!, categoryID: String!, status: SubCategoryStatus): SubCategoryDto!
   updateSubCategory(nameAR: String, nameEN: String, categoryID: String, status: SubCategoryStatus, id: String!): SubCategoryDto!
   deleteSubCategory(id: String!): SubCategoryDto!
+  createImage(file: Upload, id: String, url: String, name: String, folder: ImageType): ImageDto!
+  uploadImage(file: Upload): ImageDto!
+  updateImage(id: String!): ImageDto!
+  deleteImage(id: String!): ImageDto!
   createRequest(title: String!, description: String, budgetMin: Float, budgetMax: Float, budgetCurrency: String, images: [CreateImageDto!], categoryID: String!, subCategoryID: String, location: CreateLocationDto!, status: RequestStatus!, ownerID: String): RequestDto!
   updateRequest(title: String, description: String, budgetMin: Float, budgetMax: Float, budgetCurrency: String, images: [CreateImageDto!], categoryID: String, subCategoryID: String, location: CreateLocationDto, status: RequestStatus, ownerID: String, id: String!): RequestDto!
   deleteRequest(id: String!): RequestDto!
@@ -386,6 +418,18 @@ input CreateLocationDto {
   address2: String
   cityID: String!
   districtID: String
+}
+
+input CreateUserDto {
+  id: String
+  name: String!
+  email: String
+  password: String!
+  phone: String!
+  status: UserStatus!
+  role: RoleType
+  profile: CreateProfileDto
+  location: CreateLocationDto
 }
 
 """The `Upload` scalar type represents a file upload."""
