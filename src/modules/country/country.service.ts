@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { FindConditions } from 'typeorm';
+import { FindConditions, FindOneOptions } from 'typeorm';
 
+import { GetOptionsDto } from '../../common/dto/GetOptionsDto';
 import { CountryNotFoundException } from '../../exceptions/country-not-found.exception';
 import { ValidatorService } from '../../shared/services/validator.service';
 import { CountryEntity } from './country.entity';
@@ -22,8 +23,11 @@ export class CountryService {
     /**
      * Find single country
      */
-    findOne(findData: FindConditions<CountryEntity>): Promise<CountryEntity> {
-        return this.countryRepository.findOne(findData);
+    findOne(
+        findData: FindConditions<CountryEntity>,
+        findOptions?: FindOneOptions<CountryEntity>,
+    ): Promise<CountryEntity> {
+        return this.countryRepository.findOne(findData, findOptions);
     }
 
     async createCountry(countryDto: CreateCountryDto): Promise<CountryDto> {
@@ -54,8 +58,11 @@ export class CountryService {
         return items.toPageDto(pageMetaDto);
     }
 
-    async getCountry(id: string) {
-        const countryEntity = await this.findOne({ id });
+    async getCountry(id: string, options?: GetOptionsDto) {
+        const countryEntity = await this.findOne(
+            { id },
+            { relations: options?.includes },
+        );
 
         if (!countryEntity) {
             throw new CountryNotFoundException();

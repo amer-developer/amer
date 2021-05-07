@@ -14,6 +14,7 @@ import {
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { RoleType } from '../../common/constants/role-type';
+import { GetOptionsDto } from '../../common/dto/GetOptionsDto';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { Auth, UUIDParam } from '../../decorators/http.decorators';
 import { UserEntity } from '../user/user.entity';
@@ -72,8 +73,12 @@ export class CategoryController {
         description: 'Get a category',
         type: CategoryDto,
     })
-    getCategory(@UUIDParam('id') categoryId: string): Promise<CategoryDto> {
-        return this.categoryService.getCategory(categoryId);
+    getCategory(
+        @UUIDParam('id') categoryId: string,
+        @Query(new ValidationPipe({ transform: true }))
+        getOptionsDto: GetOptionsDto,
+    ): Promise<CategoryDto> {
+        return this.categoryService.getCategory(categoryId, getOptionsDto);
     }
 
     @Put(':id')
