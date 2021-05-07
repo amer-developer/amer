@@ -67,7 +67,18 @@ export class RequestService {
         });
 
         const savedEntity = await this.requestRepository.save(request);
-        return savedEntity.toDto();
+
+        this.logger.log(`Created request ${JSON.stringify(savedEntity)}`);
+
+        return this.getRequest(savedEntity.id, {
+            includes: [
+                'location',
+                'category',
+                'subCategory',
+                'images',
+                'owner',
+            ],
+        });
     }
 
     async getRequests(

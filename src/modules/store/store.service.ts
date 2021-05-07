@@ -59,7 +59,12 @@ export class StoreService {
         });
 
         const savedEntity = await this.storeRepository.save(store);
-        return savedEntity.toDto();
+
+        this.logger.log(`Created request ${JSON.stringify(savedEntity)}`);
+
+        return this.getStore(savedEntity.id, {
+            includes: ['location', 'category', 'subCategory', 'users'],
+        });
     }
 
     async getStores(
@@ -70,7 +75,7 @@ export class StoreService {
 
         if (pageOptionsDto.q) {
             queryBuilder = queryBuilder.searchByString(pageOptionsDto.q, [
-                'storeNumber',
+                'reference',
                 'bio',
             ]);
         }

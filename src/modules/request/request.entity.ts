@@ -21,7 +21,7 @@ export class RequestEntity extends AbstractEntity<RequestDto> {
     @Column({
         nullable: false,
     })
-    requestNumber: number;
+    reference: number;
 
     @Column({ nullable: false })
     title: string;

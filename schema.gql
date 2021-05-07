@@ -114,7 +114,7 @@ type StoreDto {
   id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
-  storeNumber: Float!
+  reference: Float!
   name: String!
   bio: String
   avatar: String
@@ -162,7 +162,7 @@ type RequestDto {
   id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
-  requestNumber: Float!
+  reference: Float!
   title: String!
   description: String
   budgetMin: Float

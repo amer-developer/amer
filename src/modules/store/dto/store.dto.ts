@@ -26,7 +26,7 @@ export class StoreDto extends AbstractDto {
     @ApiProperty({ required: true })
     @IsNumber()
     @Type(() => Number)
-    storeNumber: number;
+    reference: number;
 
     @Field({ nullable: false })
     @ApiProperty({ required: true })
@@ -86,7 +86,7 @@ export class StoreDto extends AbstractDto {
 
     constructor(store: StoreEntity) {
         super(store);
-        this.storeNumber = store.storeNumber;
+        this.reference = store.reference;
         this.name = store.name;
         this.bio = store.bio;
         this.avatar = store.avatar;

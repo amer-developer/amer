@@ -20,7 +20,7 @@ export class StoreEntity extends AbstractEntity<StoreDto> {
     @Column({
         nullable: false,
     })
-    storeNumber: number;
+    reference: number;
 
     @Column({ nullable: false })
     name: string;
