@@ -49,7 +49,6 @@ export class CategoryService {
             queryBuilder = queryBuilder.searchByString(pageOptionsDto.q, [
                 'nameAR',
                 'nameEN',
-                'code',
             ]);
         }
 
