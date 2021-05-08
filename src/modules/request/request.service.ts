@@ -45,17 +45,14 @@ export class RequestService {
         return this.requestRepository.findOne(findData, findOneOptions);
     }
 
-    async createRequest(
-        requestDto: CreateRequestDto,
-        user: UserDto,
-    ): Promise<RequestDto> {
+    async createRequest(requestDto: CreateRequestDto): Promise<RequestDto> {
         const {
             category,
             subCategory,
             location,
             images,
             owner,
-        } = await this.validateRequestInputs(requestDto, user);
+        } = await this.validateRequestInputs(requestDto);
 
         const request = this.requestRepository.create({
             ...requestDto,
@@ -100,7 +97,7 @@ export class RequestService {
         if (pageOptionsDto.q) {
             queryBuilder = queryBuilder.searchByString(
                 pageOptionsDto.q,
-                ['title', 'description'],
+                ['title', 'description', 'reference'],
                 true,
             );
         }
@@ -125,11 +122,7 @@ export class RequestService {
         return requestEntity.toDto();
     }
 
-    async updateRequest(
-        id: string,
-        requestDto: UpdateRequestDto,
-        user: UserDto,
-    ) {
+    async updateRequest(id: string, requestDto: UpdateRequestDto) {
         const requestEntity = await this.findOne(
             { id },
             { relations: ['location'] },
@@ -146,7 +139,6 @@ export class RequestService {
             owner,
         } = await this.validateRequestInputs(
             requestDto,
-            user,
             requestEntity.location.id,
         );
 
@@ -181,14 +173,13 @@ export class RequestService {
 
     private async validateRequestInputs(
         requestDto: Partial<CreateRequestDto>,
-        user: UserDto,
         locationID?: string,
     ) {
         let locationDto: LocationDto;
         let category: CategoryDto;
         let subCategory: SubCategoryDto;
         let imagesDto: CreateImageDto[];
-        let owner = user;
+        let owner: UserDto;
         const {
             categoryID,
             subCategoryID,

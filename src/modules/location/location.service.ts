@@ -35,10 +35,6 @@ export class LocationService {
         locationDto: CreateLocationDto,
         existingID?: string,
     ): Promise<LocationDto> {
-        if (locationDto.cityID && locationDto.districtID) {
-            throw new HttpException('One is required', HttpStatus.BAD_REQUEST);
-        }
-
         let city: CityDto;
 
         if (locationDto.cityID) {

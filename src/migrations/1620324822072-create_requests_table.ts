@@ -11,7 +11,7 @@ export class CreateRequestsTable1620324822072 implements MigrationInterface {
             "CREATE TYPE \"requests_status_enum\" AS ENUM('ACTIVE', 'INACTIVE', 'EXPIRED', 'DELETED')",
         );
         await queryRunner.query(
-            'CREATE SEQUENCE request_reference_sequence START WITH 1 INCREMENT BY 1 MAXVALUE 2147483647 MINVALUE 1;',
+            'CREATE SEQUENCE request_reference_sequence START WITH 1000 INCREMENT BY 1 MAXVALUE 2147483647 MINVALUE 1;',
         );
         await queryRunner.query(
             `CREATE TABLE "requests" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(),

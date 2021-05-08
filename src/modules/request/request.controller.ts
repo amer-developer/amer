@@ -45,7 +45,7 @@ export class RequestController {
         @AuthUser() user: UserEntity,
     ): Promise<RequestDto> {
         if (user.role !== RoleType.ADMIN) {
-            delete request.ownerID;
+            request.ownerID = user.id;
         }
         this.logger.debug(
             `Creating a new request, user: ${user.id}, request ${JSON.stringify(
@@ -53,7 +53,7 @@ export class RequestController {
             )}`,
         );
         this.logger.debug(request.images);
-        return this.requestService.createRequest(request, user.toDto());
+        return this.requestService.createRequest(request);
     }
 
     @Get()
@@ -99,7 +99,7 @@ export class RequestController {
         @AuthUser() user: UserEntity,
     ): Promise<RequestDto> {
         if (user.role !== RoleType.ADMIN) {
-            delete request.ownerID;
+            request.ownerID = user.id;
         }
 
         this.logger.debug(
@@ -108,11 +108,7 @@ export class RequestController {
             )}`,
         );
 
-        return this.requestService.updateRequest(
-            requestId,
-            request,
-            user.toDto(),
-        );
+        return this.requestService.updateRequest(requestId, request);
     }
 
     @Delete(':id')

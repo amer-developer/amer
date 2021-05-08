@@ -27,14 +27,14 @@ export class RequestResolver {
         @AuthUser() user: UserEntity,
     ): Promise<RequestDto> {
         if (user.role !== RoleType.ADMIN) {
-            delete request.ownerID;
+            request.ownerID = user.id;
         }
         this.logger.debug(
             `Creating a new request, user: ${user.id}, request ${JSON.stringify(
                 request,
             )}`,
         );
-        return this.requestService.createRequest(request, user.toDto());
+        return this.requestService.createRequest(request);
     }
     @Query(() => RequestsPageDto, { name: 'requests' })
     getRequests(
@@ -60,7 +60,7 @@ export class RequestResolver {
         @AuthUser() user: UserEntity,
     ): Promise<RequestDto> {
         if (user.role !== RoleType.ADMIN) {
-            delete request.ownerID;
+            request.ownerID = user.id;
         }
         this.logger.debug(
             `Update request, user: ${user.id}, request ${JSON.stringify(
@@ -68,7 +68,7 @@ export class RequestResolver {
             )}`,
         );
 
-        return this.requestService.updateRequest(id, request, user.toDto());
+        return this.requestService.updateRequest(id, request);
     }
 
     @Mutation(() => RequestDto, { name: 'deleteRequest' })

@@ -10,7 +10,7 @@ export class createStoresTable1620332939820 implements MigrationInterface {
             "CREATE TYPE \"stores_status_enum\" AS ENUM('ACTIVE', 'INACTIVE', 'DELETED')",
         );
         await queryRunner.query(
-            'CREATE SEQUENCE store_reference_sequence START WITH 1 INCREMENT BY 1 MAXVALUE 2147483647 MINVALUE 1;',
+            'CREATE SEQUENCE store_reference_sequence START WITH 1000 INCREMENT BY 1 MAXVALUE 2147483647 MINVALUE 1;',
         );
         await queryRunner.query(
             'CREATE TABLE "stores" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "reference" integer NOT NULL DEFAULT nextval(\'store_reference_sequence\'), "name" character varying NOT NULL,  "avatar" character varying, "bio" character varying, "status" "stores_status_enum" NOT NULL DEFAULT \'INACTIVE\', "category_id" uuid, "sub_category_id" uuid, "location_id" uuid, CONSTRAINT "REL_63adcb0fb5f55a15434453e80a" UNIQUE ("location_id"), CONSTRAINT "PK_7aa6e7d71fa7acdd7ca43d7c9cb" PRIMARY KEY ("id"))',
