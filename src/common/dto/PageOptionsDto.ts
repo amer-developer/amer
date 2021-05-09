@@ -91,8 +91,22 @@ export class PageOptionsDto {
                 ? this.filter
                       .split(',')
                       .splice(0, 1)
-                      .map((val) => this.mapFilters(val))
-                : this.filter.split(',').map((val) => this.mapFilters(val))
+                      .map((val) => {
+                          const filter = val.split('=');
+                          return {
+                              name: filter[0],
+                              value: filter[1],
+                          };
+                      })
+                : this.filter.split(',').map((val) => {
+                      {
+                          const filter = val.split('=');
+                          return {
+                              name: filter[0],
+                              value: filter[1],
+                          };
+                      }
+                  })
             : [];
     }
 
@@ -102,12 +116,4 @@ export class PageOptionsDto {
     @IsNotEmpty()
     @IsOptional()
     readonly q?: string;
-
-    private mapFilters = (val) => {
-        const filter = val.split('=');
-        return {
-            name: filter[0],
-            value: filter[1],
-        };
-    };
 }
