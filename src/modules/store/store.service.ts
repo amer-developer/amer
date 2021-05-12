@@ -48,6 +48,7 @@ export class StoreService {
             subCategory,
             location,
             users,
+            owner,
         } = await this.validateRequestInputs(storeDto);
 
         const store = this.storeRepository.create({
@@ -56,6 +57,7 @@ export class StoreService {
             subCategory,
             location,
             users,
+            owner,
         });
 
         const savedEntity = await this.storeRepository.save(store);
@@ -114,6 +116,7 @@ export class StoreService {
             subCategory,
             location,
             users,
+            owner,
         } = await this.validateRequestInputs(storeDto, storeEntity.location.id);
 
         const store = await this.storeRepository.save({
@@ -123,6 +126,7 @@ export class StoreService {
             subCategory,
             location,
             users,
+            owner,
         });
 
         let updatedStore = storeEntity.toDto();
@@ -149,8 +153,15 @@ export class StoreService {
         let locationDto: LocationDto;
         let category: CategoryDto;
         let subCategory: SubCategoryDto;
+        let owner: UserDto;
         const usersDto: UserDto[] = [];
-        const { categoryID, subCategoryID, users, location } = requestDto;
+        const {
+            categoryID,
+            subCategoryID,
+            users,
+            location,
+            ownerID,
+        } = requestDto;
         if (categoryID) {
             category = await this.categoryService.getCategory(categoryID);
         }
@@ -173,9 +184,14 @@ export class StoreService {
             );
         }
 
+        if (ownerID) {
+            owner = await this.userService.getUser(ownerID);
+        }
+
         return {
             category,
             subCategory,
+            owner,
             users: usersDto,
             location: locationDto,
         };
