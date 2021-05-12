@@ -122,6 +122,7 @@ type StoreDto {
   subCategory: SubCategoryDto!
   location: LocationDto
   users: [UserDto!]
+  owner: UserDto
   status: StoreStatus
 }
 
@@ -390,8 +391,8 @@ type Mutation {
   sendSMS(phone: String!, body: String!): SMSSentRo!
   updateSMS(phone: String, body: String, id: String!): SMSDto!
   deleteSMS(id: String!): SMSDto!
-  createStore(name: String!, bio: String, avatar: String, categoryID: String!, subCategoryID: String, location: CreateLocationDto!, users: [CreateUserDto!], status: StoreStatus = ACTIVE): StoreDto!
-  updateStore(name: String, bio: String, avatar: String, categoryID: String, subCategoryID: String, location: CreateLocationDto, users: [CreateUserDto!], status: StoreStatus = ACTIVE, id: String!): StoreDto!
+  createStore(name: String!, bio: String, avatar: String, categoryID: String!, subCategoryID: String, location: CreateLocationDto!, users: [CreateUserDto!], ownerID: String, status: StoreStatus = ACTIVE): StoreDto!
+  updateStore(name: String, bio: String, avatar: String, categoryID: String, subCategoryID: String, location: CreateLocationDto, users: [CreateUserDto!], ownerID: String, status: StoreStatus = ACTIVE, id: String!): StoreDto!
   deleteStore(id: String!): StoreDto!
   createCategory(nameAR: String!, nameEN: String!, status: CategoryStatus): CategoryDto!
   updateCategory(nameAR: String, nameEN: String, status: CategoryStatus, id: String!): CategoryDto!

@@ -74,6 +74,12 @@ export class StoreDto extends AbstractDto {
     @ValidateNested({ each: true })
     users: UserDto[];
 
+    @Field(() => UserDto, { nullable: true })
+    @ApiProperty({ type: () => UserDto })
+    @IsObject()
+    @IsOptional()
+    owner: UserDto;
+
     @Field(() => StoreStatus, { nullable: true })
     @ApiProperty({
         required: true,
@@ -102,6 +108,9 @@ export class StoreDto extends AbstractDto {
         this.status = store.status;
         if (store.users) {
             this.users = store.users.toDtos();
+        }
+        if (store.owner) {
+            this.owner = store.owner.toDto();
         }
     }
 }

@@ -65,6 +65,12 @@ export class CreateStoreDto {
     @ValidateNested({ each: true })
     users: CreateUserDto[];
 
+    @Field({ nullable: true })
+    @ApiProperty({ required: false })
+    @IsUUID()
+    @IsOptional()
+    ownerID: string;
+
     @Field(() => StoreStatus, { nullable: true })
     @ApiProperty({
         required: true,

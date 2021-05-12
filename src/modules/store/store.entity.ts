@@ -55,5 +55,9 @@ export class StoreEntity extends AbstractEntity<StoreDto> {
     })
     users: UserEntity[];
 
+    @OneToOne(() => UserEntity)
+    @JoinColumn()
+    owner: UserEntity;
+
     dtoClass = StoreDto;
 }

@@ -48,6 +48,7 @@ export class StoreController {
             storeRequest.users = storeRequest.users ?? [];
             storeRequest.users.push({ id: user.id });
             storeRequest.users.map((st) => ({ ...st, role: RoleType.SELLER }));
+            storeRequest.ownerID = user.id;
         }
         this.logger.debug(
             `Creating a new store, user: ${user.id}, store ${JSON.stringify(
