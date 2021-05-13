@@ -76,21 +76,6 @@ enum SubCategoryStatus {
   DELETED
 }
 
-type ImageDto {
-  id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  name: String!
-  folder: ImageType!
-  url: String!
-}
-
-enum ImageType {
-  PROFILE
-  REQUEST
-  OFFER
-}
-
 type LocationDto {
   id: String!
   createdAt: DateTime!
@@ -108,28 +93,6 @@ type ProfileDto {
   updatedAt: DateTime!
   bio: String
   avatar: String
-}
-
-type StoreDto {
-  id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  reference: Float!
-  name: String!
-  bio: String
-  avatar: String
-  category: CategoryDto!
-  subCategory: SubCategoryDto!
-  location: LocationDto
-  users: [UserDto!]
-  owner: UserDto
-  status: StoreStatus
-}
-
-enum StoreStatus {
-  ACTIVE
-  INACTIVE
-  DELETED
 }
 
 type UserDto {
@@ -159,6 +122,43 @@ enum UserStatus {
   DELETED
 }
 
+type StoreDto {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  reference: Float!
+  name: String!
+  bio: String
+  avatar: String
+  category: CategoryDto!
+  subCategory: SubCategoryDto!
+  location: LocationDto
+  users: [UserDto!]
+  owner: UserDto
+  status: StoreStatus
+}
+
+enum StoreStatus {
+  ACTIVE
+  INACTIVE
+  DELETED
+}
+
+type ImageDto {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  folder: ImageType!
+  url: String!
+}
+
+enum ImageType {
+  PROFILE
+  REQUEST
+  OFFER
+}
+
 type RequestDto {
   id: String!
   createdAt: DateTime!
@@ -174,10 +174,34 @@ type RequestDto {
   subCategory: SubCategoryDto!
   location: LocationDto
   owner: UserDto!
+  offers: [OfferDto!]
   status: RequestStatus!
 }
 
 enum RequestStatus {
+  ACTIVE
+  INACTIVE
+  EXPIRED
+  DELETED
+}
+
+type OfferDto {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  reference: Float!
+  title: String
+  description: String!
+  price: Float
+  priceCurrency: String
+  images: [ImageDto!]
+  request: RequestDto!
+  owner: UserDto!
+  store: StoreDto!
+  status: OfferStatus!
+}
+
+enum OfferStatus {
   ACTIVE
   INACTIVE
   EXPIRED
@@ -329,6 +353,11 @@ type StoresPageDto {
   meta: PageMetaDto!
 }
 
+type OffersPageDto {
+  data: [OfferDto!]!
+  meta: PageMetaDto!
+}
+
 type Query {
   me: UserDto!
   users(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): UsersPageDto!
@@ -357,6 +386,8 @@ type Query {
   image(id: String!): ImageDto!
   requests(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): RequestsPageDto!
   request(include: String, id: String!): RequestDto!
+  offers(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): OffersPageDto!
+  offer(include: String, id: String!): OfferDto!
 }
 
 enum Order {
@@ -407,6 +438,9 @@ type Mutation {
   createRequest(title: String!, description: String, budgetMin: Float, budgetMax: Float, budgetCurrency: String, images: [CreateImageDto!], categoryID: String!, subCategoryID: String, location: CreateLocationDto!, status: RequestStatus!, ownerID: String): RequestDto!
   updateRequest(title: String, description: String, budgetMin: Float, budgetMax: Float, budgetCurrency: String, images: [CreateImageDto!], categoryID: String, subCategoryID: String, location: CreateLocationDto, status: RequestStatus, ownerID: String, id: String!): RequestDto!
   deleteRequest(id: String!): RequestDto!
+  createOffer(title: String, description: String!, price: Float!, priceCurrency: String, images: [CreateImageDto!], status: OfferStatus!, ownerID: String, storeID: String, requestID: String!): OfferDto!
+  updateOffer(title: String, description: String, price: Float, priceCurrency: String, images: [CreateImageDto!], status: OfferStatus, ownerID: String, storeID: String, requestID: String, id: String!): OfferDto!
+  deleteOffer(id: String!): OfferDto!
 }
 
 input CreateProfileDto {

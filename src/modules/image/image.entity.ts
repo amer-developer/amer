@@ -2,6 +2,7 @@ import { Column, Entity, ManyToOne } from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
 import { ImageFolder } from '../../common/constants/image-folder';
+import { OfferEntity } from '../offer/offer.entity';
 import { RequestEntity } from '../request/request.entity';
 import { ImageDto } from './dto/image.dto';
 
@@ -18,6 +19,9 @@ export class ImageEntity extends AbstractEntity<ImageDto> {
 
     @ManyToOne(() => RequestEntity, (request) => request.images)
     request: RequestEntity;
+
+    @ManyToOne(() => OfferEntity, (offer) => offer.images)
+    offer: OfferEntity;
 
     dtoClass = ImageDto;
 }

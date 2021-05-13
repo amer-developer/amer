@@ -11,6 +11,7 @@ import { AbstractEntity } from '../../common/abstract.entity';
 import { RoleType } from '../../common/constants/role-type';
 import { UserStatus } from '../../common/constants/user-status';
 import { LocationEntity } from '../location/location.entity';
+import { OfferEntity } from '../offer/offer.entity';
 import { ProfileEntity } from '../profile/profile.entity';
 import { RequestEntity } from '../request/request.entity';
 import { StoreEntity } from '../store/store.entity';
@@ -48,6 +49,9 @@ export class UserEntity extends AbstractEntity<UserDto> {
 
     @OneToMany(() => RequestEntity, (request) => request.owner)
     requests: RequestEntity[];
+
+    @OneToMany(() => OfferEntity, (offer) => offer.owner)
+    offers: OfferEntity[];
 
     @ManyToOne(() => StoreEntity, (store) => store.users)
     store: StoreEntity;

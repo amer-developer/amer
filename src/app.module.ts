@@ -14,6 +14,7 @@ import { CountryModule } from './modules/country/country.module';
 import { DistrictModule } from './modules/district/district.module';
 import { ImageModule } from './modules/image/image.module';
 import { LocationModule } from './modules/location/location.module';
+import { OfferModule } from './modules/offer/offer.module';
 import { OTPModule } from './modules/otp/otp.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { RequestModule } from './modules/request/request.module';
@@ -40,6 +41,7 @@ import { SharedModule } from './shared/shared.module';
         CategoryModule,
         SubCategoryModule,
         RequestModule,
+        OfferModule,
         GraphQLModule.forRootAsync({
             imports: [SharedModule],
             useFactory: (configService: ConfigService) =>

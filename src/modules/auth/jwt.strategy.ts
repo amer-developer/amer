@@ -22,7 +22,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         if (timeDiff <= 0) {
             throw new UnauthorizedException();
         }
-        const user = await this.userService.findOne(userId);
+        const user = await this.userService.findOne(userId, {
+            relations: ['store'],
+        });
 
         if (!user) {
             throw new UnauthorizedException();

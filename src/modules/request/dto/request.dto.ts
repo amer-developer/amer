@@ -15,6 +15,7 @@ import { AbstractDto } from '../../../common/dto/AbstractDto';
 import { CategoryDto } from '../../category/dto/category.dto';
 import { ImageDto } from '../../image/dto/image.dto';
 import { LocationDto } from '../../location/dto/location.dto';
+import { OfferDto } from '../../offer/dto/offer.dto';
 import { SubCategoryDto } from '../../sub-category/dto/sub-category.dto';
 import { UserDto } from '../../user/dto/user.dto';
 import { RequestEntity } from '../request.entity';
@@ -86,6 +87,12 @@ export class RequestDto extends AbstractDto {
     @IsObject()
     owner: UserDto;
 
+    @Field(() => [OfferDto], { nullable: true })
+    @ApiProperty({ required: false, type: () => [OfferDto] })
+    @IsObject()
+    @IsOptional()
+    offers: OfferDto[];
+
     @Field(() => RequestStatus)
     @ApiProperty({
         required: false,
@@ -118,6 +125,9 @@ export class RequestDto extends AbstractDto {
         }
         if (request.owner) {
             this.owner = request.owner.toDto();
+        }
+        if (request.offers) {
+            this.offers = request.offers.toDtos();
         }
         this.status = request.status;
     }

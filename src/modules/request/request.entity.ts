@@ -12,6 +12,7 @@ import { RequestStatus } from '../../common/constants/request-status';
 import { CategoryEntity } from '../category/category.entity';
 import { ImageEntity } from '../image/image.entity';
 import { LocationEntity } from '../location/location.entity';
+import { OfferEntity } from '../offer/offer.entity';
 import { SubCategoryEntity } from '../sub-category/sub-category.entity';
 import { UserEntity } from '../user/user.entity';
 import { RequestDto } from './dto/request.dto';
@@ -62,6 +63,9 @@ export class RequestEntity extends AbstractEntity<RequestDto> {
 
     @ManyToOne(() => UserEntity, (user) => user.requests)
     owner: UserEntity;
+
+    @OneToMany(() => OfferEntity, (offer) => offer.request)
+    offers: OfferEntity[];
 
     dtoClass = RequestDto;
 }

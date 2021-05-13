@@ -11,6 +11,7 @@ import { AbstractEntity } from '../../common/abstract.entity';
 import { StoreStatus } from '../../common/constants/store-status';
 import { CategoryEntity } from '../category/category.entity';
 import { LocationEntity } from '../location/location.entity';
+import { OfferEntity } from '../offer/offer.entity';
 import { SubCategoryEntity } from '../sub-category/sub-category.entity';
 import { UserEntity } from '../user/user.entity';
 import { StoreDto } from './dto/store.dto';
@@ -58,6 +59,9 @@ export class StoreEntity extends AbstractEntity<StoreDto> {
     @OneToOne(() => UserEntity)
     @JoinColumn()
     owner: UserEntity;
+
+    @OneToMany(() => OfferEntity, (offer) => offer.store)
+    offers: OfferEntity[];
 
     dtoClass = StoreDto;
 }
