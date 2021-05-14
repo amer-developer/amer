@@ -76,10 +76,11 @@ export class StoreService {
         let queryBuilder = this.storeRepository.createQueryBuilder('store');
 
         if (pageOptionsDto.q) {
-            queryBuilder = queryBuilder.searchByString(pageOptionsDto.q, [
-                'reference',
-                'bio',
-            ]);
+            queryBuilder = queryBuilder.searchByString(
+                pageOptionsDto.q,
+                ['reference', 'name', 'bio'],
+                true,
+            );
         }
 
         const { items, pageMetaDto } = await queryBuilder.paginate(
