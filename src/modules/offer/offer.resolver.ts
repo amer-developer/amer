@@ -28,6 +28,7 @@ export class OfferResolver {
     ): Promise<OfferDto> {
         if (user.role !== RoleType.ADMIN) {
             offer.ownerID = user.id;
+            offer.storeID = user.store?.id;
         }
         this.logger.debug(
             `Creating a new offer, user: ${user.id}, offer ${JSON.stringify(
@@ -61,6 +62,7 @@ export class OfferResolver {
     ): Promise<OfferDto> {
         if (user.role !== RoleType.ADMIN) {
             offer.ownerID = user.id;
+            offer.storeID = user.store?.id;
         }
         this.logger.debug(
             `Update offer, user: ${user.id}, offer ${JSON.stringify(offer)}`,
