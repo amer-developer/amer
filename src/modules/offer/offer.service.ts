@@ -63,13 +63,7 @@ export class OfferService {
         this.logger.log(`Created offer ${JSON.stringify(savedEntity)}`);
 
         return this.getOffer(savedEntity.id, {
-            includes: [
-                'location',
-                'category',
-                'subCategory',
-                'images',
-                'owner',
-            ],
+            includes: ['request', 'store', 'images', 'owner'],
         });
     }
 
