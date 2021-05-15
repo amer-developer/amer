@@ -118,7 +118,7 @@ export class OfferController {
     }
 
     @Put(':id/accept')
-    @Auth(RoleType.SELLER, RoleType.ADMIN)
+    @Auth(RoleType.BUYER, RoleType.ADMIN)
     @HttpCode(HttpStatus.OK)
     @ApiResponse({
         status: HttpStatus.OK,
@@ -178,7 +178,7 @@ export class OfferController {
     }
 
     @Put(':id/reject')
-    @Auth(RoleType.SELLER, RoleType.ADMIN)
+    @Auth(RoleType.BUYER, RoleType.ADMIN)
     @HttpCode(HttpStatus.OK)
     @ApiResponse({
         status: HttpStatus.OK,

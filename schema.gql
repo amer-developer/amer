@@ -449,6 +449,8 @@ type Mutation {
   deleteRequest(id: String!): RequestDto!
   createOffer(title: String, description: String!, price: Float!, priceCurrency: String, images: [CreateImageDto!], status: OfferStatus!, ownerID: String, storeID: String, requestID: String!): OfferDto!
   updateOffer(title: String, description: String, price: Float, priceCurrency: String, images: [CreateImageDto!], status: OfferStatus, ownerID: String, storeID: String, requestID: String, id: String!): OfferDto!
+  acceptOffer(id: String!): OfferDto!
+  rejectOffer(code: OfferRejectReason!, message: String, id: String!): OfferDto!
   deleteOffer(id: String!): OfferDto!
 }
 
