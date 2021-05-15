@@ -425,8 +425,8 @@ type Mutation {
   createStore(name: String!, bio: String, avatar: String, categoryID: String!, subCategoryID: String, location: CreateLocationDto!, users: [CreateUserDto!], ownerID: String, status: StoreStatus = ACTIVE): StoreDto!
   updateStore(name: String, bio: String, avatar: String, categoryID: String, subCategoryID: String, location: CreateLocationDto, users: [CreateUserDto!], ownerID: String, status: StoreStatus = ACTIVE, id: String!): StoreDto!
   deleteStore(id: String!): StoreDto!
-  createCategory(nameAR: String!, nameEN: String!, status: CategoryStatus): CategoryDto!
-  updateCategory(nameAR: String, nameEN: String, status: CategoryStatus, id: String!): CategoryDto!
+  createCategory(nameAR: String!, nameEN: String!, icon: CreateImageDto!, backgroundColor: String, textColor: String, status: CategoryStatus): CategoryDto!
+  updateCategory(nameAR: String, nameEN: String, icon: CreateImageDto, backgroundColor: String, textColor: String, status: CategoryStatus, id: String!): CategoryDto!
   deleteCategory(id: String!): CategoryDto!
   createSubCategory(nameAR: String!, nameEN: String!, categoryID: String!, status: SubCategoryStatus): SubCategoryDto!
   updateSubCategory(nameAR: String, nameEN: String, categoryID: String, status: SubCategoryStatus, id: String!): SubCategoryDto!
@@ -467,12 +467,12 @@ input CreateUserDto {
   location: CreateLocationDto
 }
 
-"""The `Upload` scalar type represents a file upload."""
-scalar Upload
-
 input CreateImageDto {
   id: String
   url: String
   name: String
   folder: ImageType
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
