@@ -7,6 +7,7 @@ export enum RequestStatus {
     INACTIVE = 'INACTIVE',
     EXPIRED = 'EXPIRED',
     DELETED = 'DELETED',
+    ACCEPTED_COMPLETED = 'ACCEPTED_COMPLETED',
 }
 
 registerEnumType(RequestStatus, {

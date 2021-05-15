@@ -50,7 +50,9 @@ export class OfferResolver {
         @Args('id', new ParseUUIDPipe()) id: string,
         @Args({ nullable: true }) getOptionsDto: GetOptionsDto,
     ): Promise<OfferDto> {
-        return this.offerService.getOffer(id, getOptionsDto);
+        return this.offerService.getOffer(id, {
+            relations: getOptionsDto.includes,
+        });
     }
 
     @Mutation(() => OfferDto, { name: 'updateOffer' })

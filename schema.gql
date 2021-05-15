@@ -183,6 +183,7 @@ enum RequestStatus {
   INACTIVE
   EXPIRED
   DELETED
+  ACCEPTED_COMPLETED
 }
 
 type OfferDto {
@@ -206,6 +207,8 @@ enum OfferStatus {
   INACTIVE
   EXPIRED
   DELETED
+  ACCEPTED
+  REJECTED
 }
 
 type CountriesPageDto {

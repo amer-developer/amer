@@ -1,9 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { FindConditions, FindOneOptions } from 'typeorm';
+import {
+    DeepPartial,
+    FindConditions,
+    FindOneOptions,
+    SaveOptions,
+} from 'typeorm';
 
 import { ImageFolder } from '../../common/constants/image-folder';
 import { OfferStatus } from '../../common/constants/offer-status';
-import { GetOptionsDto } from '../../common/dto/GetOptionsDto';
 import { OfferNotFoundException } from '../../exceptions/offer-not-found.exception';
 import { CreateImageDto } from '../image/dto/create-image.dto';
 import { ImageService } from '../image/image.service';
@@ -42,6 +46,13 @@ export class OfferService {
         return this.offerRepository.findOne(findData, findOneOptions);
     }
 
+    save(
+        entities: DeepPartial<OfferEntity>,
+        opts?: SaveOptions,
+    ): Promise<OfferEntity> {
+        return this.offerRepository.save(entities, opts);
+    }
+
     async createOffer(offerDto: CreateOfferDto): Promise<OfferDto> {
         const {
             store,
@@ -58,12 +69,12 @@ export class OfferService {
             owner,
         });
 
-        const savedEntity = await this.offerRepository.save(offer);
+        const savedEntity = await this.save(offer);
 
         this.logger.log(`Created offer ${JSON.stringify(savedEntity)}`);
 
         return this.getOffer(savedEntity.id, {
-            includes: ['request', 'store', 'images', 'owner'],
+            relations: ['request', 'store', 'images', 'owner'],
         });
     }
 
@@ -94,11 +105,11 @@ export class OfferService {
         return items.toPageDto(pageMetaDto);
     }
 
-    async getOffer(id: string, options?: GetOptionsDto) {
-        const offerEntity = await this.findOne(
-            { id },
-            { relations: options?.includes },
-        );
+    async getOffer(
+        id: string,
+        options?: FindOneOptions<OfferEntity>,
+    ): Promise<OfferDto> {
+        const offerEntity = await this.findOne({ id }, options);
 
         if (!offerEntity) {
             throw new OfferNotFoundException();
@@ -120,7 +131,7 @@ export class OfferService {
             owner,
         } = await this.validateOfferInputs(offerDto);
 
-        const offer = await this.offerRepository.save({
+        const offer = await this.save({
             id: offerEntity.id,
             ...offerDto,
             store,
@@ -140,7 +151,7 @@ export class OfferService {
         if (!offerEntity) {
             throw new OfferNotFoundException();
         }
-        await this.offerRepository.save({
+        await this.save({
             id: offerEntity.id,
             status: OfferStatus.DELETED,
         });

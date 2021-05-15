@@ -1,5 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { FindConditions, FindOneOptions } from 'typeorm';
+import {
+    DeepPartial,
+    FindConditions,
+    FindOneOptions,
+    SaveOptions,
+} from 'typeorm';
 
 import { ImageFolder } from '../../common/constants/image-folder';
 import { RequestStatus } from '../../common/constants/request-status';
@@ -43,6 +48,13 @@ export class RequestService {
         findOneOptions?: FindOneOptions<RequestEntity>,
     ): Promise<RequestEntity> {
         return this.requestRepository.findOne(findData, findOneOptions);
+    }
+
+    save(
+        entities: DeepPartial<RequestEntity>,
+        opts?: SaveOptions,
+    ): Promise<RequestEntity> {
+        return this.requestRepository.save(entities, opts);
     }
 
     async createRequest(requestDto: CreateRequestDto): Promise<RequestDto> {

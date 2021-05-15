@@ -7,6 +7,8 @@ export enum OfferStatus {
     INACTIVE = 'INACTIVE',
     EXPIRED = 'EXPIRED',
     DELETED = 'DELETED',
+    ACCEPTED = 'ACCEPTED',
+    REJECTED = 'REJECTED',
 }
 
 registerEnumType(OfferStatus, {
