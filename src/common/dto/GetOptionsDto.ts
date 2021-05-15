@@ -14,7 +14,7 @@ export class GetOptionsDto {
     @IsString()
     @IsNotEmpty()
     @IsOptional()
-    readonly include?: string;
+    include?: string;
 
     get includes(): string[] {
         return this.include

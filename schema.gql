@@ -44,12 +44,30 @@ type DistrictDto {
   city: CityDto!
 }
 
+type ImageDto {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String!
+  folder: ImageType!
+  url: String!
+}
+
+enum ImageType {
+  PROFILE
+  REQUEST
+  OFFER
+}
+
 type CategoryDto {
   id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   nameAR: String!
   nameEN: String!
+  icon: ImageDto
+  backgroundColor: String
+  textColor: String
   status: CategoryStatus!
   subCategories: [SubCategoryDto!]
 }
@@ -142,21 +160,6 @@ enum StoreStatus {
   ACTIVE
   INACTIVE
   DELETED
-}
-
-type ImageDto {
-  id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  name: String!
-  folder: ImageType!
-  url: String!
-}
-
-enum ImageType {
-  PROFILE
-  REQUEST
-  OFFER
 }
 
 type RequestDto {
@@ -337,13 +340,13 @@ type LoginRo {
   token: TokenRo!
 }
 
-type CategoriesPageDto {
-  data: [CategoryDto!]!
+type ImagesPageDto {
+  data: [ImageDto!]!
   meta: PageMetaDto!
 }
 
-type ImagesPageDto {
-  data: [ImageDto!]!
+type CategoriesPageDto {
+  data: [CategoryDto!]!
   meta: PageMetaDto!
 }
 
@@ -389,10 +392,10 @@ type Query {
   store(id: String!): StoreDto!
   categories(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): CategoriesPageDto!
   category(id: String!): CategoryDto!
-  subCategories(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): SubCategoriesPageDto!
-  subCategory(id: String!): SubCategoryDto!
   images(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): ImagesPageDto!
   image(id: String!): ImageDto!
+  subCategories(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): SubCategoriesPageDto!
+  subCategory(id: String!): SubCategoryDto!
   requests(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): RequestsPageDto!
   request(include: String, id: String!): RequestDto!
   offers(order: Order = ASC, sort: String, page: Int = 1, take: Int = 10, include: String, filter: String, q: String): OffersPageDto!
@@ -437,13 +440,13 @@ type Mutation {
   createCategory(nameAR: String!, nameEN: String!, icon: CreateImageDto!, backgroundColor: String, textColor: String, status: CategoryStatus): CategoryDto!
   updateCategory(nameAR: String, nameEN: String, icon: CreateImageDto, backgroundColor: String, textColor: String, status: CategoryStatus, id: String!): CategoryDto!
   deleteCategory(id: String!): CategoryDto!
-  createSubCategory(nameAR: String!, nameEN: String!, categoryID: String!, status: SubCategoryStatus): SubCategoryDto!
-  updateSubCategory(nameAR: String, nameEN: String, categoryID: String, status: SubCategoryStatus, id: String!): SubCategoryDto!
-  deleteSubCategory(id: String!): SubCategoryDto!
   createImage(file: Upload, id: String, url: String, name: String, folder: ImageType): ImageDto!
   uploadImage(file: Upload): ImageDto!
   updateImage(id: String!): ImageDto!
   deleteImage(id: String!): ImageDto!
+  createSubCategory(nameAR: String!, nameEN: String!, categoryID: String!, status: SubCategoryStatus): SubCategoryDto!
+  updateSubCategory(nameAR: String, nameEN: String, categoryID: String, status: SubCategoryStatus, id: String!): SubCategoryDto!
+  deleteSubCategory(id: String!): SubCategoryDto!
   createRequest(title: String!, description: String, budgetMin: Float, budgetMax: Float, budgetCurrency: String, images: [CreateImageDto!], categoryID: String!, subCategoryID: String, location: CreateLocationDto!, status: RequestStatus!, ownerID: String): RequestDto!
   updateRequest(title: String, description: String, budgetMin: Float, budgetMax: Float, budgetCurrency: String, images: [CreateImageDto!], categoryID: String, subCategoryID: String, location: CreateLocationDto, status: RequestStatus, ownerID: String, id: String!): RequestDto!
   deleteRequest(id: String!): RequestDto!

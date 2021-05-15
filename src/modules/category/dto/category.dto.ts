@@ -5,6 +5,7 @@ import { IsObject, IsOptional, IsString } from 'class-validator';
 
 import { CategoryStatus } from '../../../common/constants/category-status';
 import { AbstractDto } from '../../../common/dto/AbstractDto';
+import { ImageDto } from '../../image/dto/image.dto';
 import { SubCategoryDto } from '../../sub-category/dto/sub-category.dto';
 import { CategoryEntity } from '../category.entity';
 
@@ -20,6 +21,24 @@ export class CategoryDto extends AbstractDto {
     @IsString()
     nameEN: string;
 
+    @Field(() => ImageDto, { nullable: true })
+    @ApiProperty({ required: false, type: () => ImageDto })
+    @IsObject()
+    @IsOptional()
+    icon: ImageDto;
+
+    @Field({ nullable: true })
+    @ApiProperty({ required: false })
+    @IsString()
+    @IsOptional()
+    backgroundColor: string;
+
+    @Field({ nullable: true })
+    @ApiProperty({ required: false })
+    @IsString()
+    @IsOptional()
+    textColor: string;
+
     @Field(() => CategoryStatus)
     @ApiProperty({ required: true, enum: CategoryStatus })
     status: CategoryStatus;
@@ -34,6 +53,11 @@ export class CategoryDto extends AbstractDto {
         super(category);
         this.nameAR = category.nameAR;
         this.nameEN = category.nameEN;
+        if (category.icon) {
+            this.icon = category.icon.toDto();
+        }
+        this.backgroundColor = category.backgroundColor;
+        this.textColor = category.textColor;
         this.status = category.status;
         if (category.subCategories) {
             this.subCategories = category.subCategories.toDtos();

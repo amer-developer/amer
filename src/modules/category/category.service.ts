@@ -4,6 +4,8 @@ import { FindConditions, FindOneOptions } from 'typeorm';
 import { GetOptionsDto } from '../../common/dto/GetOptionsDto';
 import { CategoryNotFoundException } from '../../exceptions/category-not-found.exception';
 import { ValidatorService } from '../../shared/services/validator.service';
+import { ImageDto } from '../image/dto/image.dto';
+import { ImageService } from '../image/image.service';
 import { CategoryEntity } from './category.entity';
 import { CategoryRepository } from './category.repository';
 import { CategoriesPageOptionsDto } from './dto/categories-page-options.dto';
@@ -18,6 +20,7 @@ export class CategoryService {
     constructor(
         public readonly categoryRepository: CategoryRepository,
         public readonly validatorService: ValidatorService,
+        public readonly imagesService: ImageService,
     ) {}
 
     /**
@@ -60,6 +63,11 @@ export class CategoryService {
     }
 
     async getCategory(id: string, options?: GetOptionsDto) {
+        options.include = options.include ?? '';
+        options.include =
+            options.include.indexOf('icon') >= 0
+                ? options.include
+                : (options.include += ',icon');
         const categoryEntity = await this.findOne(
             { id },
             { relations: options?.includes },
@@ -77,10 +85,15 @@ export class CategoryService {
         if (!categoryEntity) {
             throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
         }
+        let icon: ImageDto;
+        if (category.icon) {
+            icon = await this.imagesService.getImage(category.icon.id);
+        }
 
         await this.categoryRepository.save({
             id: categoryEntity.id,
             ...category,
+            icon,
         });
 
         let updatedCategory = categoryEntity.toDto();
