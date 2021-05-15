@@ -10,6 +10,7 @@ import {
     IsString,
 } from 'class-validator';
 
+import { OfferRejectReason } from '../../../common/constants/offer-reject-reason';
 import { OfferStatus } from '../../../common/constants/offer-status';
 import { AbstractDto } from '../../../common/dto/AbstractDto';
 import { ImageDto } from '../../image/dto/image.dto';
@@ -72,6 +73,21 @@ export class OfferDto extends AbstractDto {
     @IsObject()
     store: StoreDto;
 
+    @Field(() => OfferRejectReason)
+    @ApiProperty({
+        required: false,
+        enum: OfferRejectReason,
+    })
+    @IsEnum(OfferRejectReason)
+    @IsOptional()
+    rejectCode: OfferRejectReason;
+
+    @Field({ nullable: true })
+    @ApiProperty({ required: false })
+    @IsString()
+    @IsOptional()
+    rejectMessage: string;
+
     @Field(() => OfferStatus)
     @ApiProperty({
         required: false,
@@ -89,6 +105,8 @@ export class OfferDto extends AbstractDto {
         this.description = offer.description;
         this.price = offer.price;
         this.priceCurrency = offer.priceCurrency;
+        this.rejectCode = offer.rejectCode;
+        this.rejectMessage = offer.rejectMessage;
         if (offer.images) {
             this.images = offer.images.toDtos();
         }

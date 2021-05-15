@@ -1,6 +1,7 @@
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
+import { OfferRejectReason } from '../../common/constants/offer-reject-reason';
 import { OfferStatus } from '../../common/constants/offer-status';
 import { ImageEntity } from '../image/image.entity';
 import { RequestEntity } from '../request/request.entity';
@@ -29,6 +30,16 @@ export class OfferEntity extends AbstractEntity<OfferDto> {
 
     @OneToMany(() => ImageEntity, (image) => image.offer, { cascade: true })
     images: ImageEntity[];
+
+    @Column({
+        type: 'enum',
+        enum: OfferRejectReason,
+        nullable: true,
+    })
+    rejectCode: OfferRejectReason;
+
+    @Column({ nullable: true })
+    rejectMessage: string;
 
     @Column({
         type: 'enum',

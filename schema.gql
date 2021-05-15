@@ -199,7 +199,13 @@ type OfferDto {
   request: RequestDto!
   owner: UserDto!
   store: StoreDto!
+  rejectCode: OfferRejectReason!
+  rejectMessage: String
   status: OfferStatus!
+}
+
+enum OfferRejectReason {
+  TOO_HIGH
 }
 
 enum OfferStatus {

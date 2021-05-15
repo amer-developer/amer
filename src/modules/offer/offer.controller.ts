@@ -25,6 +25,7 @@ import { CreateOfferDto } from './dto/create-offer.dto';
 import { OfferDto } from './dto/offer.dto';
 import { OffersPageOptionsDto } from './dto/offers-page-options.dto';
 import { OffersPageDto } from './dto/offers-page.dto';
+import { RejectOfferDto } from './dto/reject-offer.dto';
 import { UpdateOfferDto } from './dto/update-offer.dto';
 import { OfferService } from './offer.service';
 
@@ -186,6 +187,7 @@ export class OfferController {
     })
     async rejectOffer(
         @UUIDParam('id') offerId: string,
+        @Body() offer: RejectOfferDto,
         @AuthUser() user: UserEntity,
     ): Promise<OfferDto> {
         this.logger.debug(`Reject offer, user: ${user.id}, offer ${offerId}`);
@@ -223,9 +225,13 @@ export class OfferController {
         await this.offerService.save({
             id: offerId,
             status: OfferStatus.REJECTED,
+            rejectCode: offer.code,
+            rejectMessage: offer.message,
         });
 
         rejectedOffer.status = OfferStatus.REJECTED;
+        rejectedOffer.rejectCode = offer.code;
+        rejectedOffer.rejectMessage = offer.message;
 
         return rejectedOffer;
     }
