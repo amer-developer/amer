@@ -4,7 +4,6 @@ import { FindConditions, FindOneOptions } from 'typeorm';
 import { GetOptionsDto } from '../../common/dto/GetOptionsDto';
 import { CategoryNotFoundException } from '../../exceptions/category-not-found.exception';
 import { ValidatorService } from '../../shared/services/validator.service';
-import { ImageDto } from '../image/dto/image.dto';
 import { ImageService } from '../image/image.service';
 import { CategoryEntity } from './category.entity';
 import { CategoryRepository } from './category.repository';
@@ -81,19 +80,21 @@ export class CategoryService {
     }
 
     async updateCategory(id: string, category: UpdateCategoryDto) {
-        const categoryEntity = await this.findOne({ id });
+        const categoryEntity = await this.findOne(
+            { id },
+            { relations: ['icon'] },
+        );
         if (!categoryEntity) {
             throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
         }
-        let icon: ImageDto;
+
         if (category.icon) {
-            icon = await this.imagesService.getImage(category.icon.id);
+            category.icon = await this.imagesService.getImage(category.icon.id);
         }
 
         await this.categoryRepository.save({
             id: categoryEntity.id,
             ...category,
-            icon,
         });
 
         let updatedCategory = categoryEntity.toDto();
