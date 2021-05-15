@@ -95,12 +95,20 @@ export class SubCategoryService {
     }
 
     async updateSubCategory(id: string, subCategory: UpdateSubCategoryDto) {
-        const subCategoryEntity = await this.findOne({ id });
+        const subCategoryEntity = await this.findOne(
+            { id },
+            { relations: ['category'] },
+        );
         if (!subCategoryEntity) {
             throw new SubCategoryNotFoundException();
         }
 
+        const category = subCategory.categoryID
+            ? await this.countriesService.getCategory(subCategory.categoryID)
+            : subCategoryEntity.category;
+
         await this.subCategoryRepository.save({
+            category,
             id: subCategoryEntity.id,
             ...subCategory,
         });

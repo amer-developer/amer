@@ -42,6 +42,7 @@ export class CreateUserDto {
     @ApiProperty({ minLength: 6 })
     @IsString()
     @MinLength(6)
+    @IsOptional()
     readonly password?: string;
 
     @Field()

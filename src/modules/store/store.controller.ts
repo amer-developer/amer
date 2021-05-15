@@ -100,6 +100,12 @@ export class StoreController {
         @Body() store: UpdateStoreDto,
         @AuthUser() user: UserEntity,
     ): Promise<StoreDto> {
+        if (user.role !== RoleType.ADMIN) {
+            store.users = store.users ?? [];
+            store.users.push({ id: user.id });
+            store.users.map((st) => ({ ...st, role: RoleType.SELLER }));
+            store.ownerID = user.id;
+        }
         this.logger.debug(
             `Update store, user: ${user.id}, store ${JSON.stringify(store)}`,
         );

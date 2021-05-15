@@ -22,6 +22,7 @@ export class UserSubscriber implements EntitySubscriberInterface<UserEntity> {
     }
     beforeUpdate(event: UpdateEvent<UserEntity>) {
         if (
+            event.entity &&
             event.entity.password &&
             event.entity.password !== event.databaseEntity.password
         ) {
